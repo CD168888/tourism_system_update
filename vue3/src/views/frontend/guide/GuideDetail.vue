@@ -27,32 +27,29 @@
                 <h1 class="guide-title">{{ guide.title }}</h1>
                 <div class="guide-meta">
                   <div class="meta-item author">
-                    <el-avatar
-                      :src="getImageUrl(guide.userAvatar)"
-                      :size="40"
-                      class="author-avatar"
-                    >
-                      <el-icon><User /></el-icon>
+                    <el-avatar :src="getImageUrl(guide.userAvatar)" :size="40" class="author-avatar">
+                      <el-icon>
+                        <User />
+                      </el-icon>
                     </el-avatar>
                     <span class="author-name">{{ guide.userNickname || '旅行者' + guide.userId }}</span>
                   </div>
                   <div class="meta-item">
-                    <el-icon><Calendar /></el-icon>
+                    <el-icon>
+                      <Calendar />
+                    </el-icon>
                     <span>{{ formatDate(guide.createTime) }}</span>
                   </div>
                   <div class="meta-item">
-                    <el-icon><View /></el-icon>
+                    <el-icon>
+                      <View />
+                    </el-icon>
                     <span>{{ formatNumber(guide.views) }} 阅读</span>
                   </div>
                 </div>
                 <div class="action-buttons">
-                  <el-button
-                    :type="isCollected ? 'danger' : 'primary'"
-                    size="large"
-                    @click="handleCollectionToggle"
-                    :disabled="!userStore.isLoggedIn"
-                    class="collection-btn"
-                  >
+                  <el-button :type="isCollected ? 'danger' : 'primary'" size="large" @click="handleCollectionToggle"
+                    :disabled="!userStore.isLoggedIn" class="collection-btn">
                     <el-icon>
                       <StarFilled v-if="isCollected" />
                       <Star v-else />
@@ -60,7 +57,9 @@
                     {{ isCollected ? '已收藏' : '收藏攻略' }}
                   </el-button>
                   <el-button size="large" class="share-btn" @click="handleShare">
-                    <el-icon><Share /></el-icon>
+                    <el-icon>
+                      <Share />
+                    </el-icon>
                     分享
                   </el-button>
                 </div>
@@ -91,16 +90,13 @@
                   相关攻略
                 </h3>
                 <div class="related-guides">
-                  <div
-                    v-for="item in relatedGuides"
-                    :key="item.id"
-                    class="related-item"
-                    @click="goToGuide(item.id)"
-                  >
+                  <div v-for="item in relatedGuides" :key="item.id" class="related-item" @click="goToGuide(item.id)">
                     <h4 class="related-title">{{ item.title }}</h4>
                     <div class="related-meta">
                       <span class="views">
-                        <el-icon><View /></el-icon>
+                        <el-icon>
+                          <View />
+                        </el-icon>
                         {{ formatNumber(item.views) }} 阅读
                       </span>
                     </div>
@@ -112,7 +108,7 @@
         </div>
       </div>
     </div>
-    
+
     <div class="guide-not-found" v-else-if="!loading">
       <el-empty description="未找到该攻略" />
       <el-button type="primary" @click="goBack">返回</el-button>
@@ -167,20 +163,20 @@ const formatNumber = (num) => {
 // 处理富文本内容中的图片路径
 const processedContent = computed(() => {
   if (!guide.value || !guide.value.content) return ''
-  
+
   let content = guide.value.content
-  
+
   // 判断是否为Markdown格式（包含 # 或 ## 等标题标记）
-  const isMarkdown = /^#{1,6}\s+.+$/m.test(content) || 
-                     /^\*\*.*\*\*/.test(content) ||
-                     /^\*\s+.+$/m.test(content) ||
-                     /^\d+\.\s+.+$/m.test(content)
-  
+  const isMarkdown = /^#{1,6}\s+.+$/m.test(content) ||
+    /^\*\*.*\*\*/.test(content) ||
+    /^\*\s+.+$/m.test(content) ||
+    /^\d+\.\s+.+$/m.test(content)
+
   // 如果是Markdown，先转换为HTML
   if (isMarkdown) {
     content = md.render(content)
   }
-  
+
   // 处理图片路径：将相对路径转换为完整URL
   content = content.replace(/<img([^>]*?)src="([^"]*?)"([^>]*?)>/gi, (match, before, src, after) => {
     // 如果是相对路径，添加baseAPI前缀
@@ -189,7 +185,7 @@ const processedContent = computed(() => {
     }
     return `<img${before}src="${src}"${after}>`
   })
-  
+
   // 处理视频路径（如果有）
   content = content.replace(/<video([^>]*?)src="([^"]*?)"([^>]*?)>/gi, (match, before, src, after) => {
     if (src && !src.startsWith('http://') && !src.startsWith('https://')) {
@@ -197,7 +193,7 @@ const processedContent = computed(() => {
     }
     return `<video${before}src="${src}"${after}>`
   })
-  
+
   return content
 })
 
@@ -210,12 +206,12 @@ const fetchGuide = async () => {
       onSuccess: (res) => {
         guide.value = res
         document.title = res.title + ' - 旅游攻略'
-        
+
         // 如果用户已登录，查询是否已收藏
         if (userStore.isLoggedIn) {
           checkIsCollected(id)
         }
-        
+
         // 获取相关攻略
         fetchRelatedGuides()
       }
@@ -230,9 +226,9 @@ const fetchGuide = async () => {
 // 获取相关攻略
 const fetchRelatedGuides = async () => {
   if (!guide.value) return
-  
+
   try {
-    await request.get('/guide/related', { 
+    await request.get('/guide/related', {
       guideId: guide.value.id,
       limit: 3
     }, {
@@ -249,7 +245,7 @@ const fetchRelatedGuides = async () => {
 // 查询是否已收藏
 const checkIsCollected = async (guideId) => {
   if (!userStore.isLoggedIn) return
-  
+
   try {
     await request.get('/collection/isCollected', { guideId }, {
       showDefaultMsg: false,
@@ -269,7 +265,7 @@ const handleCollectionToggle = async () => {
     router.push('/login?redirect=' + route.fullPath)
     return
   }
-  
+
   try {
     if (isCollected.value) {
       // 取消收藏
@@ -325,6 +321,7 @@ onMounted(fetchGuide)
 }
 
 .guide-detail {
+
   // 英雄区域样式 - 参考景点详情页面
   .detail-hero-section {
     position: relative;
@@ -527,571 +524,574 @@ onMounted(fetchGuide)
       border-color: rgba(255, 255, 255, 0.5);
     }
   }
-// 攻略内容区域
-.guide-content-section {
-  background: transparent;
-  margin: 0;
-  position: relative;
-  z-index: 1;
-  padding: 40px 0;
-}
 
-.content-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
-}
-
-.content-layout {
-  display: grid;
-  grid-template-columns: 1fr 280px;
-  gap: 60px;
-  align-items: start;
-}
-
-.main-content {
-  min-width: 0; // 防止内容溢出
-}
-
-.sidebar {
-  .sidebar-sticky {
-    position: sticky;
-    top: 20px;
+  // 攻略内容区域
+  .guide-content-section {
+    background: transparent;
+    margin: 0;
+    position: relative;
+    z-index: 1;
+    padding: 40px 0;
   }
 
-  .glass-card {
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(25px) saturate(180%);
-    -webkit-backdrop-filter: blur(25px) saturate(180%);
-    border-radius: 20px;
-    padding: 24px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    transition: all 0.3s ease;
+  .content-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
 
-    &:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 12px 40px rgba(103, 182, 245, 0.2);
+  .content-layout {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 60px;
+    align-items: start;
+  }
+
+  .main-content {
+    min-width: 0; // 防止内容溢出
+  }
+
+  .sidebar {
+    .sidebar-sticky {
+      position: sticky;
+      top: 20px;
     }
-  }
 
-  .sidebar-title {
-    font-size: 20px;
-    font-weight: 700;
-    color: #1a202c;
-    margin: 0 0 20px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(25px) saturate(180%);
+      -webkit-backdrop-filter: blur(25px) saturate(180%);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      transition: all 0.3s ease;
 
-  .title-icon {
-    width: 24px;
-    height: 24px;
-    color: #67b6f5;
-    flex-shrink: 0;
-  }
-
-  .related-guides {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-
-  .related-item {
-    padding: 16px;
-    background: rgba(255, 255, 255, 0.6);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border-radius: 12px;
-    border: 1px solid rgba(103, 182, 245, 0.1);
-    cursor: pointer;
-    transition: all 0.3s ease;
-
-    &:hover {
-      transform: translateY(-2px);
-      background: rgba(255, 255, 255, 0.9);
-      box-shadow: 0 8px 20px rgba(103, 182, 245, 0.2);
-      border-color: rgba(103, 182, 245, 0.3);
-
-      .related-title {
-        color: #67b6f5;
+      &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 40px rgba(103, 182, 245, 0.2);
       }
     }
-  }
 
-  .related-title {
-    font-size: 15px;
-    font-weight: 600;
-    color: #1a202c;
-    margin-bottom: 8px;
-    line-height: 1.4;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    transition: color 0.3s ease;
-  }
-
-  .related-meta {
-    .views {
+    .sidebar-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #1a202c;
+      margin: 0 0 20px;
       display: flex;
       align-items: center;
-      gap: 4px;
-      font-size: 12px;
-      color: #64748b;
+      gap: 10px;
+    }
 
-      .el-icon {
+    .title-icon {
+      width: 24px;
+      height: 24px;
+      color: #67b6f5;
+      flex-shrink: 0;
+    }
+
+    .related-guides {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .related-item {
+      padding: 16px;
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: 12px;
+      border: 1px solid rgba(103, 182, 245, 0.1);
+      cursor: pointer;
+      transition: all 0.3s ease;
+
+      &:hover {
+        transform: translateY(-2px);
+        background: rgba(255, 255, 255, 0.9);
+        box-shadow: 0 8px 20px rgba(103, 182, 245, 0.2);
+        border-color: rgba(103, 182, 245, 0.3);
+
+        .related-title {
+          color: #67b6f5;
+        }
+      }
+    }
+
+    .related-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #1a202c;
+      margin-bottom: 8px;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      transition: color 0.3s ease;
+    }
+
+    .related-meta {
+      .views {
+        display: flex;
+        align-items: center;
+        gap: 4px;
         font-size: 12px;
+        color: #64748b;
+
+        .el-icon {
+          font-size: 12px;
+        }
       }
     }
   }
-}
 
-// 富文本内容样式
-.rich-content {
-  font-size: 16px;
-  line-height: 1.8;
-  color: #1a202c;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-
-  // 标题样式
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
+  // 富文本内容样式
+  .rich-content {
+    font-size: 16px;
+    line-height: 1.8;
     color: #1a202c;
-    font-weight: 700;
-    margin: 32px 0 16px;
-    line-height: 1.3;
-  }
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 
-  h1 {
-    font-size: 32px;
-    border-bottom: 3px solid #67b6f5;
-    padding-bottom: 12px;
-    margin-bottom: 24px;
-  }
-
-  h2 {
-    font-size: 28px;
-    border-bottom: 2px solid #e2e8f0;
-    padding-bottom: 10px;
-    margin-bottom: 20px;
-  }
-
-  h3 {
-    font-size: 24px;
-    margin-bottom: 16px;
-  }
-
-  h4 {
-    font-size: 20px;
-    margin-bottom: 14px;
-  }
-
-  // 段落样式
-  p {
-    margin: 16px 0;
-    text-align: justify;
-    text-justify: inter-ideograph;
-    color: #4a5568;
-  }
-
-  // 图片样式
-  img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 12px;
-    margin: 24px auto;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
-    display: block;
-
-    &:hover {
-      transform: scale(1.02);
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    // 标题样式
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      color: #1a202c;
+      font-weight: 700;
+      margin: 32px 0 16px;
+      line-height: 1.3;
     }
-  }
 
-  // 视频样式
-  video {
-    max-width: 100%;
-    height: auto;
-    border-radius: 12px;
-    margin: 24px auto;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    display: block;
-  }
+    h1 {
+      font-size: 32px;
+      border-bottom: 3px solid #67b6f5;
+      padding-bottom: 12px;
+      margin-bottom: 24px;
+    }
 
-  // 引用样式
-  blockquote {
-    border-left: 4px solid #67b6f5;
-    padding: 16px 20px;
-    margin: 24px 0;
-    background: linear-gradient(135deg, rgba(103, 182, 245, 0.05) 0%, rgba(255, 193, 124, 0.05) 100%);
-    border-radius: 0 12px 12px 0;
-    font-style: italic;
-    color: #4a5568;
+    h2 {
+      font-size: 28px;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+    }
 
+    h3 {
+      font-size: 24px;
+      margin-bottom: 16px;
+    }
+
+    h4 {
+      font-size: 20px;
+      margin-bottom: 14px;
+    }
+
+    // 段落样式
     p {
-      margin: 0;
-    }
-  }
-
-  // 列表样式
-  ul,
-  ol {
-    margin: 16px 0;
-    padding-left: 24px;
-
-    li {
-      margin: 8px 0;
-      line-height: 1.6;
+      margin: 16px 0;
+      text-align: justify;
+      text-justify: inter-ideograph;
       color: #4a5568;
     }
-  }
 
-  ul li {
-    list-style-type: disc;
-  }
+    // 图片样式
+    img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 12px;
+      margin: 24px auto;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease;
+      display: block;
 
-  ol li {
-    list-style-type: decimal;
-  }
+      &:hover {
+        transform: scale(1.02);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+      }
+    }
 
-  // 代码样式
-  code {
-    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
-    padding: 4px 8px;
-    border-radius: 6px;
-    color: #67b6f5;
-    font-weight: 600;
-    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-    font-size: 14px;
-  }
+    // 视频样式
+    video {
+      max-width: 100%;
+      height: auto;
+      border-radius: 12px;
+      margin: 24px auto;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      display: block;
+    }
 
-  pre {
-    background: #1a202c;
-    padding: 20px;
-    border-radius: 12px;
-    margin: 24px 0;
-    overflow-x: auto;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    // 引用样式
+    blockquote {
+      border-left: 4px solid #67b6f5;
+      padding: 16px 20px;
+      margin: 24px 0;
+      background: linear-gradient(135deg, rgba(103, 182, 245, 0.05) 0%, rgba(255, 193, 124, 0.05) 100%);
+      border-radius: 0 12px 12px 0;
+      font-style: italic;
+      color: #4a5568;
 
+      p {
+        margin: 0;
+      }
+    }
+
+    // 列表样式
+    ul,
+    ol {
+      margin: 16px 0;
+      padding-left: 24px;
+
+      li {
+        margin: 8px 0;
+        line-height: 1.6;
+        color: #4a5568;
+      }
+    }
+
+    ul li {
+      list-style-type: disc;
+    }
+
+    ol li {
+      list-style-type: decimal;
+    }
+
+    // 代码样式
     code {
-      background: transparent;
-      color: #e2e8f0;
-      font-weight: normal;
-      padding: 0;
-    }
-  }
-
-  // 表格样式
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 24px 0;
-    background: white;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-
-    th,
-    td {
-      padding: 12px 16px;
-      text-align: left;
-      border-bottom: 1px solid #e2e8f0;
+      background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+      padding: 4px 8px;
+      border-radius: 6px;
+      color: #67b6f5;
+      font-weight: 600;
+      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+      font-size: 14px;
     }
 
-    th {
-      background: linear-gradient(135deg, rgba(103, 182, 245, 0.1) 0%, rgba(90, 169, 230, 0.1) 100%);
+    pre {
+      background: #1a202c;
+      padding: 20px;
+      border-radius: 12px;
+      margin: 24px 0;
+      overflow-x: auto;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+
+      code {
+        background: transparent;
+        color: #e2e8f0;
+        font-weight: normal;
+        padding: 0;
+      }
+    }
+
+    // 表格样式
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 24px 0;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+
+      th,
+      td {
+        padding: 12px 16px;
+        text-align: left;
+        border-bottom: 1px solid #e2e8f0;
+      }
+
+      th {
+        background: linear-gradient(135deg, rgba(103, 182, 245, 0.1) 0%, rgba(90, 169, 230, 0.1) 100%);
+        font-weight: 700;
+        color: #1a202c;
+      }
+
+      tr:hover {
+        background: rgba(103, 182, 245, 0.05);
+      }
+
+      tr:last-child td {
+        border-bottom: none;
+      }
+    }
+
+    // 链接样式
+    a {
+      color: #67b6f5;
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: all 0.3s ease;
+
+      &:hover {
+        color: #5aa9e6;
+        border-bottom-color: #5aa9e6;
+      }
+    }
+
+    // 分割线样式
+    hr {
+      border: none;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #e2e8f0, transparent);
+      margin: 32px 0;
+    }
+
+    // 强调样式
+    strong,
+    b {
       font-weight: 700;
       color: #1a202c;
     }
 
-    tr:hover {
-      background: rgba(103, 182, 245, 0.05);
+    em,
+    i {
+      font-style: italic;
+      color: #4a5568;
     }
 
-    tr:last-child td {
-      border-bottom: none;
-    }
-  }
-
-  // 链接样式
-  a {
-    color: #67b6f5;
-    text-decoration: none;
-    border-bottom: 1px solid transparent;
-    transition: all 0.3s ease;
-
-    &:hover {
-      color: #5aa9e6;
-      border-bottom-color: #5aa9e6;
-    }
-  }
-
-  // 分割线样式
-  hr {
-    border: none;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, #e2e8f0, transparent);
-    margin: 32px 0;
-  }
-
-  // 强调样式
-  strong,
-  b {
-    font-weight: 700;
-    color: #1a202c;
-  }
-
-  em,
-  i {
-    font-style: italic;
-    color: #4a5568;
-  }
-
-  // 删除线
-  del,
-  s {
-    text-decoration: line-through;
-    color: #a0aec0;
-  }
-
-  // 下划线
-  u {
-    text-decoration: underline;
-    text-decoration-color: #67b6f5;
-  }
-
-  // WangEditor 特定样式
-  .w-e-text-container {
-    background: transparent !important;
-  }
-
-  // 处理内联样式的图片
-  p img {
-    margin: 12px auto;
-  }
-
-  // 图片居中
-  [style*="text-align: center"],
-  [style*="text-align:center"] {
-    img {
-      margin-left: auto;
-      margin-right: auto;
-    }
-  }
-}
-
-// 侧边栏样式已整合到上面
-
-.guide-not-found {
-  text-align: center;
-  padding: 80px 20px;
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-radius: 20px;
-  margin: 40px 20px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-
-  .el-button {
-    margin-top: 24px;
-    border-radius: 25px;
-    padding: 12px 32px;
-    font-weight: 600;
-    background: linear-gradient(135deg, #67b6f5 0%, #5aa9e6 100%);
-    border: none;
-    box-shadow: 0 6px 20px rgba(103, 182, 245, 0.3);
-
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(103, 182, 245, 0.4);
-    }
-  }
-}
-
-// 动画效果
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.animate-fade-in-up {
-  animation: fadeInUp 0.8s ease-out forwards;
-  opacity: 0;
-}
-
-.delay-200 {
-  animation-delay: 0.2s;
-}
-
-.delay-300 {
-  animation-delay: 0.3s;
-}
-
-// 响应式设计
-@media (max-width: 1024px) {
-  .content-layout {
-    grid-template-columns: 1fr;
-    gap: 40px;
-  }
-
-  .sidebar {
-    .sidebar-sticky {
-      position: static;
-      top: auto;
-    }
-  }
-}
-
-@media (max-width: 768px) {
-  .detail-hero-section {
-    height: 45vh;
-    min-height: 350px;
-  }
-
-  .hero-content {
-    padding: 20px;
-  }
-
-  .guide-title {
-    font-size: 28px;
-    margin-bottom: 16px;
-  }
-
-  .guide-meta {
-    gap: 16px;
-  }
-
-  .action-buttons {
-    flex-direction: column;
-  }
-
-  .collection-btn,
-  .share-btn {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .guide-content-section {
-    padding: 30px 0 50px;
-  }
-
-  .content-container {
-    padding: 0 16px;
-  }
-
-  .content-layout {
-    gap: 30px;
-  }
-
-  .sidebar {
-    .sidebar-sticky {
-      padding: 20px;
+    // 删除线
+    del,
+    s {
+      text-decoration: line-through;
+      color: #a0aec0;
     }
 
-    .sidebar-title {
-      font-size: 16px;
+    // 下划线
+    u {
+      text-decoration: underline;
+      text-decoration-color: #67b6f5;
     }
 
-    .related-item {
-      padding: 12px;
+    // WangEditor 特定样式
+    .w-e-text-container {
+      background: transparent !important;
     }
 
-    .related-title {
-      font-size: 13px;
-    }
-  }
-
-  .rich-content {
-    font-size: 15px;
-
-    h1 {
-      font-size: 26px;
+    // 处理内联样式的图片
+    p img {
+      margin: 12px auto;
     }
 
-    h2 {
-      font-size: 22px;
-    }
-
-    h3 {
-      font-size: 20px;
-    }
-
-    h4 {
-      font-size: 18px;
-    }
-
-    img {
-      margin: 16px 0;
-    }
-
-    blockquote {
-      padding: 12px 16px;
-      margin: 16px 0;
-    }
-
-    pre {
-      padding: 16px;
-      margin: 16px 0;
-    }
-
-    table {
-      font-size: 14px;
-
-      th, td {
-        padding: 8px 12px;
+    // 图片居中
+    [style*="text-align: center"],
+    [style*="text-align:center"] {
+      img {
+        margin-left: auto;
+        margin-right: auto;
       }
     }
   }
-}
 
-@media (max-width: 480px) {
-  .guide-title {
-    font-size: 24px;
-  }
+  // 侧边栏样式已整合到上面
 
-  .meta-item {
-    font-size: 14px;
+  .guide-not-found {
+    text-align: center;
+    padding: 80px 20px;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 20px;
+    margin: 40px 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.5);
 
-    .el-icon {
-      font-size: 16px;
+    .el-button {
+      margin-top: 24px;
+      border-radius: 25px;
+      padding: 12px 32px;
+      font-weight: 600;
+      background: linear-gradient(135deg, #67b6f5 0%, #5aa9e6 100%);
+      border: none;
+      box-shadow: 0 6px 20px rgba(103, 182, 245, 0.3);
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(103, 182, 245, 0.4);
+      }
     }
   }
 
-  .rich-content {
-    font-size: 14px;
-
-    h1 {
-      font-size: 22px;
+  // 动画效果
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
     }
 
-    h2 {
-      font-size: 20px;
-    }
-
-    h3 {
-      font-size: 18px;
-    }
-
-    h4 {
-      font-size: 16px;
+    to {
+      opacity: 1;
+      transform: translateY(0);
     }
   }
-}
+
+  .animate-fade-in-up {
+    animation: fadeInUp 0.8s ease-out forwards;
+    opacity: 0;
+  }
+
+  .delay-200 {
+    animation-delay: 0.2s;
+  }
+
+  .delay-300 {
+    animation-delay: 0.3s;
+  }
+
+  // 响应式设计
+  @media (max-width: 1024px) {
+    .content-layout {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+
+    .sidebar {
+      .sidebar-sticky {
+        position: static;
+        top: auto;
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    .detail-hero-section {
+      height: 45vh;
+      min-height: 350px;
+    }
+
+    .hero-content {
+      padding: 20px;
+    }
+
+    .guide-title {
+      font-size: 28px;
+      margin-bottom: 16px;
+    }
+
+    .guide-meta {
+      gap: 16px;
+    }
+
+    .action-buttons {
+      flex-direction: column;
+    }
+
+    .collection-btn,
+    .share-btn {
+      width: 100%;
+      justify-content: center;
+    }
+
+    .guide-content-section {
+      padding: 30px 0 50px;
+    }
+
+    .content-container {
+      padding: 0 16px;
+    }
+
+    .content-layout {
+      gap: 30px;
+    }
+
+    .sidebar {
+      .sidebar-sticky {
+        padding: 20px;
+      }
+
+      .sidebar-title {
+        font-size: 16px;
+      }
+
+      .related-item {
+        padding: 12px;
+      }
+
+      .related-title {
+        font-size: 13px;
+      }
+    }
+
+    .rich-content {
+      font-size: 15px;
+
+      h1 {
+        font-size: 26px;
+      }
+
+      h2 {
+        font-size: 22px;
+      }
+
+      h3 {
+        font-size: 20px;
+      }
+
+      h4 {
+        font-size: 18px;
+      }
+
+      img {
+        margin: 16px 0;
+      }
+
+      blockquote {
+        padding: 12px 16px;
+        margin: 16px 0;
+      }
+
+      pre {
+        padding: 16px;
+        margin: 16px 0;
+      }
+
+      table {
+        font-size: 14px;
+
+        th,
+        td {
+          padding: 8px 12px;
+        }
+      }
+    }
+  }
+
+  @media (max-width: 480px) {
+    .guide-title {
+      font-size: 24px;
+    }
+
+    .meta-item {
+      font-size: 14px;
+
+      .el-icon {
+        font-size: 16px;
+      }
+    }
+
+    .rich-content {
+      font-size: 14px;
+
+      h1 {
+        font-size: 22px;
+      }
+
+      h2 {
+        font-size: 20px;
+      }
+
+      h3 {
+        font-size: 18px;
+      }
+
+      h4 {
+        font-size: 16px;
+      }
+    }
+  }
 }
 </style>
