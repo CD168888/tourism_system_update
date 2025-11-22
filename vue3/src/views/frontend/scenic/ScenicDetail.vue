@@ -19,27 +19,28 @@
               <h1 class="scenic-title">{{ scenic.name }}</h1>
               <div class="scenic-meta">
                 <div class="meta-item">
-                  <el-icon><Location /></el-icon>
+                  <el-icon>
+                    <Location />
+                  </el-icon>
                   <span>{{ scenic.location }}</span>
                 </div>
                 <div class="meta-item" v-if="scenic.categoryInfo">
-                  <el-icon><CollectionTag /></el-icon>
+                  <el-icon>
+                    <CollectionTag />
+                  </el-icon>
                   <span>{{ scenic.categoryInfo.name }}</span>
                 </div>
                 <div class="meta-item rating">
-                  <el-icon><Star /></el-icon>
+                  <el-icon>
+                    <Star />
+                  </el-icon>
                   <span>{{ getDisplayRating(scenic.rating) }}</span>
                   <span class="rating-text">({{ formatReviewCount(scenic.reviewCount) }})</span>
                 </div>
               </div>
               <div class="action-buttons">
-                <el-button
-                  :type="isCollected ? 'danger' : 'primary'"
-                  size="large"
-                  :loading="collectionLoading"
-                  @click="handleCollection"
-                  class="collection-btn"
-                >
+                <el-button :type="isCollected ? 'danger' : 'primary'" size="large" :loading="collectionLoading"
+                  @click="handleCollection" class="collection-btn">
                   <el-icon>
                     <StarFilled v-if="isCollected" />
                     <Star v-else />
@@ -47,7 +48,9 @@
                   {{ isCollected ? '已收藏' : '收藏景点' }}
                 </el-button>
                 <el-button size="large" class="share-btn" @click="handleShare">
-                  <el-icon><Share /></el-icon>
+                  <el-icon>
+                    <Share />
+                  </el-icon>
                   分享
                 </el-button>
               </div>
@@ -64,9 +67,16 @@
           <!-- 左侧主要内容 -->
           <div class="main-content">
             <!-- 景点描述 -->
-            <div class="info-card description-card">
+            <div class="info-card description-card glass-card">
               <h3 class="card-title">
-                <el-icon><Document /></el-icon>
+                <svg class="title-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                  <line x1="16" y1="13" x2="8" y2="13"></line>
+                  <line x1="16" y1="17" x2="8" y2="17"></line>
+                  <polyline points="10 9 9 9 8 9"></polyline>
+                </svg>
                 景点介绍
               </h3>
               <div class="description-content">{{ scenic.description }}</div>
@@ -74,7 +84,18 @@
             <!-- 天气信息卡片 -->
             <div class="info-card weather-card" v-if="weather.now || weatherLoading || weatherForecast.length > 0">
               <h3 class="card-title">
-                <el-icon><Sunny /></el-icon>
+                <svg class="title-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="5"></circle>
+                  <line x1="12" y1="1" x2="12" y2="3"></line>
+                  <line x1="12" y1="21" x2="12" y2="23"></line>
+                  <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                  <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                  <line x1="1" y1="12" x2="3" y2="12"></line>
+                  <line x1="21" y1="12" x2="23" y2="12"></line>
+                  <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                  <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
                 天气信息
               </h3>
 
@@ -113,11 +134,7 @@
               <div v-if="weatherForecast.length > 0" class="forecast-section">
                 <h4 class="forecast-title">未来天气</h4>
                 <div class="forecast-list">
-                  <div
-                    v-for="(day, index) in weatherForecast.slice(0, 4)"
-                    :key="index"
-                    class="forecast-item"
-                  >
+                  <div v-for="(day, index) in weatherForecast.slice(0, 4)" :key="index" class="forecast-item">
                     <div class="forecast-date">{{ formatForecastDate(day.fxDate) }}</div>
                     <div class="forecast-weather">
                       <div class="weather-desc">{{ day.textDay }}</div>
@@ -131,7 +148,9 @@
               </div>
 
               <div v-else-if="weatherLoading" class="weather-loading">
-                <el-icon class="loading-icon"><Loading /></el-icon>
+                <el-icon class="loading-icon">
+                  <Loading />
+                </el-icon>
                 <span>获取天气信息中...</span>
               </div>
             </div>
@@ -140,15 +159,22 @@
           <!-- 右侧信息栏 -->
           <div class="sidebar-content">
             <!-- 基本信息卡片 -->
-            <div class="info-card basic-info-card">
+            <div class="info-card basic-info-card glass-card">
               <h3 class="card-title">
-                <el-icon><InfoFilled /></el-icon>
+                <svg class="title-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="16" x2="12" y2="12"></line>
+                  <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
                 基本信息
               </h3>
               <div class="info-list">
                 <div class="info-item">
                   <div class="info-label">
-                    <el-icon><Money /></el-icon>
+                    <el-icon>
+                      <Money />
+                    </el-icon>
                     门票价格
                   </div>
                   <div class="info-value price-value">
@@ -158,19 +184,25 @@
                 </div>
                 <div class="info-item">
                   <div class="info-label">
-                    <el-icon><Timer /></el-icon>
+                    <el-icon>
+                      <Timer />
+                    </el-icon>
                     开放时间
                   </div>
                   <div class="info-value">{{ scenic.openingHours || '全天开放' }}</div>
                 </div>
                 <div class="info-item" v-if="scenic.longitude && scenic.latitude">
                   <div class="info-label">
-                    <el-icon><Location /></el-icon>
+                    <el-icon>
+                      <Location />
+                    </el-icon>
                     地理坐标
                   </div>
                   <div class="info-value coordinates" @click="copyCoordinates">
                     {{ scenic.longitude }}, {{ scenic.latitude }}
-                    <el-icon class="copy-icon"><CopyDocument /></el-icon>
+                    <el-icon class="copy-icon">
+                      <CopyDocument />
+                    </el-icon>
                   </div>
                 </div>
               </div>
@@ -186,7 +218,11 @@
     <div class="map-section">
       <div class="section-container">
         <h2 class="section-title">
-          <el-icon><Location /></el-icon>
+          <svg class="section-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+            <circle cx="12" cy="10" r="3"></circle>
+          </svg>
           地理位置
         </h2>
         <div class="map-wrapper">
@@ -199,21 +235,26 @@
     <div class="ticket-section">
       <div class="section-container">
         <h2 class="section-title">
-          <el-icon><Ticket /></el-icon>
+          <svg class="section-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M13.73 4a2 2 0 0 0-3.46 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
+            <line x1="12" y1="9" x2="12" y2="13"></line>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>
           门票预订
         </h2>
         <div v-loading="ticketLoading" class="ticket-content">
           <div v-if="tickets.length === 0" class="empty-state">
-            <div class="empty-icon">🎫</div>
+            <svg class="empty-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect>
+              <polyline points="17 2 12 7 7 2"></polyline>
+            </svg>
             <h3 class="empty-title">暂无可预订门票</h3>
             <p class="empty-desc">该景点暂时没有开放在线预订服务</p>
           </div>
           <div v-else class="ticket-grid">
-            <div
-              v-for="ticket in tickets"
-              :key="ticket.id"
-              class="ticket-card"
-            >
+            <div v-for="ticket in tickets" :key="ticket.id" class="ticket-card">
               <div class="ticket-header">
                 <h4 class="ticket-name">{{ ticket.ticketName }}</h4>
                 <div class="ticket-type-badge">{{ ticket.ticketType }}</div>
@@ -232,11 +273,15 @@
 
               <div class="ticket-details">
                 <div class="detail-item">
-                  <el-icon><Timer /></el-icon>
+                  <el-icon>
+                    <Timer />
+                  </el-icon>
                   <span>{{ ticket.validPeriod }}</span>
                 </div>
                 <div class="detail-item">
-                  <el-icon><Tickets /></el-icon>
+                  <el-icon>
+                    <Tickets />
+                  </el-icon>
                   <span>剩余 {{ ticket.stock }} 张</span>
                 </div>
               </div>
@@ -246,13 +291,8 @@
               </div>
 
               <div class="ticket-actions">
-                <el-button
-                  type="primary"
-                  size="large"
-                  @click="goToBooking(ticket.id)"
-                  class="booking-btn"
-                  :disabled="ticket.stock === 0"
-                >
+                <el-button type="primary" size="large" @click="goToBooking(ticket.id)" class="booking-btn"
+                  :disabled="ticket.stock === 0">
                   {{ ticket.stock === 0 ? '已售罄' : '立即预订' }}
                 </el-button>
               </div>
@@ -266,7 +306,10 @@
     <div class="comment-section">
       <div class="section-container">
         <h2 class="section-title">
-          <el-icon><ChatDotRound /></el-icon>
+          <svg class="section-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+          </svg>
           游客评价
         </h2>
         <div class="comment-wrapper">
@@ -345,11 +388,11 @@ const initMap = () => {
     // 如果有经纬度信息，直接使用
     if (scenic.value.longitude && scenic.value.latitude) {
       const lnglat = new AMap.LngLat(scenic.value.longitude, scenic.value.latitude)
-      
+
       // 设置地图中心点
       map.setCenter(lnglat)
       map.setZoom(16)
-      
+
       // 创建标记
       marker = new AMap.Marker({
         position: lnglat,
@@ -357,7 +400,7 @@ const initMap = () => {
         animation: 'AMAP_ANIMATION_DROP'
       })
       map.add(marker)
-      
+
       // 添加信息窗体
       const infoWindow = new AMap.InfoWindow({
         content: `<div class="info-window">
@@ -367,15 +410,15 @@ const initMap = () => {
                   </div>`,
         offset: new AMap.Pixel(0, -30)
       })
-      
+
       // 点击标记时打开信息窗体
       marker.on('click', () => {
         infoWindow.open(map, marker.getPosition())
       })
-      
+
       // 默认打开信息窗体
       infoWindow.open(map, marker.getPosition())
-      
+
       // 确保标记在地图中心
       setTimeout(() => {
         map.setCenter(lnglat)
@@ -434,7 +477,7 @@ const formatForecastDate = (dateString) => {
   const today = new Date()
   const tomorrow = new Date()
   tomorrow.setDate(today.getDate() + 1)
-  
+
   if (date.toDateString() === today.toDateString()) {
     return '今天'
   } else if (date.toDateString() === tomorrow.toDateString()) {
@@ -448,12 +491,12 @@ const formatForecastDate = (dateString) => {
 // 获取天气信息
 const fetchWeatherInfo = async (location) => {
   if (!location) return
-  
+
   weatherLoading.value = true
   try {
     // 调用和风天气API
     const key = '308d7421f676413aab8b4064aba532d7'
-    
+
     // 先通过地名查询获取经纬度
     const locationResponse = await axios.get(`https://geoapi.qweather.com/v2/city/lookup`, {
       params: {
@@ -462,12 +505,12 @@ const fetchWeatherInfo = async (location) => {
         number: 1
       }
     })
-    
+
     if (locationResponse.data.code === '200' && locationResponse.data.location && locationResponse.data.location.length > 0) {
       const locationId = locationResponse.data.location[0].id
       const lon = locationResponse.data.location[0].lon
       const lat = locationResponse.data.location[0].lat
-      
+
       // 获取实时天气
       const weatherResponse = await axios.get(`https://devapi.qweather.com/v7/weather/now`, {
         params: {
@@ -475,11 +518,11 @@ const fetchWeatherInfo = async (location) => {
           location: `${lon},${lat}`
         }
       })
-      
+
       if (weatherResponse.data.code === '200') {
         weather.value = weatherResponse.data
       }
-      
+
       // 获取天气预报
       const forecastResponse = await axios.get(`https://devapi.qweather.com/v7/weather/3d`, {
         params: {
@@ -487,7 +530,7 @@ const fetchWeatherInfo = async (location) => {
           location: `${lon},${lat}`
         }
       })
-      
+
       if (forecastResponse.data.code === '200') {
         weatherForecast.value = forecastResponse.data.daily
       }
@@ -501,7 +544,7 @@ const fetchWeatherInfo = async (location) => {
 
 const fetchDetail = async () => {
   const id = route.params.id
-  await request.get(`/scenic/${id}`,null, {
+  await request.get(`/scenic/${id}`, null, {
     onSuccess: (res) => {
       scenic.value = res
       fetchTickets(id)
@@ -509,7 +552,7 @@ const fetchDetail = async () => {
       fetchCommentStats(id)
       // 加载天气信息
       fetchWeatherInfo(res.location)
-      
+
       // 确保DOM已经渲染完成后再初始化地图
       nextTick(() => {
         loadMapScript()
@@ -523,7 +566,7 @@ const fetchDetail = async () => {
             console.error('加载高德地图失败:', err)
           })
       })
-      
+
       // 如果用户已登录，检查收藏状态
       if (isLoggedIn.value) {
         checkCollectionStatus(id)
@@ -583,7 +626,7 @@ const fetchAllCommentsForRating = async (scenicId) => {
 // 检查收藏状态
 const checkCollectionStatus = async (scenicId) => {
   if (!isLoggedIn.value) return
-  
+
   try {
     await request.get(`/scenic-collection/is-collected/${scenicId}`, null, {
       showDefaultMsg: false,
@@ -609,13 +652,13 @@ const handleCollection = async () => {
         path: '/login',
         query: { redirect: route.fullPath }
       })
-    }).catch(() => {})
+    }).catch(() => { })
     return
   }
-  
+
   const scenicId = scenic.value.id
   if (!scenicId) return
-  
+
   collectionLoading.value = true
   try {
     if (isCollected.value) {
@@ -677,7 +720,7 @@ const goToBooking = (ticketId) => {
 // 复制坐标到剪贴板
 const copyCoordinates = () => {
   if (!scenic.value.longitude || !scenic.value.latitude) return
-  
+
   const text = `${scenic.value.longitude}, ${scenic.value.latitude}`
   navigator.clipboard.writeText(text)
     .then(() => {
@@ -713,8 +756,8 @@ onMounted(fetchDetail)
 <style lang="scss" scoped>
 .scenic-detail-container {
   min-height: 100vh;
-  background: #f8fafc;
-  font-family: "思源黑体", "Source Han Sans", "Noto Sans CJK SC", sans-serif;
+  font-family: "PingFang SC", "Helvetica Neue", Helvetica, Arial, "Microsoft YaHei", sans-serif;
+  color: #1a202c;
 }
 
 // Hero区域样式
@@ -723,6 +766,7 @@ onMounted(fetchDetail)
   height: 50vh;
   min-height: 400px;
   overflow: hidden;
+  border-radius: 20px;
 }
 
 .hero-image-container {
@@ -759,12 +803,10 @@ onMounted(fetchDetail)
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    to bottom,
-    rgba(0, 0, 0, 0.1) 0%,
-    rgba(0, 0, 0, 0.3) 50%,
-    rgba(0, 0, 0, 0.8) 100%
-  );
+  background: linear-gradient(to bottom,
+      rgba(0, 0, 0, 0.1) 0%,
+      rgba(0, 0, 0, 0.3) 50%,
+      rgba(0, 0, 0, 0.8) 100%);
 }
 
 .hero-content {
@@ -859,11 +901,17 @@ onMounted(fetchDetail)
 }
 
 .collection-btn {
-  background: linear-gradient(45deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #67b6f5 0%, #5aa9e6 100%);
   border: none;
+  box-shadow: 0 6px 20px rgba(103, 182, 245, 0.3);
 
   &.el-button--danger {
-    background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+    box-shadow: 0 6px 20px rgba(255, 107, 107, 0.3);
+  }
+
+  &:hover {
+    box-shadow: 0 8px 25px rgba(103, 182, 245, 0.4);
   }
 }
 
@@ -881,16 +929,16 @@ onMounted(fetchDetail)
 
 // 详细内容区域
 .detail-content {
-  background: white;
+  background: transparent;
   margin: 0;
   position: relative;
   z-index: 1;
+  padding: 40px 0;
 }
 
 .section-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 40px 20px;
 }
 
 .content-grid {
@@ -913,25 +961,42 @@ onMounted(fetchDetail)
 
 // 信息卡片通用样式
 .info-card {
-  background: white;
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-  border: 1px solid #e2e8f0;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(103, 182, 245, 0.2);
+  }
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(25px) saturate(180%);
+  -webkit-backdrop-filter: blur(25px) saturate(180%);
 }
 
 .card-title {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 700;
-  color: #2d3748;
-  margin: 0 0 16px;
+  color: #1a202c;
+  margin: 0 0 20px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+}
 
-  .el-icon {
-    color: #667eea;
-  }
+.title-icon {
+  width: 24px;
+  height: 24px;
+  color: #67b6f5;
+  flex-shrink: 0;
 }
 
 // 描述卡片
@@ -939,6 +1004,10 @@ onMounted(fetchDetail)
   font-size: 16px;
   line-height: 1.8;
   color: #4a5568;
+  background: linear-gradient(135deg, rgba(103, 182, 245, 0.05) 0%, rgba(255, 193, 124, 0.05) 100%);
+  padding: 20px;
+  border-radius: 12px;
+  border-left: 4px solid #67b6f5;
 }
 
 // 天气卡片
@@ -954,15 +1023,19 @@ onMounted(fetchDetail)
     text-align: center;
 
     .weather-temp {
-      font-size: 36px;
-      font-weight: 700;
-      color: #667eea;
-      margin-bottom: 4px;
+      font-size: 42px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #67b6f5 0%, #5aa9e6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
     }
 
     .weather-text {
       font-size: 16px;
-      color: #64748b;
+      color: #5a6c7d;
+      font-weight: 600;
     }
   }
 
@@ -975,19 +1048,23 @@ onMounted(fetchDetail)
   .detail-item {
     display: flex;
     justify-content: space-between;
-    padding: 8px 12px;
-    background: #f8fafc;
-    border-radius: 8px;
+    padding: 10px 16px;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 12px;
+    border: 1px solid rgba(103, 182, 245, 0.1);
 
     .label {
       font-size: 14px;
-      color: #64748b;
+      color: #5a6c7d;
+      font-weight: 500;
     }
 
     .value {
       font-size: 14px;
-      font-weight: 600;
-      color: #2d3748;
+      font-weight: 700;
+      color: #1a202c;
     }
   }
 
@@ -1012,8 +1089,13 @@ onMounted(fetchDetail)
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 // 基本信息卡片
@@ -1040,65 +1122,75 @@ onMounted(fetchDetail)
   align-items: center;
   gap: 8px;
   font-size: 14px;
-  color: #64748b;
+  color: #5a6c7d;
+  font-weight: 500;
 
   .el-icon {
-    color: #667eea;
+    color: #67b6f5;
+    font-size: 18px;
   }
 }
 
 .info-value {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
-  color: #2d3748;
+  color: #1a202c;
 
   &.price-value {
     .free-tag {
-      background: linear-gradient(45deg, #10b981, #059669);
+      background: linear-gradient(135deg, #52c787, #4ecdc4);
       color: white;
-      padding: 4px 8px;
-      border-radius: 12px;
-      font-size: 12px;
+      padding: 6px 12px;
+      border-radius: 16px;
+      font-size: 13px;
+      font-weight: 700;
     }
 
     .price {
-      color: #667eea;
-      font-size: 18px;
+      background: linear-gradient(135deg, #67b6f5 0%, #5aa9e6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-size: 20px;
+      font-weight: 800;
     }
   }
 
   &.coordinates {
     cursor: pointer;
-    color: #667eea;
+    color: #67b6f5;
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 6px;
+    font-weight: 600;
 
     &:hover {
-      color: #5a67d8;
+      color: #5aa9e6;
     }
 
     .copy-icon {
-      font-size: 12px;
-      opacity: 0.7;
+      font-size: 14px;
+      opacity: 0.8;
     }
   }
 }
 
 // 区域标题
 .section-title {
-  font-size: 24px;
-  font-weight: 700;
-  color: #2d3748;
-  margin: 0 0 20px;
+  font-size: 28px;
+  font-weight: 800;
+  color: #1a202c;
+  margin: 0 0 30px;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
+}
 
-  .el-icon {
-    color: #667eea;
-    font-size: 20px;
-  }
+.section-icon {
+  width: 28px;
+  height: 28px;
+  color: #67b6f5;
+  flex-shrink: 0;
 }
 
 // 天气预报样式
@@ -1122,16 +1214,19 @@ onMounted(fetchDetail)
 }
 
 .forecast-item {
-  background: #f8fafc;
-  border-radius: 8px;
-  padding: 12px;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 16px;
   text-align: center;
-  border: 1px solid #e2e8f0;
+  border: 1px solid rgba(103, 182, 245, 0.2);
   transition: all 0.3s ease;
 
   &:hover {
-    background: #f1f5f9;
-    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.9);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(103, 182, 245, 0.2);
   }
 }
 
@@ -1174,15 +1269,15 @@ onMounted(fetchDetail)
 
 // 地图区域
 .map-section {
-  background: #f8fafc;
-  padding: 40px 0;
+  background: transparent;
 }
 
 .map-wrapper {
   position: relative;
-  border-radius: 16px;
+  border-radius: 24px;
   overflow: hidden;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.15);
+  border: 2px solid rgba(255, 255, 255, 0.5);
 }
 
 .map-container {
@@ -1194,19 +1289,9 @@ onMounted(fetchDetail)
 
 // 门票区域
 .ticket-section {
-  background: white;
-  padding: 40px 0;
+  background: transparent;
+  padding: 20px 0;
   position: relative;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, #e2e8f0, transparent);
-  }
 }
 
 .ticket-content {
@@ -1220,16 +1305,18 @@ onMounted(fetchDetail)
 }
 
 .ticket-card {
-  background: white;
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-  border: 1px solid #e2e8f0;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.5);
   transition: all 0.3s ease;
 
   &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    transform: translateY(-8px);
+    box-shadow: 0 16px 48px rgba(103, 182, 245, 0.2);
   }
 }
 
@@ -1249,12 +1336,13 @@ onMounted(fetchDetail)
 }
 
 .ticket-type-badge {
-  background: linear-gradient(45deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #67b6f5 0%, #5aa9e6 100%);
   color: white;
-  padding: 4px 12px;
-  border-radius: 12px;
+  padding: 6px 14px;
+  border-radius: 16px;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(103, 182, 245, 0.3);
 }
 
 .ticket-price {
@@ -1270,15 +1358,21 @@ onMounted(fetchDetail)
 }
 
 .price-discount {
-  font-size: 24px;
-  font-weight: 700;
-  color: #e53e3e;
+  font-size: 28px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .price-normal {
-  font-size: 24px;
-  font-weight: 700;
-  color: #667eea;
+  font-size: 28px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #67b6f5 0%, #5aa9e6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .discount-tag {
@@ -1305,10 +1399,11 @@ onMounted(fetchDetail)
   align-items: center;
   gap: 8px;
   font-size: 14px;
-  color: #64748b;
+  color: #5a6c7d;
+  font-weight: 500;
 
   .el-icon {
-    color: #667eea;
+    color: #67b6f5;
   }
 }
 
@@ -1326,18 +1421,20 @@ onMounted(fetchDetail)
 .ticket-actions {
   .booking-btn {
     width: 100%;
-    border-radius: 25px;
-    background: linear-gradient(45deg, #667eea, #764ba2);
+    border-radius: 20px;
+    background: linear-gradient(135deg, #67b6f5 0%, #5aa9e6 100%);
     border: none;
-    font-weight: 600;
+    font-weight: 700;
+    padding: 14px;
+    box-shadow: 0 6px 20px rgba(103, 182, 245, 0.3);
 
     &:hover:not(:disabled) {
       transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+      box-shadow: 0 8px 25px rgba(103, 182, 245, 0.4);
     }
 
     &:disabled {
-      background: #e2e8f0;
+      background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e0 100%);
       color: #94a3b8;
     }
   }
@@ -1346,38 +1443,43 @@ onMounted(fetchDetail)
 // 空状态
 .empty-state {
   text-align: center;
-  padding: 60px 20px;
+  padding: 80px 20px;
 
   .empty-icon {
-    font-size: 64px;
-    margin-bottom: 20px;
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 24px;
+    color: #cbd5e0;
   }
 
   .empty-title {
-    font-size: 20px;
-    font-weight: 600;
-    color: #2d3748;
-    margin: 0 0 8px;
+    font-size: 22px;
+    font-weight: 700;
+    color: #1a202c;
+    margin: 0 0 12px;
   }
 
   .empty-desc {
     font-size: 16px;
-    color: #64748b;
+    color: #5a6c7d;
     margin: 0;
   }
 }
 
 // 评论区域
 .comment-section {
-  background: #f8fafc;
-  padding: 40px 0;
+  background: transparent;
+  padding: 20px 0;
 }
 
 .comment-wrapper {
-  background: white;
-  border-radius: 12px;
-  padding: 24px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-radius: 20px;
+  padding: 32px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.5);
 }
 
 // 响应式设计
@@ -1454,6 +1556,7 @@ onMounted(fetchDetail)
     opacity: 0;
     transform: translateY(30px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
