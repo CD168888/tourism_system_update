@@ -1,62 +1,70 @@
+<!-- eslint-disable -->
 <template>
   <div class="guide-list-container">
+    <!-- Hero顶部区域 -->
+    <div class="hero-section">
+      <div class="hero-background">
+        <div class="hero-gradient"></div>
+      </div>
+      <div class="hero-content">
+        <div class="hero-glass-card">
+          <h1 class="hero-title">
+            <svg class="hero-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+            </svg>
+            探索旅游攻略
+          </h1>
+          <p class="hero-subtitle">分享精彩旅游体验和实用建议</p>
+        </div>
+      </div>
+    </div>
+
     <!-- 搜索和筛选区域 -->
     <div class="search-filter-section">
       <div class="section-container">
-        <!-- 页面标题和统计 -->
-        <div class="page-header">
-          <div class="header-content">
-            <h1 class="page-title">
-              <span class="title-icon">📖</span>
-              旅游攻略
-            </h1>
-            <p class="page-subtitle">
-              探索旅行者分享的精彩旅游体验和实用建议
-            </p>
-          </div>
-
-        </div>
-
-        <!-- 搜索栏 -->
-        <div class="search-card">
+        <!-- 搜索卡片 -->
+        <div class="search-card glass-card">
           <div class="search-header">
             <h3 class="search-title">
-              <el-icon><Search /></el-icon>
+              <svg class="title-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.35-4.35"></path>
+              </svg>
               智能搜索
             </h3>
           </div>
           <div class="search-form">
             <div class="search-inputs">
               <div class="search-input-group">
-                <el-input
-                  v-model="searchForm.title"
-                  placeholder="搜索攻略标题或内容..."
-                  clearable
-                  size="large"
-                  class="main-search-input"
-                  @keyup.enter="handleSearch"
-                >
+                <el-input v-model="searchForm.title" placeholder="搜索攻略标题或内容..." clearable size="large"
+                  class="main-search-input" @keyup.enter="handleSearch">
                   <template #prefix>
-                    <el-icon><Search /></el-icon>
+                    <el-icon>
+                      <Search />
+                    </el-icon>
                   </template>
                 </el-input>
               </div>
               <div class="search-actions">
                 <el-button type="primary" @click="handleSearch" class="search-btn" size="large">
-                  <el-icon><Search /></el-icon>
+                  <el-icon>
+                    <Search />
+                  </el-icon>
                   搜索
                 </el-button>
                 <el-button @click="resetSearch" class="reset-btn" size="large">
-                  <el-icon><RefreshLeft /></el-icon>
+                  <el-icon>
+                    <RefreshLeft />
+                  </el-icon>
                   重置
                 </el-button>
-                <el-button
-                  type="primary"
-                  @click="goEdit"
-                  class="publish-btn"
-                  size="large"
-                >
-                  <el-icon><Edit /></el-icon>
+                <el-button type="primary" @click="goEdit" class="publish-btn" size="large">
+                  <el-icon>
+                    <Edit />
+                  </el-icon>
                   发布攻略
                 </el-button>
               </div>
@@ -64,14 +72,7 @@
 
             <!-- 搜索结果提示 -->
             <div v-if="searchForm.title" class="search-tags">
-              <el-tag
-                v-if="searchForm.title"
-                closable
-                @close="clearSearchTitle"
-                type="info"
-                effect="dark"
-                class="search-tag"
-              >
+              <el-tag v-if="searchForm.title" closable @close="clearSearchTitle" class="search-tag tag-keyword">
                 关键词: {{ searchForm.title }}
               </el-tag>
             </div>
@@ -79,40 +80,47 @@
         </div>
       </div>
     </div>
-    
+
     <!-- 攻略列表区域 -->
     <div class="guide-list-section">
       <div class="section-container">
         <div class="guides-container" v-loading="loading">
           <div class="empty-state" v-if="tableData.length === 0 && !loading">
-            <div class="empty-icon">📝</div>
+            <svg class="empty-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+            </svg>
             <h3 class="empty-title">暂无攻略内容</h3>
             <p class="empty-desc">成为第一个分享旅游攻略的人吧！</p>
             <el-button type="primary" @click="goEdit" class="empty-action">
-              <el-icon><Edit /></el-icon>
+              <el-icon>
+                <Edit />
+              </el-icon>
               发布攻略
             </el-button>
           </div>
 
-          <div class="guides-grid" v-else>
-            <div
-              v-for="item in tableData"
-              :key="item.id"
-              class="guide-card hover-lift"
-              @click="goDetail(item.id)"
-            >
-              <div class="card-image">
+          <div class="guides-grid" v-if="tableData.length > 0">
+            <div v-for="(item, index) in tableData" :key="item.id" class="guide-card glass-card-guide"
+              :class="`delay-${(index % 6 + 1) * 100}`" @click="goDetail(item.id)">
+              <div class="card-image-wrapper">
                 <img :src="getImageUrl(item.coverImage)" :alt="item.title" v-if="item.coverImage" />
                 <div class="default-cover" v-else>
-                  <div class="cover-icon">📖</div>
+                  <svg class="cover-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                  </svg>
                   <div class="cover-text">旅游攻略</div>
                 </div>
-                <div class="image-overlay">
-                  <div class="overlay-content">
-                    <div class="guide-views">
-                      <el-icon><View /></el-icon>
-                      {{ formatNumber(item.views) }}
-                    </div>
+                <div class="image-gradient-overlay"></div>
+                <div class="card-badges">
+                  <div class="badge badge-views">
+                    <el-icon>
+                      <View />
+                    </el-icon>
+                    {{ formatNumber(item.views) }}
                   </div>
                 </div>
               </div>
@@ -121,17 +129,17 @@
                 <h3 class="guide-title">{{ item.title }}</h3>
                 <div class="card-footer">
                   <div class="author-info">
-                    <el-avatar
-                      :src="getImageUrl(item.userAvatar)"
-                      :size="28"
-                      class="author-avatar"
-                    >
-                      <el-icon><User /></el-icon>
+                    <el-avatar :src="getImageUrl(item.userAvatar)" :size="32" class="author-avatar">
+                      <el-icon>
+                        <User />
+                      </el-icon>
                     </el-avatar>
                     <span class="nickname">{{ item.userNickname || '旅行者' + item.userId }}</span>
                   </div>
                   <div class="publish-time">
-                    <el-icon><Calendar /></el-icon>
+                    <el-icon>
+                      <Calendar />
+                    </el-icon>
                     <span>{{ formatDate(item.createTime) }}</span>
                   </div>
                 </div>
@@ -139,22 +147,11 @@
             </div>
           </div>
         </div>
-      </div>
-    </div>
-    
-    <!-- 分页 -->
-    <div class="pagination-section" v-if="total > 0">
-      <div class="section-container">
-        <div class="pagination-wrapper">
-          <el-pagination
-            background
-            layout="total, prev, pager, next, jumper"
-            :current-page="currentPage"
-            :page-size="pageSize"
-            :total="total"
-            @current-change="handleCurrentChange"
-            class="modern-pagination"
-          />
+
+        <!-- 分页 -->
+        <div class="pagination-wrapper" v-if="total > 0">
+          <el-pagination background layout="total, prev, pager, next, jumper" :current-page="currentPage"
+            :page-size="pageSize" :total="total" @current-change="handleCurrentChange" class="modern-pagination" />
         </div>
       </div>
     </div>
@@ -209,8 +206,8 @@ const fetchGuides = async () => {
     }, {
       showDefaultMsg: false,
       onSuccess: (res) => {
-        tableData.value = res.records||[]
-        total.value = res.total||0
+        tableData.value = res.records || []
+        total.value = res.total || 0
 
         // 计算总阅读量
         totalViews.value = tableData.value.reduce((sum, item) => sum + (item.views || 0), 0)
@@ -259,71 +256,114 @@ const goEdit = () => {
 <style lang="scss" scoped>
 .guide-list-container {
   min-height: 100vh;
-  background: #f8fafc;
-  font-family: "思源黑体", "Source Han Sans", "Noto Sans CJK SC", sans-serif;
-  color: #333;
+  font-family: "PingFang SC", "Helvetica Neue", Helvetica, Arial, "Microsoft YaHei", sans-serif;
+  color: #1a202c;
+}
+
+// Hero区域样式
+.hero-section {
+  position: relative;
+  height: 150px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 800px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hero-glass-card {
+  border-radius: 30px;
+  padding: 0px 60px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  text-align: center;
+  width: 100%;
+  transition: all 0.4s ease;
+  animation: fadeInUp 0.8s ease;
+}
+
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-title {
+  font-size: 48px;
+  font-weight: 800;
+  margin: 0 0 16px;
+  color: #1a202c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  letter-spacing: 1px;
+}
+
+.hero-icon {
+  width: 48px;
+  height: 48px;
+  color: #67b6f5;
+  flex-shrink: 0;
+}
+
+.hero-subtitle {
+  font-size: 18px;
+  margin: 0;
+  color: #5a6c7d;
+  font-weight: 400;
+  letter-spacing: 0.5px;
 }
 
 // 通用容器样式
 .section-container {
   max-width: 1300px;
   margin: 0 auto;
-  padding: 40px 20px;
+  padding: 20px 20px;
 }
 
-// 搜索筛选区域
-.search-filter-section {
-  background: white;
-  padding: 0;
-}
-
-// 页面头部
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 40px;
-  padding: 40px 0 20px;
-  border-bottom: 1px solid #e2e8f0;
-}
-
-.header-content {
-  flex: 1;
-}
-
-.page-title {
-  font-size: 36px;
-  font-weight: 700;
-  margin: 0 0 8px;
-  color: #2d3748;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-
-  .title-icon {
-    font-size: 32px;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
-  }
-}
-
-.page-subtitle {
-  text-align: left;
-  font-size: 16px;
-  color: #64748b;
-  margin: 0;
-  line-height: 1.6;
-}
-
-
-
-// 搜索卡片样式
 .search-card {
-  background: white;
-  border-radius: 16px;
   padding: 32px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  border: 1px solid #e2e8f0;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
+
+.glass-card-guide {
+  background: #fff;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
 }
 
 .search-header {
@@ -333,113 +373,154 @@ const goEdit = () => {
 .search-title {
   font-size: 20px;
   font-weight: 700;
-  color: #2d3748;
+  color: #1a202c;
   margin: 0;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+}
 
-  .el-icon {
-    color: #667eea;
-    font-size: 20px;
-  }
+.title-icon {
+  width: 24px;
+  height: 24px;
+  color: #67b6f5;
+  flex-shrink: 0;
 }
 
 .search-form {
   .search-inputs {
-    display: flex;
+    display: grid;
+    grid-template-columns: 2fr auto;
     gap: 16px;
-    align-items: flex-end;
-    flex-wrap: wrap;
+    align-items: end;
+    margin-bottom: 20px;
   }
 
   .search-input-group {
-    flex: 1;
-    min-width: 300px;
+    display: flex;
+    flex-direction: column;
   }
 
   .main-search-input {
     :deep(.el-input__wrapper) {
-      border-radius: 12px;
-      border: 2px solid #e2e8f0;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      border: 2px solid rgba(103, 182, 245, 0.2);
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
       transition: all 0.3s ease;
 
       &:hover {
-        border-color: #667eea;
+        border-color: #67b6f5;
+        box-shadow: 0 6px 16px rgba(103, 182, 245, 0.15);
       }
 
       &.is-focus {
-        border-color: #667eea;
-        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        border-color: #67b6f5;
+        box-shadow: 0 6px 20px rgba(103, 182, 245, 0.25);
       }
+    }
+  }
+
+  :deep(.el-input__wrapper) {
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border: 2px solid rgba(103, 182, 245, 0.2);
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+
+    &:hover {
+      border-color: #67b6f5;
+    }
+
+    &.is-focus {
+      border-color: #67b6f5;
+      box-shadow: 0 6px 20px rgba(103, 182, 245, 0.25);
     }
   }
 
   .search-actions {
     display: flex;
     gap: 12px;
-    flex-wrap: wrap;
-  }
-
-  .search-btn, .reset-btn, .publish-btn {
-    border-radius: 12px;
-    font-weight: 600;
-    transition: all 0.3s ease;
-
-    &:hover {
-      transform: translateY(-2px);
-    }
   }
 
   .search-btn {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #67b6f5 0%, #5aa9e6 100%);
     border: none;
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    border-radius: 16px;
+    font-weight: 600;
+    box-shadow: 0 6px 20px rgba(103, 182, 245, 0.3);
+    transition: all 0.3s ease;
+    color: white;
 
     &:hover {
-      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(103, 182, 245, 0.4);
+      background: linear-gradient(135deg, #5aa9e6 0%, #4a99d6 100%);
+    }
+  }
+
+  .reset-btn {
+    border-radius: 16px;
+    border: 2px solid rgba(103, 182, 245, 0.3);
+    color: #67b6f5;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    font-weight: 600;
+
+    &:hover {
+      border-color: #67b6f5;
+      background: rgba(103, 182, 245, 0.1);
+      transform: translateY(-2px);
     }
   }
 
   .publish-btn {
     background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
     border: none;
-    box-shadow: 0 4px 15px rgba(72, 187, 120, 0.3);
+    border-radius: 16px;
+    font-weight: 600;
+    box-shadow: 0 6px 20px rgba(72, 187, 120, 0.3);
+    transition: all 0.3s ease;
+    color: white;
 
     &:hover {
-      box-shadow: 0 6px 20px rgba(72, 187, 120, 0.4);
-    }
-  }
-
-  .reset-btn {
-    background: #f7fafc;
-    color: #4a5568;
-    border: 2px solid #e2e8f0;
-
-    &:hover {
-      background: #edf2f7;
-      border-color: #cbd5e0;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(72, 187, 120, 0.4);
+      background: linear-gradient(135deg, #38a169 0%, #2f855a 100%);
     }
   }
 }
 
 .search-tags {
-  margin-top: 16px;
   display: flex;
-  gap: 8px;
   flex-wrap: wrap;
-}
+  gap: 12px;
+  margin-top: 16px;
 
-.search-tag {
-  border-radius: 20px;
-  font-size: 12px;
+  .search-tag {
+    border-radius: 20px;
+    font-weight: 600;
+    padding: 8px 16px;
+    border: none;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+    &.tag-keyword {
+      background: linear-gradient(135deg, #ffa7c4 0%, #ff9ab5 100%);
+      color: white;
+    }
+  }
 }
 
 // 攻略列表区域
 .guide-list-section {
-  background: #f8fafc;
-  min-height: 50vh;
-  padding: 0;
+  padding: 20px 0 60px;
 }
 
 .guides-container {
@@ -448,8 +529,8 @@ const goEdit = () => {
 
 .guides-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 24px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 30px;
   margin-bottom: 40px;
 }
 
@@ -457,71 +538,75 @@ const goEdit = () => {
 .empty-state {
   text-align: center;
   padding: 80px 20px;
-  color: #64748b;
 
   .empty-icon {
-    font-size: 64px;
-    margin-bottom: 24px;
-    opacity: 0.6;
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 24px;
+    color: #cbd5e0;
   }
 
   .empty-title {
     font-size: 24px;
     font-weight: 600;
-    margin: 0 0 12px;
     color: #2d3748;
+    margin: 0 0 12px;
   }
 
   .empty-desc {
     font-size: 16px;
+    color: #718096;
     margin: 0 0 32px;
-    opacity: 0.8;
   }
 
   .empty-action {
-    border-radius: 12px;
+    background: linear-gradient(135deg, #67b6f5 0%, #5aa9e6 100%);
+    border: none;
+    border-radius: 24px;
     padding: 12px 32px;
     font-weight: 600;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border: none;
-    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 6px 20px rgba(103, 182, 245, 0.3);
 
     &:hover {
       transform: translateY(-2px);
-      box-shadow: 0 8px 30px rgba(102, 126, 234, 0.4);
+      box-shadow: 0 8px 25px rgba(103, 182, 245, 0.4);
     }
   }
 }
 
 // 攻略卡片样式
 .guide-card {
-  background: white;
-  border-radius: 16px;
+  border-radius: 20px;
   overflow: hidden;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  border: 1px solid #e2e8f0;
+  opacity: 1;
+  transform: translateY(0);
+  animation: fadeInUp 0.6s ease both;
 
-  &:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-    border-color: rgba(102, 126, 234, 0.3);
-
-    .card-image img {
-      transform: scale(1.1);
-    }
-
-    .image-overlay {
-      opacity: 1;
+  @for $i from 1 through 12 {
+    &.delay-#{$i * 100} {
+      animation-delay: #{$i * 0.1}s;
     }
   }
 
-  .card-image {
-    position: relative;
-    height: 180px;
+  &:hover {
+    transform: translateY(-12px);
+    box-shadow: 0 20px 50px rgba(103, 182, 245, 0.25);
+
+    .card-image-wrapper img {
+      transform: scale(1.15);
+    }
+
+    .image-gradient-overlay {
+      opacity: 0.6;
+    }
+  }
+
+  .card-image-wrapper {
+    height: 240px;
     overflow: hidden;
-    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    position: relative;
 
     img {
       width: 100%;
@@ -537,72 +622,83 @@ const goEdit = () => {
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #67b6f5 0%, #5aa9e6 100%);
       color: white;
 
       .cover-icon {
-        font-size: 36px;
-        margin-bottom: 8px;
-        opacity: 0.8;
+        width: 60px;
+        height: 60px;
+        margin-bottom: 12px;
+        opacity: 0.9;
       }
 
       .cover-text {
-        font-size: 14px;
+        font-size: 16px;
         font-weight: 600;
         opacity: 0.9;
       }
     }
+  }
 
-    .image-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 0%, transparent 50%, rgba(0, 0, 0, 0.4) 100%);
-      opacity: 0;
-      transition: opacity 0.3s ease;
+  .image-gradient-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg,
+        rgba(0, 0, 0, 0) 0%,
+        rgba(0, 0, 0, 0.3) 70%,
+        rgba(0, 0, 0, 0.6) 100%);
+    opacity: 0.4;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
 
-      .overlay-content {
-        position: absolute;
-        top: 12px;
-        right: 12px;
+  .card-badges {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 2;
+  }
 
-        .guide-views {
-          background: rgba(0, 0, 0, 0.7);
-          color: white;
-          padding: 4px 8px;
-          border-radius: 12px;
-          font-size: 12px;
-          font-weight: 500;
-          display: flex;
-          align-items: center;
-          gap: 4px;
-          backdrop-filter: blur(10px);
+  .badge {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    gap: 6px;
 
-          .el-icon {
-            font-size: 12px;
-          }
-        }
+    &.badge-views {
+      background: rgba(255, 255, 255, 0.95);
+      color: #1a202c;
+
+      .el-icon {
+        color: #67b6f5;
+        font-size: 14px;
       }
     }
   }
-  
+
   .card-content {
-    padding: 16px;
+    padding: 24px;
 
     .guide-title {
-      font-size: 16px;
+      margin: 0 0 16px;
+      font-size: 20px;
       font-weight: 700;
-      margin: 0 0 12px;
-      color: #2d3748;
+      color: #1a202c;
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
       line-height: 1.4;
-      min-height: 44px;
-      transition: color 0.3s ease;
+      min-height: 56px;
     }
 
     .card-footer {
@@ -618,14 +714,14 @@ const goEdit = () => {
         .author-avatar {
           border: 2px solid #e2e8f0;
           transition: all 0.3s ease;
-          margin-right: 8px;
+          margin-right: 10px;
         }
 
         .nickname {
-          font-size: 13px;
+          font-size: 14px;
           font-weight: 600;
           color: #4a5568;
-          max-width: 80px;
+          max-width: 100px;
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
@@ -633,14 +729,15 @@ const goEdit = () => {
       }
 
       .publish-time {
-        font-size: 11px;
+        font-size: 12px;
         color: #64748b;
         display: flex;
         align-items: center;
         gap: 4px;
+        font-weight: 500;
 
         .el-icon {
-          font-size: 11px;
+          font-size: 12px;
         }
       }
     }
@@ -652,59 +749,86 @@ const goEdit = () => {
   display: flex;
   justify-content: center;
   margin-top: 40px;
+}
 
-  .modern-pagination {
-    :deep(.el-pagination) {
-      .el-pager li {
-        border-radius: 8px;
-        margin: 0 4px;
-        transition: all 0.3s ease;
+.modern-pagination {
+  :deep(.el-pagination) {
+    .el-pager li {
+      border-radius: 12px;
+      margin: 0 6px;
+      transition: all 0.3s ease;
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 2px solid transparent;
 
-        &:hover {
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          color: white;
-        }
-
-        &.is-active {
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          color: white;
-        }
+      &:hover {
+        background: linear-gradient(135deg, #67b6f5 0%, #5aa9e6 100%);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(103, 182, 245, 0.3);
       }
 
-      .btn-prev, .btn-next {
-        border-radius: 8px;
-        transition: all 0.3s ease;
+      &.is-active {
+        background: linear-gradient(135deg, #67b6f5 0%, #5aa9e6 100%);
+        color: white;
+        border-color: transparent;
+        box-shadow: 0 4px 12px rgba(103, 182, 245, 0.3);
+      }
+    }
 
-        &:hover {
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          color: white;
-        }
+    .btn-prev,
+    .btn-next {
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+
+      &:hover {
+        background: linear-gradient(135deg, #67b6f5 0%, #5aa9e6 100%);
+        color: white;
+        transform: translateY(-2px);
       }
     }
   }
 }
 
-// 动画效果
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
+// 响应式样式
+@media (max-width: 992px) {
+  .guides-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
 
-
-.hover-lift {
-  transition: transform 0.3s ease;
-
-  &:hover {
-    transform: translateY(-4px);
+  .section-container {
+    padding: 20px 16px;
   }
 }
 
+@media (max-width: 768px) {
+  .hero-section {
+    height: 120px;
+  }
 
+  .hero-glass-card {
+    padding: 0px 30px;
+  }
 
+  .hero-title {
+    font-size: 32px;
+  }
+
+  .hero-subtitle {
+    font-size: 16px;
+  }
+
+  .search-form .search-inputs {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .guides-grid {
+    grid-template-columns: 1fr;
+  }
+}
 </style>
