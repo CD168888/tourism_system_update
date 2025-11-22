@@ -7,7 +7,11 @@
           <div class="image-wrapper">
             <img :src="getImageUrl(guide.coverImage)" :alt="guide.title" class="hero-image" v-if="guide.coverImage" />
             <div class="default-hero-image" v-else>
-              <div class="default-icon">📖</div>
+              <svg class="default-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+              </svg>
               <div class="default-text">旅游攻略</div>
             </div>
             <div class="image-overlay">
@@ -72,14 +76,18 @@
           <div class="content-layout">
             <!-- 主要内容 -->
             <div class="main-content">
-              <div v-html="guide.content" class="rich-content"></div>
+              <div v-html="processedContent" class="rich-content"></div>
             </div>
 
             <!-- 侧边栏 -->
             <div class="sidebar" v-if="relatedGuides.length > 0">
-              <div class="sidebar-sticky">
+              <div class="sidebar-sticky glass-card">
                 <h3 class="sidebar-title">
-                  <el-icon><ArrowRight /></el-icon>
+                  <svg class="title-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                  </svg>
                   相关攻略
                 </h3>
                 <div class="related-guides">
@@ -113,13 +121,14 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import request from '@/utils/request'
 import { formatDate } from '@/utils/dateUtils'
 import { useUserStore } from '@/store/user'
 import { ElMessage } from 'element-plus'
 import { View, Calendar, Star, StarFilled, Share, User, ArrowRight } from '@element-plus/icons-vue'
+import MarkdownIt from 'markdown-it'
 
 const baseAPI = process.env.VUE_APP_BASE_API || '/api'
 const route = useRoute()
@@ -129,6 +138,14 @@ const guide = ref(null)
 const isCollected = ref(false)
 const loading = ref(true)
 const relatedGuides = ref([])
+
+// 初始化 Markdown 解析器
+const md = new MarkdownIt({
+  html: true,        // 允许HTML标签
+  linkify: true,     // 自动转换URL为链接
+  typographer: true, // 智能标点
+  breaks: true       // 转换换行符为<br>
+})
 
 // 获取图片完整URL
 const getImageUrl = (url) => {
@@ -146,6 +163,43 @@ const formatNumber = (num) => {
   }
   return num.toString()
 }
+
+// 处理富文本内容中的图片路径
+const processedContent = computed(() => {
+  if (!guide.value || !guide.value.content) return ''
+  
+  let content = guide.value.content
+  
+  // 判断是否为Markdown格式（包含 # 或 ## 等标题标记）
+  const isMarkdown = /^#{1,6}\s+.+$/m.test(content) || 
+                     /^\*\*.*\*\*/.test(content) ||
+                     /^\*\s+.+$/m.test(content) ||
+                     /^\d+\.\s+.+$/m.test(content)
+  
+  // 如果是Markdown，先转换为HTML
+  if (isMarkdown) {
+    content = md.render(content)
+  }
+  
+  // 处理图片路径：将相对路径转换为完整URL
+  content = content.replace(/<img([^>]*?)src="([^"]*?)"([^>]*?)>/gi, (match, before, src, after) => {
+    // 如果是相对路径，添加baseAPI前缀
+    if (src && !src.startsWith('http://') && !src.startsWith('https://') && !src.startsWith('data:')) {
+      src = baseAPI + src
+    }
+    return `<img${before}src="${src}"${after}>`
+  })
+  
+  // 处理视频路径（如果有）
+  content = content.replace(/<video([^>]*?)src="([^"]*?)"([^>]*?)>/gi, (match, before, src, after) => {
+    if (src && !src.startsWith('http://') && !src.startsWith('https://')) {
+      src = baseAPI + src
+    }
+    return `<video${before}src="${src}"${after}>`
+  })
+  
+  return content
+})
 
 const fetchGuide = async () => {
   loading.value = true
@@ -266,17 +320,18 @@ onMounted(fetchGuide)
 <style lang="scss" scoped>
 .guide-detail-container {
   min-height: 100vh;
-  background: #f8fafc;
-  font-family: "思源黑体", "Source Han Sans", "Noto Sans CJK SC", sans-serif;
+  font-family: "PingFang SC", "Helvetica Neue", Helvetica, Arial, "Microsoft YaHei", sans-serif;
+  color: #1a202c;
 }
 
 .guide-detail {
   // 英雄区域样式 - 参考景点详情页面
   .detail-hero-section {
     position: relative;
-    height: 60vh;
-    min-height: 500px;
+    height: 50vh;
+    min-height: 400px;
     overflow: hidden;
+    border-radius: 20px;
   }
 
   .hero-image-container {
@@ -305,19 +360,20 @@ onMounted(fetchGuide)
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #67b6f5 0%, #5aa9e6 100%);
     color: white;
 
     .default-icon {
-      font-size: 80px;
+      width: 100px;
+      height: 100px;
       margin-bottom: 20px;
-      opacity: 0.8;
+      opacity: 0.9;
     }
 
     .default-text {
       font-size: 24px;
-      font-weight: 600;
-      opacity: 0.9;
+      font-weight: 700;
+      opacity: 0.95;
     }
   }
 
@@ -338,27 +394,24 @@ onMounted(fetchGuide)
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(
-      to bottom,
-      rgba(0, 0, 0, 0.3) 0%,
-      rgba(0, 0, 0, 0.1) 50%,
-      rgba(0, 0, 0, 0.6) 100%
-    );
+    background: linear-gradient(to bottom,
+        rgba(0, 0, 0, 0.1) 0%,
+        rgba(0, 0, 0, 0.3) 50%,
+        rgba(0, 0, 0, 0.8) 100%);
   }
 
   .hero-content {
     position: relative;
     z-index: 10;
     color: white;
-    text-align: center;
-    max-width: 1200px;
+    padding: 30px 40px;
     width: 100%;
-    padding: 0 40px;
+    max-width: 1200px;
+    margin: 0 auto;
   }
 
   .breadcrumb {
-    margin-bottom: 30px;
-    text-align: left;
+    margin-bottom: 20px;
 
     :deep(.el-breadcrumb) {
       .el-breadcrumb__item {
@@ -384,20 +437,18 @@ onMounted(fetchGuide)
   }
 
   .guide-title {
-    font-size: 48px;
+    font-size: 42px;
     font-weight: 700;
-    margin: 0 0 30px;
-    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    margin: 0 0 16px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
     line-height: 1.2;
   }
 
   .guide-meta {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 30px;
-    margin-bottom: 30px;
     flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 24px;
   }
 
   .meta-item {
@@ -438,44 +489,51 @@ onMounted(fetchGuide)
 
   .collection-btn,
   .share-btn {
-    border-radius: 50px;
-    padding: 12px 24px;
+    border-radius: 25px;
     font-weight: 600;
-    font-size: 16px;
+    padding: 12px 24px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     transition: all 0.3s ease;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    backdrop-filter: blur(10px);
 
     &:hover {
       transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
     }
   }
 
   .collection-btn {
-    background: rgba(255, 255, 255, 0.9);
-    color: #667eea;
+    background: linear-gradient(135deg, #67b6f5 0%, #5aa9e6 100%);
+    border: none;
+    box-shadow: 0 6px 20px rgba(103, 182, 245, 0.3);
+
+    &.el-button--danger {
+      background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+      box-shadow: 0 6px 20px rgba(255, 107, 107, 0.3);
+    }
 
     &:hover {
-      background: white;
-      color: #5a67d8;
-      border-color: rgba(255, 255, 255, 0.6);
+      box-shadow: 0 8px 25px rgba(103, 182, 245, 0.4);
     }
   }
 
   .share-btn {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.3);
     color: white;
+    backdrop-filter: blur(10px);
 
     &:hover {
-      background: rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.3);
       border-color: rgba(255, 255, 255, 0.5);
     }
   }
-// 攻略内容区域 - 简洁无卡片设计
+// 攻略内容区域
 .guide-content-section {
-  background: white;
-  padding: 60px 0 80px;
+  background: transparent;
+  margin: 0;
+  position: relative;
+  z-index: 1;
+  padding: 40px 0;
 }
 
 .content-container {
@@ -498,28 +556,40 @@ onMounted(fetchGuide)
 .sidebar {
   .sidebar-sticky {
     position: sticky;
-    top: 100px;
-    background: #f8fafc;
-    border-radius: 12px;
+    top: 20px;
+  }
+
+  .glass-card {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(25px) saturate(180%);
+    -webkit-backdrop-filter: blur(25px) saturate(180%);
+    border-radius: 20px;
     padding: 24px;
-    border: 1px solid #e2e8f0;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    transition: all 0.3s ease;
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(103, 182, 245, 0.2);
+    }
   }
 
   .sidebar-title {
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 700;
-    color: #2d3748;
+    color: #1a202c;
     margin: 0 0 20px;
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding-bottom: 12px;
-    border-bottom: 2px solid #667eea;
+    gap: 10px;
+  }
 
-    .el-icon {
-      color: #667eea;
-      font-size: 18px;
-    }
+  .title-icon {
+    width: 24px;
+    height: 24px;
+    color: #67b6f5;
+    flex-shrink: 0;
   }
 
   .related-guides {
@@ -530,27 +600,30 @@ onMounted(fetchGuide)
 
   .related-item {
     padding: 16px;
-    background: white;
-    border-radius: 8px;
-    border: 1px solid #e2e8f0;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 12px;
+    border: 1px solid rgba(103, 182, 245, 0.1);
     cursor: pointer;
     transition: all 0.3s ease;
 
     &:hover {
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      border-color: #667eea;
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 8px 20px rgba(103, 182, 245, 0.2);
+      border-color: rgba(103, 182, 245, 0.3);
 
       .related-title {
-        color: #667eea;
+        color: #67b6f5;
       }
     }
   }
 
   .related-title {
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 600;
-    color: #2d3748;
+    color: #1a202c;
     margin-bottom: 8px;
     line-height: 1.4;
     display: -webkit-box;
@@ -575,15 +648,21 @@ onMounted(fetchGuide)
   }
 }
 
-// 富文本内容样式 - 优化阅读体验
+// 富文本内容样式
 .rich-content {
   font-size: 16px;
   line-height: 1.8;
-  color: #2d3748;
-  max-width: none;
+  color: #1a202c;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 
   // 标题样式
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     color: #1a202c;
     font-weight: 700;
     margin: 32px 0 16px;
@@ -592,7 +671,7 @@ onMounted(fetchGuide)
 
   h1 {
     font-size: 32px;
-    border-bottom: 3px solid #667eea;
+    border-bottom: 3px solid #67b6f5;
     padding-bottom: 12px;
     margin-bottom: 24px;
   }
@@ -619,6 +698,7 @@ onMounted(fetchGuide)
     margin: 16px 0;
     text-align: justify;
     text-justify: inter-ideograph;
+    color: #4a5568;
   }
 
   // 图片样式
@@ -626,22 +706,34 @@ onMounted(fetchGuide)
     max-width: 100%;
     height: auto;
     border-radius: 12px;
-    margin: 24px 0;
+    margin: 24px auto;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease;
+    display: block;
 
     &:hover {
       transform: scale(1.02);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
     }
+  }
+
+  // 视频样式
+  video {
+    max-width: 100%;
+    height: auto;
+    border-radius: 12px;
+    margin: 24px auto;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    display: block;
   }
 
   // 引用样式
   blockquote {
-    border-left: 4px solid #667eea;
+    border-left: 4px solid #67b6f5;
     padding: 16px 20px;
     margin: 24px 0;
-    background: #f8fafc;
-    border-radius: 0 8px 8px 0;
+    background: linear-gradient(135deg, rgba(103, 182, 245, 0.05) 0%, rgba(255, 193, 124, 0.05) 100%);
+    border-radius: 0 12px 12px 0;
     font-style: italic;
     color: #4a5568;
 
@@ -651,13 +743,15 @@ onMounted(fetchGuide)
   }
 
   // 列表样式
-  ul, ol {
+  ul,
+  ol {
     margin: 16px 0;
     padding-left: 24px;
 
     li {
       margin: 8px 0;
       line-height: 1.6;
+      color: #4a5568;
     }
   }
 
@@ -674,7 +768,7 @@ onMounted(fetchGuide)
     background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
     padding: 4px 8px;
     border-radius: 6px;
-    color: #667eea;
+    color: #67b6f5;
     font-weight: 600;
     font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
     font-size: 14px;
@@ -702,24 +796,25 @@ onMounted(fetchGuide)
     border-collapse: collapse;
     margin: 24px 0;
     background: white;
-    border-radius: 8px;
+    border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 
-    th, td {
+    th,
+    td {
       padding: 12px 16px;
       text-align: left;
       border-bottom: 1px solid #e2e8f0;
     }
 
     th {
-      background: #f8fafc;
-      font-weight: 600;
-      color: #2d3748;
+      background: linear-gradient(135deg, rgba(103, 182, 245, 0.1) 0%, rgba(90, 169, 230, 0.1) 100%);
+      font-weight: 700;
+      color: #1a202c;
     }
 
     tr:hover {
-      background: #f8fafc;
+      background: rgba(103, 182, 245, 0.05);
     }
 
     tr:last-child td {
@@ -729,14 +824,14 @@ onMounted(fetchGuide)
 
   // 链接样式
   a {
-    color: #667eea;
+    color: #67b6f5;
     text-decoration: none;
     border-bottom: 1px solid transparent;
     transition: all 0.3s ease;
 
     &:hover {
-      color: #5a67d8;
-      border-bottom-color: #5a67d8;
+      color: #5aa9e6;
+      border-bottom-color: #5aa9e6;
     }
   }
 
@@ -749,18 +844,21 @@ onMounted(fetchGuide)
   }
 
   // 强调样式
-  strong, b {
+  strong,
+  b {
     font-weight: 700;
     color: #1a202c;
   }
 
-  em, i {
+  em,
+  i {
     font-style: italic;
     color: #4a5568;
   }
 
   // 删除线
-  del, s {
+  del,
+  s {
     text-decoration: line-through;
     color: #a0aec0;
   }
@@ -768,263 +866,55 @@ onMounted(fetchGuide)
   // 下划线
   u {
     text-decoration: underline;
-    text-decoration-color: #667eea;
-  }
-  line-height: 1.8;
-  color: #2d3748;
-  text-align: left;
-
-  // Markdown样式优化
-  h1, h2, h3, h4, h5, h6 {
-    font-weight: 700;
-    margin-top: 2em;
-    margin-bottom: 0.8em;
-    color: #1a202c;
-    text-align: left;
-    line-height: 1.3;
+    text-decoration-color: #67b6f5;
   }
 
-  h1 {
-    font-size: 32px;
-    border-bottom: 3px solid #667eea;
-    padding-bottom: 12px;
-    margin-top: 1.5em;
+  // WangEditor 特定样式
+  .w-e-text-container {
+    background: transparent !important;
   }
 
-  h2 {
-    font-size: 28px;
-    border-bottom: 2px solid #e2e8f0;
-    padding-bottom: 10px;
-    color: #2d3748;
+  // 处理内联样式的图片
+  p img {
+    margin: 12px auto;
   }
 
-  h3 {
-    font-size: 24px;
-    color: #4a5568;
-  }
-
-  h4 {
-    font-size: 20px;
-    color: #4a5568;
-  }
-
-  p {
-    margin: 1.2em 0;
-    text-align: left;
-    line-height: 1.8;
-  }
-
-  img {
-    max-width: 100%;
-    border-radius: 12px;
-    margin: 20px 0;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
-
-    &:hover {
-      transform: scale(1.02);
-    }
-  }
-
-  ul, ol {
-    padding-left: 24px;
-    margin: 1.2em 0;
-
-    li {
-      margin: 0.5em 0;
-      line-height: 1.6;
-    }
-  }
-
-  blockquote {
-    border-left: 4px solid #667eea;
-    padding: 16px 20px;
-    color: #4a5568;
-    margin: 1.5em 0;
-    background: #f8fafc;
-    border-radius: 0 8px 8px 0;
-    font-style: italic;
-  }
-
-  code {
-    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
-    padding: 4px 8px;
-    border-radius: 6px;
-    font-family: 'Fira Code', 'Monaco', 'Consolas', monospace;
-    font-size: 14px;
-    color: #667eea;
-    font-weight: 600;
-  }
-
-  pre {
-    background: #1a202c;
-    padding: 20px;
-    border-radius: 12px;
-    overflow-x: auto;
-    margin: 1.5em 0;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-
-    code {
-      background: transparent;
-      padding: 0;
-      color: #e2e8f0;
-      font-weight: normal;
-    }
-  }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 1.5em 0;
-    background: white;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-
-    th, td {
-      padding: 12px 16px;
-      text-align: left;
-      border-bottom: 1px solid #e2e8f0;
-    }
-
-    th {
-      background: #f8fafc;
-      font-weight: 600;
-      color: #2d3748;
-    }
-
-    tr:hover {
-      background: #f8fafc;
+  // 图片居中
+  [style*="text-align: center"],
+  [style*="text-align:center"] {
+    img {
+      margin-left: auto;
+      margin-right: auto;
     }
   }
 }
 
-// 侧边栏样式
-.sidebar {
-  width: 320px;
-  flex-shrink: 0;
-}
-
-.sidebar-card {
-  background: white;
-  border-radius: 20px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  border: 1px solid #e2e8f0;
-  overflow: hidden;
-}
-
-.sidebar-header {
-  padding: 24px 24px 0;
-  border-bottom: 1px solid #f1f5f9;
-}
-
-.sidebar-title {
-  font-size: 20px;
-  font-weight: 700;
-  color: #2d3748;
-  margin: 0 0 20px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-
-  .title-icon {
-    font-size: 18px;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
-  }
-}
-
-.sidebar-content {
-  padding: 24px;
-}
-
-.related-guides {
-  .related-guide-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 16px 0;
-    border-bottom: 1px solid #f1f5f9;
-    cursor: pointer;
-    transition: all 0.3s ease;
-
-    &:last-child {
-      border-bottom: none;
-    }
-
-    &:hover {
-      transform: translateX(8px);
-
-      .related-guide-title {
-        color: #667eea;
-      }
-
-      .related-guide-arrow {
-        color: #667eea;
-        transform: translateX(4px);
-      }
-    }
-  }
-
-  .related-guide-content {
-    flex: 1;
-    min-width: 0;
-  }
-
-  .related-guide-title {
-    font-size: 16px;
-    font-weight: 600;
-    color: #2d3748;
-    margin-bottom: 6px;
-    line-height: 1.4;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    transition: color 0.3s ease;
-  }
-
-  .related-guide-meta {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-
-    .views {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 13px;
-      color: #64748b;
-
-      .el-icon {
-        font-size: 12px;
-      }
-    }
-  }
-
-  .related-guide-arrow {
-    color: #cbd5e0;
-    transition: all 0.3s ease;
-    margin-left: 12px;
-
-    .el-icon {
-      font-size: 16px;
-    }
-  }
-}
+// 侧边栏样式已整合到上面
 
 .guide-not-found {
   text-align: center;
   padding: 80px 20px;
-  background: white;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border-radius: 20px;
   margin: 40px 20px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.5);
 
   .el-button {
     margin-top: 24px;
-    border-radius: 50px;
+    border-radius: 25px;
     padding: 12px 32px;
     font-weight: 600;
+    background: linear-gradient(135deg, #67b6f5 0%, #5aa9e6 100%);
+    border: none;
+    box-shadow: 0 6px 20px rgba(103, 182, 245, 0.3);
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(103, 182, 245, 0.4);
+    }
   }
 }
 
@@ -1070,38 +960,35 @@ onMounted(fetchGuide)
 
 @media (max-width: 768px) {
   .detail-hero-section {
-    height: 50vh;
-    min-height: 400px;
+    height: 45vh;
+    min-height: 350px;
   }
 
   .hero-content {
-    padding: 0 20px;
+    padding: 20px;
   }
 
   .guide-title {
-    font-size: 32px;
-    margin-bottom: 20px;
+    font-size: 28px;
+    margin-bottom: 16px;
   }
 
   .guide-meta {
-    flex-direction: column;
     gap: 16px;
-    align-items: stretch;
   }
 
   .action-buttons {
     flex-direction: column;
-    gap: 12px;
   }
 
   .collection-btn,
   .share-btn {
     width: 100%;
-    max-width: 280px;
+    justify-content: center;
   }
 
   .guide-content-section {
-    padding: 40px 0 60px;
+    padding: 30px 0 50px;
   }
 
   .content-container {
