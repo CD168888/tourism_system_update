@@ -271,20 +271,33 @@
     </div>
 
     <!-- 评价对话框 -->
-    <el-dialog v-model="showReviewDialog" title="发表评价" width="500px" :close-on-click-modal="false">
-      <el-form ref="reviewFormRef" :model="reviewForm" :rules="reviewRules" label-position="top">
-        <el-form-item label="评分" prop="rating">
-          <el-rate v-model="reviewForm.rating" :colors="colors" show-score />
+    <el-dialog v-model="showReviewDialog" title="发表评价" width="540px" :close-on-click-modal="false"
+      class="review-dialog">
+      <el-form ref="reviewFormRef" :model="reviewForm" :rules="reviewRules" label-position="top" class="review-form">
+        <el-form-item label="评分" prop="rating" class="rating-item">
+          <div class="rating-wrapper">
+            <el-rate v-model="reviewForm.rating" :colors="colors" show-score size="large" />
+            <p class="rating-hint">请为您的住宿体验打分</p>
+          </div>
         </el-form-item>
 
-        <el-form-item label="评价内容" prop="content">
-          <el-input v-model="reviewForm.content" type="textarea" :rows="4" placeholder="请分享您的住宿体验..." />
+        <el-form-item label="评价内容" prop="content" class="content-item">
+          <el-input v-model="reviewForm.content" type="textarea" :rows="6" placeholder="请分享您的住宿体验...\n例如：环境、服务、设施等方面的感受"
+            class="review-textarea" />
+          <div class="char-count">{{ reviewForm.content.length }}/500</div>
         </el-form-item>
       </el-form>
 
       <template #footer>
-        <el-button @click="showReviewDialog = false">取消</el-button>
-        <el-button type="primary" :loading="submittingReview" @click="submitReview">提交评价</el-button>
+        <div class="dialog-footer">
+          <el-button @click="showReviewDialog = false" class="cancel-btn" size="large">取消</el-button>
+          <el-button type="primary" :loading="submittingReview" @click="submitReview" class="submit-btn" size="large">
+            <el-icon v-if="!submittingReview">
+              <EditPen />
+            </el-icon>
+            {{ submittingReview ? '提交中...' : '提交评价' }}
+          </el-button>
+        </div>
       </template>
     </el-dialog>
   </div>
@@ -1338,6 +1351,213 @@ watch(() => accommodation.value, (newVal) => {
 
     .sidebar-content .card-title {
       font-size: 16px;
+    }
+  }
+}
+
+// 评价对话框样式
+:deep(.review-dialog) {
+  .el-dialog {
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    overflow: hidden;
+  }
+
+  .el-dialog__header {
+    padding: 28px 32px;
+    margin: 0;
+    background: linear-gradient(135deg, rgba(103, 182, 245, 0.08) 0%, rgba(255, 193, 124, 0.08) 100%);
+    border-bottom: 1px solid rgba(103, 182, 245, 0.15);
+
+    .el-dialog__title {
+      font-size: 24px;
+      font-weight: 800;
+      color: #1a202c;
+      background: linear-gradient(135deg, #67b6f5 0%, #ffc17c 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+  }
+
+  .el-dialog__body {
+    padding: 32px;
+  }
+
+  .el-dialog__footer {
+    padding: 0 32px 32px;
+  }
+
+  .el-dialog__headerbtn {
+    top: 24px;
+    right: 24px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(103, 182, 245, 0.1);
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: rgba(103, 182, 245, 0.2);
+      transform: rotate(90deg);
+    }
+
+    .el-dialog__close {
+      color: #67b6f5;
+      font-weight: bold;
+      font-size: 18px;
+    }
+  }
+}
+
+.review-form {
+  .rating-item {
+    margin-bottom: 32px;
+
+    .el-form-item__label {
+      font-size: 16px;
+      font-weight: 700;
+      color: #1a202c;
+      margin-bottom: 12px;
+    }
+
+    .rating-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px;
+      background: linear-gradient(135deg, rgba(103, 182, 245, 0.05) 0%, rgba(255, 193, 124, 0.05) 100%);
+      border-radius: 16px;
+      border: 2px dashed rgba(103, 182, 245, 0.2);
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: linear-gradient(135deg, rgba(103, 182, 245, 0.08) 0%, rgba(255, 193, 124, 0.08) 100%);
+        border-color: rgba(103, 182, 245, 0.3);
+        transform: translateY(-2px);
+      }
+
+      :deep(.el-rate) {
+        height: auto;
+
+        .el-rate__icon {
+          font-size: 32px;
+          margin-right: 8px;
+        }
+
+        .el-rate__text {
+          font-size: 24px;
+          font-weight: 800;
+          color: #67b6f5;
+          margin-left: 12px;
+          text-shadow: 0 2px 4px rgba(103, 182, 245, 0.2);
+        }
+      }
+
+      .rating-hint {
+        margin: 12px 0 0;
+        font-size: 14px;
+        color: #5a6c7d;
+        font-weight: 500;
+      }
+    }
+  }
+
+  .content-item {
+    .el-form-item__label {
+      font-size: 16px;
+      font-weight: 700;
+      color: #1a202c;
+      margin-bottom: 12px;
+    }
+
+    .review-textarea {
+      :deep(.el-textarea__inner) {
+        border-radius: 16px;
+        border: 2px solid rgba(103, 182, 245, 0.15);
+        padding: 16px;
+        font-size: 15px;
+        line-height: 1.8;
+        background: linear-gradient(135deg, rgba(103, 182, 245, 0.02) 0%, rgba(255, 193, 124, 0.02) 100%);
+        transition: all 0.3s ease;
+        resize: none;
+
+        &:focus {
+          border-color: #67b6f5;
+          background: linear-gradient(135deg, rgba(103, 182, 245, 0.05) 0%, rgba(255, 193, 124, 0.05) 100%);
+          box-shadow: 0 4px 16px rgba(103, 182, 245, 0.15);
+        }
+
+        &::placeholder {
+          color: #a0aec0;
+          font-size: 14px;
+        }
+      }
+    }
+
+    .char-count {
+      text-align: right;
+      margin-top: 8px;
+      font-size: 13px;
+      color: #5a6c7d;
+      font-weight: 500;
+    }
+  }
+}
+
+.dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+
+  .cancel-btn,
+  .submit-btn {
+    min-width: 120px;
+    border-radius: 20px;
+    padding: 12px 28px;
+    font-weight: 700;
+    font-size: 15px;
+    transition: all 0.3s ease;
+  }
+
+  .cancel-btn {
+    background: rgba(103, 182, 245, 0.08);
+    border: 2px solid rgba(103, 182, 245, 0.2);
+    color: #67b6f5;
+
+    &:hover {
+      background: rgba(103, 182, 245, 0.15);
+      border-color: rgba(103, 182, 245, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(103, 182, 245, 0.2);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+
+  .submit-btn {
+    background: linear-gradient(135deg, #67b6f5 0%, #5aa9e6 100%);
+    border: none;
+    box-shadow: 0 6px 20px rgba(103, 182, 245, 0.3);
+
+    &:hover {
+      background: linear-gradient(135deg, #5aa9e6 0%, #4d9ad6 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(103, 182, 245, 0.4);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+
+    .el-icon {
+      margin-right: 6px;
     }
   }
 }
