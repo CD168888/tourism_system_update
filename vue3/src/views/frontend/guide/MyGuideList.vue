@@ -104,26 +104,18 @@
               </div>
 
               <div class="card-footer">
-                <!-- <div class="guide-status">
-                  <el-tag v-if="isNew(guide.createTime)" type="success" size="small">
-                    最新发布
-                  </el-tag>
-                  <el-tag v-else type="info" size="small">
-                    已发布
-                  </el-tag>
-                </div> -->
                 <div class="card-actions">
-                  <el-button type="primary" round @click.stop="viewGuide(guide)" class="view-btn">
+                  <el-button type="primary" round @click.stop="viewGuide(guide)" class="action-btn view-btn">
                     <el-icon>
                       <View />
                     </el-icon>
                   </el-button>
-                  <el-button round @click.stop="goEdit(guide)" class="edit-btn">
+                  <el-button round @click.stop="goEdit(guide)" class="action-btn edit-btn">
                     <el-icon>
                       <Edit />
                     </el-icon>
                   </el-button>
-                  <el-button type="danger" round @click.stop="deleteGuide(guide)" class="delete-btn">
+                  <el-button type="danger" round @click.stop="deleteGuide(guide)" class="action-btn delete-btn">
                     <el-icon>
                       <Delete />
                     </el-icon>
@@ -611,6 +603,7 @@ const deleteGuide = (row) => {
   color: #1a202c;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   line-height: 1.4;
@@ -644,41 +637,45 @@ const deleteGuide = (row) => {
 
 .card-footer {
   margin-top: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-
-  .guide-status {
-    margin-bottom: 16px;
-
-    :deep(.el-tag) {
-      border-radius: 12px;
-      font-weight: 600;
-    }
-  }
 
   .card-actions {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 10px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    align-items: center;
+    gap: 8px;
+
+    .action-btn {
+      flex: 1;
+      min-width: 0;
+      height: 44px;
+      width: 44px;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+      .el-icon {
+        font-size: 20px;
+      }
+
+      &:hover {
+        transform: translateY(-4px) scale(1.05);
+      }
+
+      &:active {
+        transform: translateY(-2px) scale(1.02);
+      }
+    }
 
     .view-btn {
       background: linear-gradient(135deg, #67b6f5 0%, #5aa9e6 100%);
       box-shadow: 0 4px 12px rgba(103, 182, 245, 0.3);
 
       &:hover {
-        transform: scale(1.1);
-        box-shadow: 0 6px 16px rgba(103, 182, 245, 0.4);
+        box-shadow: 0 8px 20px rgba(103, 182, 245, 0.4);
         background: linear-gradient(135deg, #5aa9e6 0%, #4a99d6 100%);
-      }
-
-      &:active {
-        transform: scale(1);
       }
     }
 
@@ -688,12 +685,7 @@ const deleteGuide = (row) => {
 
       &:hover {
         background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-        transform: scale(1.1);
-        box-shadow: 0 6px 16px rgba(245, 158, 11, 0.4);
-      }
-
-      &:active {
-        transform: scale(1);
+        box-shadow: 0 8px 20px rgba(245, 158, 11, 0.4);
       }
     }
 
@@ -703,12 +695,7 @@ const deleteGuide = (row) => {
 
       &:hover {
         background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
-        transform: scale(1.1);
-        box-shadow: 0 6px 16px rgba(245, 101, 101, 0.4);
-      }
-
-      &:active {
-        transform: scale(1);
+        box-shadow: 0 8px 20px rgba(245, 101, 101, 0.4);
       }
     }
   }
