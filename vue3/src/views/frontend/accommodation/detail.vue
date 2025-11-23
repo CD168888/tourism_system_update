@@ -18,31 +18,36 @@
               <h1 class="accommodation-title">{{ accommodation.name }}</h1>
               <div class="accommodation-meta">
                 <div class="meta-item">
-                  <el-icon><Location /></el-icon>
+                  <el-icon>
+                    <Location />
+                  </el-icon>
                   <span>{{ accommodation.address }}</span>
                 </div>
                 <div class="meta-item" v-if="accommodation.type">
-                  <el-icon><House /></el-icon>
+                  <el-icon>
+                    <House />
+                  </el-icon>
                   <span>{{ accommodation.type }}</span>
                 </div>
                 <div class="meta-item rating">
-                  <el-icon><Star /></el-icon>
+                  <el-icon>
+                    <Star />
+                  </el-icon>
                   <span>{{ getDisplayRating(accommodation.starLevel) }}</span>
                   <span class="rating-text">({{ formatReviewCount(reviewTotal) }})</span>
                 </div>
               </div>
               <div class="action-buttons">
-                <el-button
-                  type="primary"
-                  size="large"
-                  @click="showReviewDialog = true"
-                  class="review-btn"
-                >
-                  <el-icon><EditPen /></el-icon>
+                <el-button type="primary" size="large" @click="showReviewDialog = true" class="review-btn">
+                  <el-icon>
+                    <EditPen />
+                  </el-icon>
                   发表评价
                 </el-button>
                 <el-button size="large" class="share-btn" @click="handleShare">
-                  <el-icon><Share /></el-icon>
+                  <el-icon>
+                    <Share />
+                  </el-icon>
                   分享
                 </el-button>
               </div>
@@ -67,7 +72,9 @@
             <!-- 住宿描述 -->
             <div class="info-card description-card">
               <h3 class="card-title">
-                <el-icon><Document /></el-icon>
+                <el-icon>
+                  <Document />
+                </el-icon>
                 住宿介绍
               </h3>
               <div class="description-content">{{ accommodation.description || '暂无详细描述' }}</div>
@@ -76,7 +83,9 @@
             <!-- 特色服务 -->
             <div class="info-card features-card">
               <h3 class="card-title">
-                <el-icon><Star /></el-icon>
+                <el-icon>
+                  <Star />
+                </el-icon>
                 特色服务
               </h3>
               <div class="features-content">{{ accommodation.features || '暂无特色服务介绍' }}</div>
@@ -86,7 +95,9 @@
             <div class="info-card reviews-card">
               <div class="reviews-header">
                 <h3 class="card-title">
-                  <el-icon><ChatDotRound /></el-icon>
+                  <el-icon>
+                    <ChatDotRound />
+                  </el-icon>
                   住客评价 ({{ reviewTotal || 0 }})
                 </h3>
               </div>
@@ -105,7 +116,8 @@
                 <div v-for="(review, index) in reviewList" :key="index" class="review-item">
                   <div class="review-header">
                     <div class="review-user">
-                      <el-avatar :size="40" :src="getImageUrl(review.avatar)">{{ review.nickname?.charAt(0) }}</el-avatar>
+                      <el-avatar :size="40" :src="getImageUrl(review.avatar)">{{ review.nickname?.charAt(0)
+                      }}</el-avatar>
                       <div class="user-info">
                         <span class="username">{{ review.nickname || '匿名用户' }}</span>
                         <span class="review-date">{{ formatDate(review.createTime) }}</span>
@@ -123,22 +135,18 @@
 
                   <div v-if="canDelete(review)" class="review-actions">
                     <el-button type="danger" size="small" link @click="handleDeleteReview(review.id)">
-                      <el-icon><Delete /></el-icon> 删除
+                      <el-icon>
+                        <Delete />
+                      </el-icon> 删除
                     </el-button>
                   </div>
                 </div>
 
                 <!-- 评价分页 -->
                 <div class="review-pagination" v-if="reviewTotal > 10">
-                  <el-pagination
-                    background
-                    layout="prev, pager, next"
-                    :current-page="reviewPage"
-                    :page-size="reviewPageSize"
-                    :total="reviewTotal"
-                    @current-change="handleReviewPageChange"
-                    class="modern-pagination"
-                  />
+                  <el-pagination background layout="prev, pager, next" :current-page="reviewPage"
+                    :page-size="reviewPageSize" :total="reviewTotal" @current-change="handleReviewPageChange"
+                    class="modern-pagination" />
                 </div>
               </div>
             </div>
@@ -149,27 +157,35 @@
             <!-- 基本信息卡片 -->
             <div class="info-card basic-info-card">
               <h3 class="card-title">
-                <el-icon><InfoFilled /></el-icon>
+                <el-icon>
+                  <InfoFilled />
+                </el-icon>
                 基本信息
               </h3>
               <div class="info-list">
                 <div class="info-item">
                   <div class="info-label">
-                    <el-icon><Money /></el-icon>
+                    <el-icon>
+                      <Money />
+                    </el-icon>
                     价格区间
                   </div>
                   <div class="info-value price-value">{{ accommodation.priceRange }}</div>
                 </div>
                 <div class="info-item">
                   <div class="info-label">
-                    <el-icon><Phone /></el-icon>
+                    <el-icon>
+                      <Phone />
+                    </el-icon>
                     联系电话
                   </div>
                   <div class="info-value">{{ accommodation.contactPhone || '暂无' }}</div>
                 </div>
                 <div class="info-item" v-if="accommodation.scenicName">
                   <div class="info-label">
-                    <el-icon><Location /></el-icon>
+                    <el-icon>
+                      <Location />
+                    </el-icon>
                     附近景点
                   </div>
                   <div class="info-value scenic-link" @click="goToScenic(accommodation.scenicId)">
@@ -182,7 +198,9 @@
             <!-- 周边景点推荐 -->
             <div class="info-card nearby-scenics-card" v-if="nearbyScenics.length > 0">
               <h3 class="card-title">
-                <el-icon><MapLocation /></el-icon>
+                <el-icon>
+                  <MapLocation />
+                </el-icon>
                 周边景点
               </h3>
 
@@ -191,7 +209,8 @@
               </div>
 
               <div v-else class="scenic-list">
-                <div v-for="scenic in nearbyScenics" :key="scenic.id" class="scenic-item" @click="goToScenic(scenic.id)">
+                <div v-for="scenic in nearbyScenics" :key="scenic.id" class="scenic-item"
+                  @click="goToScenic(scenic.id)">
                   <div class="scenic-image">
                     <img :src="getImageUrl(scenic.imageUrl)" :alt="scenic.name" />
                   </div>
@@ -206,7 +225,9 @@
             <!-- 更多住宿推荐 -->
             <div class="info-card similar-accommodations-card" v-if="similarAccommodations.length > 0">
               <h3 class="card-title">
-                <el-icon><House /></el-icon>
+                <el-icon>
+                  <House />
+                </el-icon>
                 更多住宿
               </h3>
 
@@ -215,12 +236,8 @@
               </div>
 
               <div v-else class="accommodation-list">
-                <div
-                  v-for="item in similarAccommodations"
-                  :key="item.id"
-                  class="accommodation-item"
-                  @click="goToAccommodation(item.id)"
-                >
+                <div v-for="item in similarAccommodations" :key="item.id" class="accommodation-item"
+                  @click="goToAccommodation(item.id)">
                   <div class="accommodation-image">
                     <img :src="getImageUrl(item.imageUrl)" :alt="item.name" />
                   </div>
@@ -252,29 +269,19 @@
         </div>
       </div>
     </div>
-    
+
     <!-- 评价对话框 -->
-    <el-dialog
-      v-model="showReviewDialog"
-      title="发表评价"
-      width="500px"
-      :close-on-click-modal="false"
-    >
+    <el-dialog v-model="showReviewDialog" title="发表评价" width="500px" :close-on-click-modal="false">
       <el-form ref="reviewFormRef" :model="reviewForm" :rules="reviewRules" label-position="top">
         <el-form-item label="评分" prop="rating">
           <el-rate v-model="reviewForm.rating" :colors="colors" show-score />
         </el-form-item>
-        
+
         <el-form-item label="评价内容" prop="content">
-          <el-input
-            v-model="reviewForm.content"
-            type="textarea"
-            :rows="4"
-            placeholder="请分享您的住宿体验..."
-          />
+          <el-input v-model="reviewForm.content" type="textarea" :rows="4" placeholder="请分享您的住宿体验..." />
         </el-form-item>
       </el-form>
-      
+
       <template #footer>
         <el-button @click="showReviewDialog = false">取消</el-button>
         <el-button type="primary" :loading="submittingReview" @click="submitReview">提交评价</el-button>
@@ -379,8 +386,8 @@ const fetchAccommodationReviews = async () => {
       size: reviewPageSize.value
     }, {
       onSuccess: (res) => {
-        reviewList.value = res.records||[]
-        reviewTotal.value = res.total||0
+        reviewList.value = res.records || []
+        reviewTotal.value = res.total || 0
       }
     })
   } catch (error) {
@@ -393,7 +400,7 @@ const fetchAccommodationReviews = async () => {
 // 获取周边景点
 const fetchNearbyScenics = async () => {
   if (!accommodation.value?.scenicId) return
-  
+
   loadingScenics.value = true
   try {
     await request.get('/scenic/page', {
@@ -415,7 +422,7 @@ const fetchNearbyScenics = async () => {
 // 获取相似住宿
 const fetchSimilarAccommodations = async () => {
   if (!accommodation.value) return
-  
+
   loadingSimilar.value = true
   try {
     await request.get('/accommodation/page', {
@@ -463,7 +470,7 @@ const submitReview = async () => {
     router.push('/login')
     return
   }
-  
+
   submittingReview.value = true
   try {
     await request.post('/accommodation/review', reviewForm, {
@@ -494,7 +501,7 @@ const handleDeleteReview = (id) => {
     type: 'warning'
   }).then(async () => {
     try {
-      await request.delete(`/accommodation/review/${id}`,  {
+      await request.delete(`/accommodation/review/${id}`, {
         successMsg: '评价已删除',
         onSuccess: () => {
           // 刷新评价列表
@@ -506,7 +513,7 @@ const handleDeleteReview = (id) => {
     } catch (error) {
       console.error('删除评价失败:', error)
     }
-  }).catch(() => {})
+  }).catch(() => { })
 }
 
 // 跳转到景点详情
@@ -557,9 +564,8 @@ watch(() => accommodation.value, (newVal) => {
 <style lang="scss" scoped>
 .accommodation-detail-container {
   min-height: 100vh;
-  background: #f8fafc;
-  font-family: "思源黑体", "Source Han Sans", "Noto Sans CJK SC", sans-serif;
-  color: #333;
+  font-family: "PingFang SC", "Helvetica Neue", Helvetica, Arial, "Microsoft YaHei", sans-serif;
+  color: #1a202c;
 
   // 通用容器样式
   .section-container {
@@ -568,12 +574,13 @@ watch(() => accommodation.value, (newVal) => {
     padding: 0 20px;
   }
 
-  // 英雄区域样式 - 参考景点详情页面
+  // 英雄区域样式
   .detail-hero-section {
     position: relative;
-    height: 60vh;
-    min-height: 500px;
+    height: 65vh;
+    min-height: 550px;
     overflow: hidden;
+    border-radius: 32px;
   }
 
   .hero-image-container {
@@ -612,12 +619,10 @@ watch(() => accommodation.value, (newVal) => {
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(
-      to bottom,
-      rgba(0, 0, 0, 0.3) 0%,
-      rgba(0, 0, 0, 0.1) 50%,
-      rgba(0, 0, 0, 0.6) 100%
-    );
+    background: linear-gradient(to bottom,
+        rgba(0, 0, 0, 0.3) 0%,
+        rgba(0, 0, 0, 0.2) 50%,
+        rgba(0, 0, 0, 0.5) 100%);
   }
 
   .hero-content {
@@ -628,21 +633,36 @@ watch(() => accommodation.value, (newVal) => {
     max-width: 1200px;
     width: 100%;
     padding: 0 40px;
+    animation: fadeInUp 0.8s ease;
+  }
+
+  @keyframes fadeInUp {
+    0% {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   .breadcrumb {
-    margin-bottom: 30px;
+    margin-bottom: 24px;
     text-align: left;
 
     :deep(.el-breadcrumb) {
       .el-breadcrumb__item {
         .el-breadcrumb__inner {
-          color: rgba(255, 255, 255, 0.8);
-          font-weight: 500;
+          color: rgba(255, 255, 255, 0.9);
+          font-weight: 600;
           cursor: pointer;
+          transition: all 0.3s ease;
 
           &:hover {
             color: white;
+            text-shadow: 0 2px 8px rgba(255, 255, 255, 0.3);
           }
         }
 
@@ -652,44 +672,53 @@ watch(() => accommodation.value, (newVal) => {
       }
 
       .el-breadcrumb__separator {
-        color: rgba(255, 255, 255, 0.6);
+        color: rgba(255, 255, 255, 0.7);
       }
     }
   }
 
   .accommodation-title {
-    font-size: 48px;
-    font-weight: 700;
-    margin: 0 0 30px;
-    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    font-size: 52px;
+    font-weight: 800;
+    margin: 0 0 24px;
+    text-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
     line-height: 1.2;
+    letter-spacing: 1px;
   }
 
   .accommodation-meta {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 30px;
-    margin-bottom: 30px;
+    gap: 32px;
+    margin-bottom: 32px;
     flex-wrap: wrap;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
   }
 
   .meta-item {
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 16px;
-    font-weight: 500;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    gap: 10px;
+    font-size: 17px;
+    font-weight: 600;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 
     .el-icon {
-      font-size: 18px;
+      font-size: 20px;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
     }
 
     &.rating {
       .rating-text {
-        opacity: 0.9;
-        margin-left: 4px;
+        opacity: 0.95;
+        margin-left: 6px;
+        font-weight: 500;
       }
     }
   }
@@ -697,57 +726,62 @@ watch(() => accommodation.value, (newVal) => {
   .action-buttons {
     display: flex;
     justify-content: center;
-    gap: 16px;
+    gap: 20px;
     flex-wrap: wrap;
   }
 
   .review-btn,
   .share-btn {
-    border-radius: 50px;
-    padding: 12px 24px;
-    font-weight: 600;
+    border-radius: 25px;
+    padding: 14px 32px;
+    font-weight: 700;
     font-size: 16px;
     transition: all 0.3s ease;
     border: 2px solid rgba(255, 255, 255, 0.3);
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 
     &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    &:active {
       transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
     }
   }
 
   .review-btn {
-    background: rgba(255, 255, 255, 0.9);
-    color: #667eea;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.85) 100%);
+    color: #67b6f5;
 
     &:hover {
-      background: white;
-      color: #5a67d8;
-      border-color: rgba(255, 255, 255, 0.6);
+      background: linear-gradient(135deg, white 0%, rgba(255, 255, 255, 0.95) 100%);
+      color: #5aa9e6;
+      border-color: rgba(255, 255, 255, 0.5);
     }
   }
 
   .share-btn {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.15);
     color: white;
 
     &:hover {
-      background: rgba(255, 255, 255, 0.2);
-      border-color: rgba(255, 255, 255, 0.5);
+      background: rgba(255, 255, 255, 0.25);
+      border-color: rgba(255, 255, 255, 0.6);
     }
   }
 
   // 加载状态
   .loading-section {
-    background: white;
     padding: 60px 0;
   }
 
-  // 详细信息区域 - 参考景点详情页面
+  // 详细信息区域
   .detail-content {
-    background: #f8fafc;
     padding: 60px 0;
+    position: relative;
   }
 
   .content-grid {
@@ -759,43 +793,55 @@ watch(() => accommodation.value, (newVal) => {
 
   .main-content {
     .info-card {
-      background: white;
-      border-radius: 16px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-      border: 1px solid #e2e8f0;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 24px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.5);
       margin-bottom: 30px;
       overflow: hidden;
+      transition: all 0.3s ease;
+
+      &:hover {
+        box-shadow: 0 12px 40px rgba(103, 182, 245, 0.15);
+        transform: translateY(-4px);
+      }
     }
 
     .card-title {
-      font-size: 20px;
-      font-weight: 700;
-      color: #2d3748;
+      font-size: 22px;
+      font-weight: 800;
+      color: #1a202c;
       margin: 0 0 20px;
-      padding: 24px 24px 0;
+      padding: 28px 28px 0;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 12px;
 
       .el-icon {
-        color: #667eea;
-        font-size: 20px;
+        color: #67b6f5;
+        font-size: 24px;
+        filter: drop-shadow(0 2px 4px rgba(103, 182, 245, 0.3));
       }
     }
 
     .description-content,
     .features-content {
-      padding: 0 24px 24px;
+      padding: 0 28px 28px;
       font-size: 16px;
-      line-height: 1.8;
+      line-height: 1.9;
       color: #4a5568;
+      background: linear-gradient(135deg, rgba(103, 182, 245, 0.02) 0%, rgba(255, 193, 124, 0.02) 100%);
+      border-radius: 0 0 24px 24px;
     }
 
     // 评价区域样式
     .reviews-card {
       .reviews-header {
-        padding: 24px 24px 0;
+        padding: 28px 28px 0;
         margin-bottom: 20px;
+        background: linear-gradient(135deg, rgba(103, 182, 245, 0.03) 0%, rgba(255, 193, 124, 0.03) 100%);
       }
 
       .review-loading {
@@ -804,36 +850,50 @@ watch(() => accommodation.value, (newVal) => {
 
       .empty-reviews {
         text-align: center;
-        padding: 40px 24px;
+        padding: 60px 28px;
+        background: linear-gradient(135deg, rgba(103, 182, 245, 0.03) 0%, rgba(255, 193, 124, 0.03) 100%);
+        border-radius: 16px;
 
         .empty-icon {
-          font-size: 48px;
-          margin-bottom: 16px;
+          font-size: 64px;
+          margin-bottom: 20px;
+          filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
         }
 
         .empty-title {
-          font-size: 18px;
-          font-weight: 600;
-          color: #2d3748;
-          margin: 0 0 8px;
+          font-size: 20px;
+          font-weight: 700;
+          color: #1a202c;
+          margin: 0 0 12px;
         }
 
         .empty-desc {
-          color: #64748b;
+          color: #5a6c7d;
           margin: 0;
+          font-size: 15px;
         }
       }
 
       .review-list {
-        padding: 0 24px 24px;
+        padding: 0 28px 28px;
       }
 
       .review-item {
-        padding: 20px 0;
-        border-bottom: 1px solid #f1f5f9;
+        padding: 24px;
+        margin-bottom: 16px;
+        background: linear-gradient(135deg, rgba(103, 182, 245, 0.02) 0%, rgba(255, 193, 124, 0.02) 100%);
+        border-radius: 16px;
+        border: 1px solid rgba(103, 182, 245, 0.1);
+        transition: all 0.3s ease;
+
+        &:hover {
+          background: linear-gradient(135deg, rgba(103, 182, 245, 0.05) 0%, rgba(255, 193, 124, 0.05) 100%);
+          border-color: rgba(103, 182, 245, 0.2);
+          transform: translateX(4px);
+        }
 
         &:last-child {
-          border-bottom: none;
+          margin-bottom: 0;
         }
       }
 
@@ -852,15 +912,16 @@ watch(() => accommodation.value, (newVal) => {
 
       .user-info {
         .username {
-          font-size: 14px;
-          font-weight: 600;
-          color: #2d3748;
+          font-size: 15px;
+          font-weight: 700;
+          color: #1a202c;
           margin: 0 0 4px;
         }
 
         .review-date {
-          font-size: 12px;
-          color: #64748b;
+          font-size: 13px;
+          color: #5a6c7d;
+          font-weight: 500;
         }
       }
 
@@ -878,9 +939,12 @@ watch(() => accommodation.value, (newVal) => {
 
       .review-content {
         .review-text {
-          font-size: 14px;
-          line-height: 1.6;
+          font-size: 15px;
+          line-height: 1.8;
           color: #4a5568;
+          padding: 12px;
+          background: rgba(255, 255, 255, 0.5);
+          border-radius: 12px;
         }
       }
 
@@ -896,29 +960,41 @@ watch(() => accommodation.value, (newVal) => {
         .modern-pagination {
           :deep(.el-pagination) {
             .el-pager li {
-              border-radius: 8px;
-              margin: 0 4px;
+              border-radius: 12px;
+              margin: 0 6px;
               transition: all 0.3s ease;
+              background: rgba(255, 255, 255, 0.9);
+              backdrop-filter: blur(10px);
+              -webkit-backdrop-filter: blur(10px);
+              border: 2px solid transparent;
 
               &:hover {
-                background: #667eea;
+                background: linear-gradient(135deg, #67b6f5 0%, #5aa9e6 100%);
                 color: white;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(103, 182, 245, 0.3);
               }
 
               &.is-active {
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                background: linear-gradient(135deg, #67b6f5 0%, #5aa9e6 100%);
                 color: white;
+                border-color: transparent;
+                box-shadow: 0 4px 12px rgba(103, 182, 245, 0.3);
               }
             }
 
             .btn-prev,
             .btn-next {
-              border-radius: 8px;
+              border-radius: 12px;
               transition: all 0.3s ease;
+              background: rgba(255, 255, 255, 0.9);
+              backdrop-filter: blur(10px);
+              -webkit-backdrop-filter: blur(10px);
 
               &:hover {
-                background: #667eea;
+                background: linear-gradient(135deg, #67b6f5 0%, #5aa9e6 100%);
                 color: white;
+                transform: translateY(-2px);
               }
             }
           }
@@ -929,82 +1005,106 @@ watch(() => accommodation.value, (newVal) => {
 
   .sidebar-content {
     .info-card {
-      background: white;
-      border-radius: 16px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-      border: 1px solid #e2e8f0;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 24px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.5);
       margin-bottom: 30px;
       overflow: hidden;
+      transition: all 0.3s ease;
+
+      &:hover {
+        box-shadow: 0 12px 40px rgba(103, 182, 245, 0.15);
+        transform: translateY(-4px);
+      }
     }
 
     .card-title {
-      font-size: 18px;
-      font-weight: 700;
-      color: #2d3748;
+      font-size: 20px;
+      font-weight: 800;
+      color: #1a202c;
       margin: 0 0 20px;
-      padding: 20px 20px 0;
+      padding: 24px 24px 0;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
 
       .el-icon {
-        color: #667eea;
-        font-size: 18px;
+        color: #67b6f5;
+        font-size: 22px;
+        filter: drop-shadow(0 2px 4px rgba(103, 182, 245, 0.3));
       }
     }
 
     .info-list {
-      padding: 0 20px 20px;
+      padding: 0 24px 24px;
     }
 
     .info-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 12px 0;
-      border-bottom: 1px solid #f1f5f9;
+      padding: 16px;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, rgba(103, 182, 245, 0.03) 0%, rgba(255, 193, 124, 0.03) 100%);
+      border-radius: 12px;
+      border: 1px solid rgba(103, 182, 245, 0.1);
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: linear-gradient(135deg, rgba(103, 182, 245, 0.08) 0%, rgba(255, 193, 124, 0.08) 100%);
+        border-color: rgba(103, 182, 245, 0.2);
+        transform: translateX(4px);
+      }
 
       &:last-child {
-        border-bottom: none;
+        margin-bottom: 0;
       }
     }
 
     .info-label {
       display: flex;
       align-items: center;
-      gap: 6px;
-      font-size: 14px;
-      color: #64748b;
-      font-weight: 500;
+      gap: 8px;
+      font-size: 15px;
+      color: #5a6c7d;
+      font-weight: 600;
 
       .el-icon {
-        color: #667eea;
-        font-size: 16px;
+        color: #67b6f5;
+        font-size: 18px;
+        filter: drop-shadow(0 1px 2px rgba(103, 182, 245, 0.3));
       }
     }
 
     .info-value {
-      font-size: 14px;
-      color: #2d3748;
-      font-weight: 600;
+      font-size: 15px;
+      color: #1a202c;
+      font-weight: 700;
 
       &.price-value {
         color: #ef4444;
-        font-size: 16px;
+        font-size: 18px;
+        text-shadow: 0 2px 4px rgba(239, 68, 68, 0.2);
       }
 
       &.scenic-link {
-        color: #667eea;
+        color: #67b6f5;
         cursor: pointer;
-        transition: color 0.3s ease;
+        transition: all 0.3s ease;
+        text-decoration: underline;
+        text-decoration-style: dotted;
 
         &:hover {
-          color: #5a67d8;
+          color: #5aa9e6;
+          text-shadow: 0 2px 4px rgba(103, 182, 245, 0.3);
         }
 
         .distance {
           color: #10b981;
-          font-weight: 500;
+          font-weight: 600;
         }
       }
     }
@@ -1018,7 +1118,7 @@ watch(() => accommodation.value, (newVal) => {
 
       .scenic-list,
       .accommodation-list {
-        padding: 0 20px 20px;
+        padding: 0 24px 24px;
         display: flex;
         flex-direction: column;
         gap: 16px;
@@ -1028,32 +1128,41 @@ watch(() => accommodation.value, (newVal) => {
       .accommodation-item {
         display: flex;
         align-items: center;
-        gap: 12px;
-        padding: 12px;
-        border-radius: 12px;
-        border: 1px solid #f1f5f9;
+        gap: 14px;
+        padding: 14px;
+        border-radius: 16px;
+        background: linear-gradient(135deg, rgba(103, 182, 245, 0.03) 0%, rgba(255, 193, 124, 0.03) 100%);
+        border: 1px solid rgba(103, 182, 245, 0.1);
         cursor: pointer;
         transition: all 0.3s ease;
 
         &:hover {
-          border-color: #667eea;
-          box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
-          transform: translateY(-2px);
+          background: linear-gradient(135deg, rgba(103, 182, 245, 0.08) 0%, rgba(255, 193, 124, 0.08) 100%);
+          border-color: #67b6f5;
+          box-shadow: 0 8px 24px rgba(103, 182, 245, 0.2);
+          transform: translateY(-4px) translateX(4px);
         }
       }
 
       .scenic-image,
       .accommodation-image {
-        width: 60px;
-        height: 60px;
-        border-radius: 8px;
+        width: 70px;
+        height: 70px;
+        border-radius: 12px;
         overflow: hidden;
         flex-shrink: 0;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
 
         img {
           width: 100%;
           height: 100%;
           object-fit: cover;
+          transition: transform 0.3s ease;
+        }
+
+        &:hover img {
+          transform: scale(1.1);
         }
       }
 
@@ -1065,10 +1174,10 @@ watch(() => accommodation.value, (newVal) => {
 
       .scenic-name,
       .item-name {
-        font-size: 14px;
-        font-weight: 600;
-        color: #2d3748;
-        margin: 0 0 4px;
+        font-size: 15px;
+        font-weight: 700;
+        color: #1a202c;
+        margin: 0 0 6px;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -1076,9 +1185,10 @@ watch(() => accommodation.value, (newVal) => {
 
       .scenic-price,
       .item-price {
-        font-size: 13px;
+        font-size: 14px;
         color: #ef4444;
-        font-weight: 600;
+        font-weight: 700;
+        text-shadow: 0 1px 2px rgba(239, 68, 68, 0.2);
       }
 
       .item-rating {
@@ -1089,30 +1199,55 @@ watch(() => accommodation.value, (newVal) => {
 
   // 空状态
   .empty-state {
-    background: white;
-    padding: 80px 0;
+    padding: 120px 0;
 
     .empty-content {
       text-align: center;
-      max-width: 400px;
+      max-width: 500px;
       margin: 0 auto;
+      padding: 60px 40px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 32px;
+      box-shadow: 0 12px 48px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.5);
 
       .empty-icon {
-        font-size: 64px;
-        margin-bottom: 20px;
+        font-size: 80px;
+        margin-bottom: 24px;
+        filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.1));
       }
 
       .empty-title {
-        font-size: 24px;
-        font-weight: 700;
-        color: #2d3748;
-        margin: 0 0 12px;
+        font-size: 28px;
+        font-weight: 800;
+        color: #1a202c;
+        margin: 0 0 16px;
+        letter-spacing: 0.5px;
       }
 
       .empty-desc {
+        font-size: 17px;
+        color: #5a6c7d;
+        margin: 0 0 32px;
+        line-height: 1.6;
+      }
+
+      .el-button {
+        border-radius: 25px;
+        padding: 14px 32px;
+        font-weight: 700;
         font-size: 16px;
-        color: #64748b;
-        margin: 0 0 24px;
+        background: linear-gradient(135deg, #67b6f5 0%, #5aa9e6 100%);
+        border: none;
+        box-shadow: 0 6px 20px rgba(103, 182, 245, 0.3);
+        transition: all 0.3s ease;
+
+        &:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 8px 25px rgba(103, 182, 245, 0.4);
+        }
       }
     }
   }
