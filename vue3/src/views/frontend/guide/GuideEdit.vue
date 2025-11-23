@@ -89,24 +89,23 @@
                 </div>
               </div>
             </el-form-item>
-
-            <el-form-item>
-              <div class="form-actions">
-                <el-button size="large" @click="goBack" class="cancel-btn">
-                  <el-icon>
-                    <Close />
-                  </el-icon>
-                  取消
-                </el-button>
-                <el-button size="large" type="primary" @click="submit" :loading="submitting" class="submit-btn">
-                  <el-icon v-if="!submitting">
-                    <Check />
-                  </el-icon>
-                  {{ form.id ? '保存修改' : '发布攻略' }}
-                </el-button>
-              </div>
-            </el-form-item>
           </el-form>
+
+          <!-- 操作按钮区域 -->
+          <div class="form-actions">
+            <el-button size="large" @click="goBack" class="cancel-btn">
+              <el-icon>
+                <Close />
+              </el-icon>
+              取消
+            </el-button>
+            <el-button size="large" type="primary" @click="submit" :loading="submitting" class="submit-btn">
+              <el-icon v-if="!submitting">
+                <Check />
+              </el-icon>
+              {{ form.id ? '保存修改' : '发布攻略' }}
+            </el-button>
+          </div>
         </div>
       </div>
     </div>
@@ -529,7 +528,9 @@ const goBack = () => {
   display: flex;
   justify-content: flex-end;
   gap: 16px;
-  margin-top: 20px;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 2px solid rgba(103, 182, 245, 0.1);
 
   .el-button {
     min-width: 140px;
@@ -551,6 +552,10 @@ const goBack = () => {
       background: rgba(103, 182, 245, 0.1);
       transform: translateY(-2px);
       box-shadow: 0 4px 12px rgba(103, 182, 245, 0.2);
+    }
+
+    &:active {
+      transform: translateY(0);
     }
   }
 
