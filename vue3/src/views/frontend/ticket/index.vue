@@ -1,60 +1,62 @@
 <template>
   <div class="ticket-list-container">
-    <!-- 现代化页面头部 - 参考景点列表页面 -->
-    <div class="page-header">
-      <div class="header-content">
-        <h1 class="page-title">
-          <span class="title-icon">🎫</span>
-          精选门票预订
-        </h1>
-        <p class="page-subtitle">
-          探索各地热门景点，预订优惠门票，开启美好旅程
-        </p>
+    <!-- Hero顶部区域 - 参考景点列表 -->
+    <div class="hero-section">
+      <div class="hero-background">
+        <div class="hero-gradient"></div>
+      </div>
+      <div class="hero-content">
+        <div class="hero-glass-card">
+          <h1 class="hero-title">
+            <svg class="hero-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="5" width="20" height="14" rx="2"></rect>
+              <line x1="2" y1="10" x2="22" y2="10"></line>
+            </svg>
+            精选门票预订
+          </h1>
+          <p class="hero-subtitle">探索各地热门景点，预订优惠门票，开启美好旅程</p>
+        </div>
       </div>
     </div>
 
-    <!-- 现代化搜索区域 - 参考景点列表页面 -->
-    <div class="search-section">
+    <!-- 搜索和筛选区域 - 参考景点列表 -->
+    <div class="search-filter-section">
       <div class="section-container">
-        <div class="search-card">
+        <div class="search-card glass-card">
           <div class="search-header">
             <h3 class="search-title">
-              <el-icon><Search /></el-icon>
-              智能筛选
+              <svg class="title-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.35-4.35"></path>
+              </svg>
+              智能搜索
             </h3>
-            <p class="search-subtitle">快速找到心仪的门票</p>
           </div>
           <div class="search-form">
             <div class="search-inputs">
               <div class="search-input-group">
-                <el-input
-                  v-model="searchForm.ticketName"
-                  placeholder="搜索门票名称或景点..."
-                  clearable
-                  size="large"
-                  class="main-search-input"
-                >
+                <el-input v-model="searchForm.ticketName" placeholder="搜索门票名称或景点..." clearable size="large"
+                  class="main-search-input" @keyup.enter="searchTickets">
                   <template #prefix>
-                    <el-icon><Search /></el-icon>
+                    <el-icon>
+                      <Search />
+                    </el-icon>
                   </template>
                 </el-input>
               </div>
               <div class="search-actions">
-                <el-button
-                  type="primary"
-                  size="large"
-                  @click="searchTickets"
-                  class="search-btn"
-                >
-                  <el-icon><Search /></el-icon>
-                  搜索门票
+                <el-button type="primary" size="large" @click="searchTickets" class="search-btn">
+                  <el-icon>
+                    <Search />
+                  </el-icon>
+                  搜索
                 </el-button>
-                <el-button
-                  size="large"
-                  @click="resetSearch"
-                  class="reset-btn"
-                >
-                  <el-icon><Refresh /></el-icon>
+                <el-button size="large" @click="resetSearch" class="reset-btn">
+                  <el-icon>
+                    <Refresh />
+                  </el-icon>
                   重置
                 </el-button>
               </div>
@@ -62,15 +64,17 @@
 
             <!-- 高级筛选选项 -->
             <div class="advanced-filters">
+              <h3 class="filter-title">
+                <svg class="title-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                </svg>
+                高级筛选
+              </h3>
               <div class="filter-row">
                 <div class="filter-group">
                   <label class="filter-label">门票类型</label>
-                  <el-select
-                    v-model="searchForm.ticketType"
-                    placeholder="选择类型"
-                    clearable
-                    class="filter-select"
-                  >
+                  <el-select v-model="searchForm.ticketType" placeholder="选择类型" clearable class="filter-select">
                     <el-option label="成人票" value="成人票" />
                     <el-option label="儿童票" value="儿童票" />
                     <el-option label="学生票" value="学生票" />
@@ -79,22 +83,9 @@
                 </div>
                 <div class="filter-group">
                   <label class="filter-label">选择景点</label>
-                  <el-select
-                    v-model="searchForm.scenicId"
-                    placeholder="选择景点"
-                    clearable
-                    filterable
-                    remote
-                    :remote-method="fetchScenicOptions"
-                    :loading="scenicLoading"
-                    class="filter-select"
-                  >
-                    <el-option
-                      v-for="item in scenicOptions"
-                      :key="item.id"
-                      :label="item.name"
-                      :value="item.id"
-                    />
+                  <el-select v-model="searchForm.scenicId" placeholder="选择景点" clearable filterable remote
+                    :remote-method="fetchScenicOptions" :loading="scenicLoading" class="filter-select">
+                    <el-option v-for="item in scenicOptions" :key="item.id" :label="item.name" :value="item.id" />
                   </el-select>
                 </div>
               </div>
@@ -104,7 +95,7 @@
       </div>
     </div>
 
-    <!-- 现代化门票列表区域 - 参考景点列表页面 -->
+    <!-- 门票列表区域 -->
     <div class="ticket-list-section">
       <div class="section-container">
         <!-- 加载状态 -->
@@ -114,33 +105,29 @@
 
         <!-- 空状态 -->
         <div v-else-if="ticketList.length === 0" class="empty-state">
-          <div class="empty-icon"></div>
+          <svg class="empty-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="5" width="20" height="14" rx="2"></rect>
+            <line x1="2" y1="10" x2="22" y2="10"></line>
+          </svg>
           <h3 class="empty-title">暂无符合条件的门票</h3>
           <p class="empty-desc">试试调整搜索条件或浏览其他门票</p>
           <el-button type="primary" @click="resetSearch" class="empty-action">
-            <el-icon><Refresh /></el-icon>
             重新搜索
           </el-button>
         </div>
 
         <!-- 门票网格 -->
         <div v-else class="ticket-grid">
-          <div
-            v-for="ticket in ticketList"
-            :key="ticket.id"
-            class="ticket-card"
-            @click="goToBooking(ticket.id)"
-          >
+          <div v-for="(ticket, index) in ticketList" :key="ticket.id" class="ticket-card glass-card-ticket"
+            :class="`delay-${(index % 6 + 1) * 100}`" @click="goToBooking(ticket.id)">
             <div class="card-header">
               <div class="ticket-type-badge">{{ ticket.ticketType }}</div>
               <div class="card-actions">
-                <el-button
-                  type="primary"
-                  size="small"
-                  @click.stop="goToBooking(ticket.id)"
-                  class="quick-book-btn"
-                >
-                  <el-icon><Ticket /></el-icon>
+                <el-button type="primary" size="small" @click.stop="goToBooking(ticket.id)" class="quick-book-btn">
+                  <el-icon>
+                    <Ticket />
+                  </el-icon>
                 </el-button>
               </div>
             </div>
@@ -160,7 +147,9 @@
                   </template>
                 </div>
                 <div class="valid-period">
-                  <el-icon><Calendar /></el-icon>
+                  <el-icon>
+                    <Calendar />
+                  </el-icon>
                   <span>{{ ticket.validPeriod }}</span>
                 </div>
               </div>
@@ -170,15 +159,13 @@
               <div class="card-footer">
                 <div class="ticket-meta">
                   <div class="stock-info" v-if="ticket.stock">
-                    <el-icon><Goods /></el-icon>
+                    <el-icon>
+                      <Goods />
+                    </el-icon>
                     <span>余票 {{ ticket.stock }} 张</span>
                   </div>
                 </div>
-                <el-button
-                  type="primary"
-                  @click.stop="goToBooking(ticket.id)"
-                  class="booking-btn"
-                >
+                <el-button type="primary" @click.stop="goToBooking(ticket.id)" class="booking-btn">
                   立即预订
                 </el-button>
               </div>
@@ -186,17 +173,10 @@
           </div>
         </div>
 
-        <!-- 现代化分页 -->
+        <!-- 分页 -->
         <div class="pagination-wrapper" v-if="total > 0">
-          <el-pagination
-            background
-            layout="total, prev, pager, next"
-            :total="total"
-            :page-size="pageSize"
-            :current-page="currentPage"
-            @current-change="handleCurrentChange"
-            class="modern-pagination"
-          />
+          <el-pagination background layout="total, prev, pager, next, jumper" :total="total" :page-size="pageSize"
+            :current-page="currentPage" @current-change="handleCurrentChange" class="modern-pagination" />
         </div>
       </div>
     </div>
@@ -244,8 +224,8 @@ const fetchTickets = async () => {
     }, {
       showDefaultMsg: false,
       onSuccess: (res) => {
-        ticketList.value = res.records||[]
-        total.value = res.total||0
+        ticketList.value = res.records || []
+        total.value = res.total || 0
       }
     })
   } catch (error) {
@@ -261,7 +241,7 @@ const fetchScenicOptions = async (query) => {
     scenicOptions.value = []
     return
   }
-  
+
   scenicLoading.value = true
   try {
     await request.get('/scenic/page', {
@@ -316,96 +296,136 @@ onMounted(() => {
 <style lang="scss" scoped>
 .ticket-list-container {
   min-height: 100vh;
-  background: #f8fafc;
-  font-family: "思源黑体", "Source Han Sans", "Noto Sans CJK SC", sans-serif;
-  color: #333;
+  font-family: "PingFang SC", "Helvetica Neue", Helvetica, Arial, "Microsoft YaHei", sans-serif;
+  color: #1a202c;
+
+  // Hero区域样式
+  .hero-section {
+    position: relative;
+    height: 150px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .hero-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    max-width: 800px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .hero-glass-card {
+    border-radius: 30px;
+    padding: 0px 60px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    text-align: center;
+    width: 100%;
+    transition: all 0.4s ease;
+    animation: fadeInUp 0.8s ease;
+  }
+
+  @keyframes fadeInUp {
+    0% {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .hero-title {
+    font-size: 48px;
+    font-weight: 800;
+    margin: 0 0 16px;
+    color: #1a202c;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    letter-spacing: 1px;
+  }
+
+  .hero-icon {
+    width: 48px;
+    height: 48px;
+    color: #67b6f5;
+    flex-shrink: 0;
+  }
+
+  .hero-subtitle {
+    font-size: 18px;
+    margin: 0;
+    color: #5a6c7d;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+  }
 
   // 通用容器样式
   .section-container {
     max-width: 1300px;
     margin: 0 auto;
-    padding: 40px 20px;
+    padding: 20px 20px;
   }
 
-  // 页面头部
-  .page-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 40px;
-    padding: 40px 0 20px;
-    border-bottom: 1px solid #e2e8f0;
-  }
-
-  .header-content {
-    flex: 1;
-  }
-
-  .page-title {
-    font-size: 36px;
-    font-weight: 700;
-    margin: 0 0 8px;
-    color: #2d3748;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-
-    .title-icon {
-      font-size: 32px;
-    }
-  }
-
-  .page-subtitle {
-    font-size: 16px;
-    color: #64748b;
-    text-align: left;
-    margin: 0;
-  }
-
-  .header-stats {
-    display: flex;
-    gap: 24px;
-  }
-
-
-
-  // 搜索区域
-  .search-section {
-    background: white;
-    padding: 0;
-  }
-
+  // 搜索卡片
   .search-card {
-    background: white;
-    border-radius: 16px;
-    padding: 24px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    padding: 32px;
     margin-bottom: 30px;
-    border: 1px solid #e2e8f0;
+  }
+
+  .glass-card {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  }
+
+  .glass-card-ticket {
+    background: #fff;
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
   }
 
   .search-header {
-    margin-bottom: 20px;
+    margin-bottom: 24px;
   }
 
-  .search-title {
+  .search-title,
+  .filter-title {
     font-size: 20px;
     font-weight: 700;
-    color: #2d3748;
-    margin: 0;
+    color: #1a202c;
+    margin: 0 0 16px;
     display: flex;
     align-items: center;
-    gap: 8px;
-
-    .el-icon {
-      color: #667eea;
-    }
+    gap: 10px;
   }
 
-  .search-subtitle {
-    font-size: 14px;
-    color: #64748b;
-    margin: 4px 0 0;
+  .title-icon {
+    width: 24px;
+    height: 24px;
+    color: #67b6f5;
+    flex-shrink: 0;
   }
 
   .search-form {
@@ -424,18 +444,22 @@ onMounted(() => {
 
     .main-search-input {
       :deep(.el-input__wrapper) {
-        border-radius: 12px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        border: 2px solid #e2e8f0;
+        border-radius: 16px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        border: 2px solid rgba(103, 182, 245, 0.2);
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
         transition: all 0.3s ease;
 
         &:hover {
-          border-color: #667eea;
+          border-color: #67b6f5;
+          box-shadow: 0 6px 16px rgba(103, 182, 245, 0.15);
         }
 
         &.is-focus {
-          border-color: #667eea;
-          box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+          border-color: #67b6f5;
+          box-shadow: 0 6px 20px rgba(103, 182, 245, 0.25);
         }
       }
     }
@@ -446,42 +470,51 @@ onMounted(() => {
     }
 
     .search-btn {
-      background: linear-gradient(45deg, #667eea, #764ba2);
+      background: linear-gradient(135deg, #67b6f5 0%, #5aa9e6 100%);
       border: none;
-      border-radius: 12px;
+      border-radius: 16px;
       font-weight: 600;
-      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+      box-shadow: 0 6px 20px rgba(103, 182, 245, 0.3);
       transition: all 0.3s ease;
+      color: white;
 
       &:hover {
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        box-shadow: 0 8px 25px rgba(103, 182, 245, 0.4);
+        background: linear-gradient(135deg, #5aa9e6 0%, #4a99d6 100%);
       }
     }
 
     .reset-btn {
-      border-radius: 12px;
-      border: 2px solid #e2e8f0;
-      color: #64748b;
-      background: white;
+      border-radius: 16px;
+      border: 2px solid rgba(103, 182, 245, 0.3);
+      color: #67b6f5;
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      font-weight: 600;
 
       &:hover {
-        border-color: #667eea;
-        color: #667eea;
-        background: #f8fafc;
+        border-color: #67b6f5;
+        background: rgba(103, 182, 245, 0.1);
+        transform: translateY(-2px);
       }
     }
   }
 
   // 高级筛选
   .advanced-filters {
-    margin-top: 20px;
+    margin-top: 32px;
+    padding-top: 32px;
+    border-top: 1px solid rgba(103, 182, 245, 0.2);
   }
 
   .filter-row {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 16px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-top: 16px;
+    align-items: start;
   }
 
   .filter-group {
@@ -492,31 +525,36 @@ onMounted(() => {
   .filter-label {
     font-size: 14px;
     font-weight: 600;
-    color: #2d3748;
+    color: #1a202c;
     margin-bottom: 8px;
   }
 
   .filter-select {
+    width: 100%;
+
     :deep(.el-input__wrapper) {
-      border-radius: 8px;
-      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      border: 2px solid rgba(103, 182, 245, 0.2);
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
       transition: all 0.3s ease;
 
       &:hover {
-        border-color: #667eea;
+        border-color: #67b6f5;
+        box-shadow: 0 4px 12px rgba(103, 182, 245, 0.15);
       }
 
       &.is-focus {
-        border-color: #667eea;
+        border-color: #67b6f5;
+        box-shadow: 0 6px 16px rgba(103, 182, 245, 0.25);
       }
     }
   }
 
   // 门票列表区域
   .ticket-list-section {
-    background: white;
-    margin: 0;
-    padding-top: 20px;
+    padding: 20px 0 60px;
   }
 
   // 加载状态
@@ -530,55 +568,69 @@ onMounted(() => {
     padding: 80px 20px;
 
     .empty-icon {
-      font-size: 64px;
-      margin-bottom: 20px;
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 24px;
+      color: #cbd5e0;
     }
 
     .empty-title {
       font-size: 24px;
       font-weight: 600;
       color: #2d3748;
-      margin: 0 0 8px;
+      margin: 0 0 12px;
     }
 
     .empty-desc {
       font-size: 16px;
-      color: #64748b;
-      margin: 0 0 24px;
+      color: #718096;
+      margin: 0 0 32px;
     }
 
     .empty-action {
-      background: linear-gradient(45deg, #667eea, #764ba2);
+      background: linear-gradient(135deg, #67b6f5 0%, #5aa9e6 100%);
       border: none;
-      border-radius: 20px;
-      padding: 12px 24px;
+      border-radius: 24px;
+      padding: 12px 32px;
       font-weight: 600;
+      box-shadow: 0 6px 20px rgba(103, 182, 245, 0.3);
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(103, 182, 245, 0.4);
+      }
     }
   }
 
-  // 门票网格布局 - 4卡片一行设计
+  // 门票网格布局
   .ticket-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 30px;
     margin-bottom: 40px;
   }
 
   .ticket-card {
-    border-radius: 16px;
+    border-radius: 20px;
     overflow: hidden;
-    background: #fff;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    transition: all 0.4s ease;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
-    position: relative;
     height: 100%;
     display: flex;
     flex-direction: column;
+    opacity: 1;
+    transform: translateY(0);
+    animation: fadeInUp 0.6s ease both;
+
+    @for $i from 1 through 12 {
+      &.delay-#{$i * 100} {
+        animation-delay: #{$i * 0.1}s;
+      }
+    }
 
     &:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+      transform: translateY(-12px);
+      box-shadow: 0 20px 50px rgba(103, 182, 245, 0.25);
     }
   }
 
@@ -592,13 +644,15 @@ onMounted(() => {
   }
 
   .ticket-type-badge {
-    padding: 6px 12px;
-    border-radius: 12px;
-    font-size: 12px;
-    font-weight: 600;
-    background: linear-gradient(45deg, #667eea, #764ba2);
-    color: white;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+    color: #1a202c;
     backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
 
   .card-actions {
@@ -607,14 +661,14 @@ onMounted(() => {
       width: 36px;
       height: 36px;
       padding: 0;
-      background: linear-gradient(45deg, #667eea, #764ba2);
+      background: linear-gradient(135deg, #67b6f5 0%, #5aa9e6 100%);
       border: none;
-      box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+      box-shadow: 0 4px 12px rgba(103, 182, 245, 0.3);
       transition: all 0.3s ease;
 
       &:hover {
         transform: scale(1.1);
-        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.5);
+        box-shadow: 0 6px 16px rgba(103, 182, 245, 0.4);
       }
     }
   }
@@ -628,14 +682,14 @@ onMounted(() => {
 
   .ticket-name {
     margin: 0 0 16px;
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 700;
-    color: #2d3748;
+    color: #1a202c;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    line-height: 1.3;
+    line-height: 1.4;
   }
 
   .ticket-price-section {
@@ -680,22 +734,22 @@ onMounted(() => {
     display: flex;
     align-items: center;
     font-size: 12px;
-    color: #64748b;
+    color: #5a6c7d;
     gap: 4px;
 
     .el-icon {
-      color: #667eea;
+      color: #67b6f5;
     }
   }
 
   .ticket-description {
     font-size: 14px;
-    color: #64748b;
+    color: #718096;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    line-height: 1.5;
+    line-height: 1.6;
     margin-bottom: 16px;
   }
 
@@ -711,19 +765,20 @@ onMounted(() => {
     .stock-info {
       display: flex;
       align-items: center;
-      font-size: 12px;
-      color: #64748b;
+      font-size: 13px;
+      color: #5a6c7d;
       gap: 4px;
+      font-weight: 500;
 
       .el-icon {
-        color: #667eea;
+        color: #67b6f5;
       }
     }
   }
 
   .booking-btn {
     border-radius: 20px;
-    background: linear-gradient(45deg, #667eea, #764ba2);
+    background: linear-gradient(135deg, #67b6f5 0%, #5aa9e6 100%);
     border: none;
     font-weight: 600;
     padding: 8px 16px;
@@ -731,7 +786,7 @@ onMounted(() => {
 
     &:hover {
       transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+      box-shadow: 0 6px 16px rgba(103, 182, 245, 0.3);
     }
   }
 
@@ -745,58 +800,82 @@ onMounted(() => {
   .modern-pagination {
     :deep(.el-pagination) {
       .el-pager li {
-        border-radius: 8px;
-        margin: 0 4px;
+        border-radius: 12px;
+        margin: 0 6px;
         transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 2px solid transparent;
 
         &:hover {
-          background: #667eea;
+          background: linear-gradient(135deg, #67b6f5 0%, #5aa9e6 100%);
           color: white;
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(103, 182, 245, 0.3);
         }
 
         &.is-active {
-          background: linear-gradient(45deg, #667eea, #764ba2);
+          background: linear-gradient(135deg, #67b6f5 0%, #5aa9e6 100%);
           color: white;
+          border-color: transparent;
+          box-shadow: 0 4px 12px rgba(103, 182, 245, 0.3);
         }
       }
 
       .btn-prev,
       .btn-next {
-        border-radius: 8px;
+        border-radius: 12px;
         transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
 
         &:hover {
-          background: #667eea;
+          background: linear-gradient(135deg, #67b6f5 0%, #5aa9e6 100%);
           color: white;
+          transform: translateY(-2px);
         }
       }
     }
   }
 
-
-
-  .hover-lift {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-
-  // 延迟动画类
-  .delay-100 { animation-delay: 0.1s; }
-  .delay-200 { animation-delay: 0.2s; }
-  .delay-300 { animation-delay: 0.3s; }
-  .delay-400 { animation-delay: 0.4s; }
-  .delay-500 { animation-delay: 0.5s; }
-  .delay-600 { animation-delay: 0.6s; }
-
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(30px);
+  // 响应式样式
+  @media (max-width: 992px) {
+    .ticket-grid {
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     }
-    to {
-      opacity: 1;
-      transform: translateY(0);
+
+    .section-container {
+      padding: 20px 16px;
     }
   }
 
+  @media (max-width: 768px) {
+    .hero-section {
+      height: 320px;
+    }
+
+    .hero-glass-card {
+      padding: 40px 30px;
+    }
+
+    .hero-title {
+      font-size: 32px;
+    }
+
+    .hero-subtitle {
+      font-size: 16px;
+    }
+
+    .search-form .search-inputs {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .ticket-grid {
+      grid-template-columns: 1fr;
+    }
+  }
 }
 </style>
