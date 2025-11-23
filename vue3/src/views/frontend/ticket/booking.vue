@@ -1,10 +1,24 @@
 <template>
   <div class="booking-container">
-    <!-- 现代化页面头部 -->
-    <div class="page-header">
-      <div class="header-content">
+    <!-- Hero顶部区域 -->
+    <div class="page-hero">
+      <div class="hero-background">
+        <div class="hero-gradient"></div>
+      </div>
+      <div class="hero-content">
+        <div class="breadcrumb">
+          <el-breadcrumb separator="/">
+            <el-breadcrumb-item @click="$router.push('/')">首页</el-breadcrumb-item>
+            <el-breadcrumb-item @click="$router.push('/tickets')">门票列表</el-breadcrumb-item>
+            <el-breadcrumb-item>门票预订</el-breadcrumb-item>
+          </el-breadcrumb>
+        </div>
         <h1 class="page-title">
-          <span class="title-icon">🎫</span>
+          <svg class="title-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="5" width="20" height="14" rx="2"></rect>
+            <line x1="2" y1="10" x2="22" y2="10"></line>
+          </svg>
           门票预订
         </h1>
         <p class="page-subtitle">
@@ -26,13 +40,15 @@
         <div class="content-grid">
           <!-- 左侧门票信息 -->
           <div class="ticket-info-section">
-            <div class="info-card ticket-info-card" v-if="ticket">
-              <div class="card-header">
-                <h3 class="card-title">
-                  <el-icon><Ticket /></el-icon>
-                  门票信息
-                </h3>
-              </div>
+            <div class="info-card ticket-info-card glass-card" v-if="ticket">
+              <h3 class="card-title">
+                <svg class="title-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="5" width="20" height="14" rx="2"></rect>
+                  <line x1="2" y1="10" x2="22" y2="10"></line>
+                </svg>
+                门票信息
+              </h3>
 
               <div class="ticket-info">
                 <div class="ticket-header">
@@ -58,7 +74,9 @@
                 <div class="ticket-details">
                   <div class="detail-item">
                     <div class="detail-label">
-                      <el-icon><Calendar /></el-icon>
+                      <el-icon>
+                        <Calendar />
+                      </el-icon>
                       有效期
                     </div>
                     <div class="detail-value">{{ ticket.validPeriod }}</div>
@@ -66,7 +84,9 @@
 
                   <div class="detail-item">
                     <div class="detail-label">
-                      <el-icon><Goods /></el-icon>
+                      <el-icon>
+                        <Goods />
+                      </el-icon>
                       库存
                     </div>
                     <div class="detail-value stock-value">{{ ticket.stock }} 张</div>
@@ -83,84 +103,60 @@
 
           <!-- 右侧预订表单 -->
           <div class="booking-form-section">
-            <div class="info-card booking-form-card">
-              <div class="card-header">
-                <h3 class="card-title">
-                  <el-icon><Edit /></el-icon>
-                  预订信息
-                </h3>
-              </div>
+            <div class="info-card booking-form-card glass-card">
+              <h3 class="card-title">
+                <svg class="title-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                </svg>
+                预订信息
+              </h3>
 
-              <el-form
-                :model="bookingForm"
-                :rules="rules"
-                ref="bookingFormRef"
-                label-position="top"
-                class="booking-form"
-              >
+              <el-form :model="bookingForm" :rules="rules" ref="bookingFormRef" label-position="top"
+                class="booking-form">
                 <div class="form-row">
                   <el-form-item label="游玩日期" prop="visitDate" class="form-item">
-                    <el-date-picker
-                      v-model="bookingForm.visitDate"
-                      type="date"
-                      placeholder="选择游玩日期"
-                      :disabled-date="disabledDate"
-                      size="large"
-                      class="form-input"
-                    />
+                    <el-date-picker v-model="bookingForm.visitDate" type="date" placeholder="选择游玩日期"
+                      :disabled-date="disabledDate" size="large" class="form-input" />
                     <div class="form-tip">请选择您计划游玩的日期</div>
                   </el-form-item>
 
                   <el-form-item label="购买数量" prop="quantity" class="form-item">
-                    <el-input-number
-                      v-model="bookingForm.quantity"
-                      :min="1"
-                      :max="maxQuantity"
-                      @change="calculateTotal"
-                      size="large"
-                      class="form-input"
-                    />
+                    <el-input-number v-model="bookingForm.quantity" :min="1" :max="maxQuantity" @change="calculateTotal"
+                      size="large" class="form-input" />
                     <div class="form-tip">最多可购买 {{ maxQuantity }} 张</div>
                   </el-form-item>
                 </div>
 
                 <div class="form-row">
                   <el-form-item label="游客姓名" prop="visitorName" class="form-item">
-                    <el-input
-                      v-model="bookingForm.visitorName"
-                      placeholder="请输入游客姓名"
-                      size="large"
-                      class="form-input"
-                    >
+                    <el-input v-model="bookingForm.visitorName" placeholder="请输入游客姓名" size="large" class="form-input">
                       <template #prefix>
-                        <el-icon><User /></el-icon>
+                        <el-icon>
+                          <User />
+                        </el-icon>
                       </template>
                     </el-input>
                   </el-form-item>
 
                   <el-form-item label="联系电话" prop="visitorPhone" class="form-item">
-                    <el-input
-                      v-model="bookingForm.visitorPhone"
-                      placeholder="请输入联系电话"
-                      size="large"
-                      class="form-input"
-                    >
+                    <el-input v-model="bookingForm.visitorPhone" placeholder="请输入联系电话" size="large" class="form-input">
                       <template #prefix>
-                        <el-icon><Phone /></el-icon>
+                        <el-icon>
+                          <Phone />
+                        </el-icon>
                       </template>
                     </el-input>
                   </el-form-item>
                 </div>
 
                 <el-form-item label="身份证号" prop="idCard" class="form-item full-width">
-                  <el-input
-                    v-model="bookingForm.idCard"
-                    placeholder="请输入身份证号（选填）"
-                    size="large"
-                    class="form-input"
-                  >
+                  <el-input v-model="bookingForm.idCard" placeholder="请输入身份证号（选填）" size="large" class="form-input">
                     <template #prefix>
-                      <el-icon><CreditCard /></el-icon>
+                      <el-icon>
+                        <CreditCard />
+                      </el-icon>
                     </template>
                   </el-input>
                   <div class="form-tip">部分景点需要提供身份证信息</div>
@@ -174,22 +170,16 @@
                 </div>
 
                 <div class="form-actions">
-                  <el-button
-                    size="large"
-                    @click="goBack"
-                    class="back-btn"
-                  >
-                    <el-icon><Back /></el-icon>
+                  <el-button size="large" @click="goBack" class="back-btn">
+                    <el-icon>
+                      <Back />
+                    </el-icon>
                     返回
                   </el-button>
-                  <el-button
-                    type="primary"
-                    size="large"
-                    @click="submitBooking"
-                    :disabled="loading"
-                    class="submit-btn"
-                  >
-                    <el-icon><Check /></el-icon>
+                  <el-button type="primary" size="large" @click="submitBooking" :disabled="loading" class="submit-btn">
+                    <el-icon>
+                      <Check />
+                    </el-icon>
                     提交订单
                   </el-button>
                 </div>
@@ -201,21 +191,17 @@
     </div>
 
     <!-- 支付对话框 -->
-    <el-dialog
-      title="订单支付"
-      v-model="payDialogVisible"
-      width="500px"
-      :close-on-click-modal="false"
-      
-      class="payment-dialog"
-    >
+    <el-dialog title="订单支付" v-model="payDialogVisible" width="500px" :close-on-click-modal="false"
+      class="payment-dialog">
       <div class="pay-dialog-content">
         <div class="order-info">
           <div class="order-header">
-            <el-icon><Ticket /></el-icon>
+            <el-icon>
+              <Ticket />
+            </el-icon>
             <span>订单详情</span>
           </div>
-          
+
           <div class="order-details">
             <div class="order-item">
               <span class="order-label">订单号:</span>
@@ -239,51 +225,63 @@
             </div>
           </div>
         </div>
-        
+
         <div class="payment-methods">
           <div class="payment-header">
-            <el-icon><Wallet /></el-icon>
+            <el-icon>
+              <Wallet />
+            </el-icon>
             <span>支付方式</span>
           </div>
-          
+
           <el-radio-group v-model="paymentMethod" class="payment-options">
             <el-radio label="WECHAT">
               <div class="payment-option">
-                <el-icon class="payment-icon wechat-icon"><Money /></el-icon>
+                <el-icon class="payment-icon wechat-icon">
+                  <Money />
+                </el-icon>
                 <span>微信支付</span>
               </div>
             </el-radio>
             <el-radio label="ALIPAY">
               <div class="payment-option">
-                <el-icon class="payment-icon alipay-icon"><Money /></el-icon>
+                <el-icon class="payment-icon alipay-icon">
+                  <Money />
+                </el-icon>
                 <span>支付宝</span>
               </div>
             </el-radio>
             <el-radio label="BANK_CARD">
               <div class="payment-option">
-                <el-icon class="payment-icon bank-icon"><CreditCard /></el-icon>
+                <el-icon class="payment-icon bank-icon">
+                  <CreditCard />
+                </el-icon>
                 <span>银行卡</span>
               </div>
             </el-radio>
           </el-radio-group>
         </div>
-        
+
         <div class="payment-info" v-if="paymentMethod">
           <template v-if="paymentMethod === 'ALIPAY'">
             <div class="payment-tip">
-              <el-icon><InfoFilled /></el-icon>
+              <el-icon>
+                <InfoFilled />
+              </el-icon>
               <span>点击下方"去支付"按钮，跳转到支付宝支付页面</span>
             </div>
           </template>
           <template v-else>
             <div class="qrcode-tip">
-              <el-icon><InfoFilled /></el-icon>
+              <el-icon>
+                <InfoFilled />
+              </el-icon>
               <span>请选择支付方式完成支付</span>
             </div>
           </template>
         </div>
       </div>
-      
+
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="cancelOrder" :icon="Close">取消订单</el-button>
@@ -305,21 +303,21 @@ import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import request from '@/utils/request'
 import { useUserStore } from '@/store/user'
-import { 
-  Ticket, 
-  Calendar, 
-  Goods, 
-  Edit, 
-  User, 
-  Phone, 
-  CreditCard, 
-  Back, 
-  Check, 
-  Close, 
-  Right, 
-  Wallet, 
-  Money, 
-  InfoFilled 
+import {
+  Ticket,
+  Calendar,
+  Goods,
+  Edit,
+  User,
+  Phone,
+  CreditCard,
+  Back,
+  Check,
+  Close,
+  Right,
+  Wallet,
+  Money,
+  InfoFilled
 } from '@element-plus/icons-vue'
 
 const route = useRoute()
@@ -398,18 +396,18 @@ const fetchTicketDetail = async () => {
       onSuccess: (res) => {
         ticket.value = res
         bookingForm.ticketId = res.id
-        
+
         // 默认选择当前日期
         if (!bookingForm.visitDate) {
           bookingForm.visitDate = new Date()
         }
-        
+
         // 如果已登录，预填用户信息
         if (userStore.isLoggedIn && userStore.userInfo) {
           bookingForm.visitorName = userStore.userInfo.name || userStore.userInfo.nickname || ''
           bookingForm.visitorPhone = userStore.userInfo.phone || ''
         }
-        
+
         calculateTotal()
       }
     })
@@ -534,18 +532,16 @@ onMounted(() => {
 <style lang="scss" scoped>
 .booking-container {
   min-height: 100vh;
-  background: #f8fafc;
-  font-family: "思源黑体", "Source Han Sans", "Noto Sans CJK SC", sans-serif;
-  color: #333;
+  font-family: "PingFang SC", "Helvetica Neue", Helvetica, Arial, "Microsoft YaHei", sans-serif;
+  color: #1a202c;
 
-  // 页面头部
-  .page-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 60px 0 40px;
-    text-align: center;
+  // Hero顶部区域
+  .page-hero {
     position: relative;
+    background: linear-gradient(135deg, #67b6f5 0%, #5aa9e6 100%);
+    padding: 40px 0 30px;
     overflow: hidden;
+    border-radius: 24px;
 
     &::before {
       content: '';
@@ -557,36 +553,60 @@ onMounted(() => {
       background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.1)"/><circle cx="20" cy="60" r="0.5" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="0.5" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
       opacity: 0.3;
     }
+  }
 
-    .header-content {
-      position: relative;
-      z-index: 1;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 20px;
-    }
+  .hero-content {
+    position: relative;
+    z-index: 10;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    color: white;
+  }
 
-    .page-title {
-      font-size: 36px;
-      font-weight: 700;
-      margin: 0 0 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
+  .breadcrumb {
+    margin-bottom: 20px;
 
-      .title-icon {
-        font-size: 32px;
+    :deep(.el-breadcrumb__item) {
+      .el-breadcrumb__inner {
+        color: rgba(255, 255, 255, 0.8);
+        cursor: pointer;
+
+        &:hover {
+          color: white;
+        }
+      }
+
+      &:last-child .el-breadcrumb__inner {
+        color: white;
       }
     }
 
-    .page-subtitle {
-      font-size: 16px;
-      opacity: 0.9;
-      margin: 0;
-      max-width: 600px;
-      margin: 0 auto;
+    :deep(.el-breadcrumb__separator) {
+      color: rgba(255, 255, 255, 0.6);
     }
+  }
+
+  .page-title {
+    font-size: 36px;
+    font-weight: 800;
+    margin: 0 0 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+
+  .title-icon {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+  }
+
+  .page-subtitle {
+    font-size: 16px;
+    opacity: 0.9;
+    margin: 0;
   }
 
   // 加载状态
@@ -603,60 +623,59 @@ onMounted(() => {
   // 预订内容区域
   .booking-content {
     padding: 40px 0;
+    background: transparent;
+  }
 
-    .section-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 20px;
-    }
+  .section-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
 
-    .content-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 40px;
-      align-items: start;
-    }
+  .content-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: start;
   }
 
   // 信息卡片通用样式
   .info-card {
-    background: white;
-    border-radius: 16px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    overflow: hidden;
-    border: 1px solid #e2e8f0;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.5);
     transition: all 0.3s ease;
 
     &:hover {
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(103, 182, 245, 0.2);
     }
+  }
 
-    .card-header {
-      padding: 24px 24px 0;
-      border-bottom: 1px solid #f1f5f9;
-      margin-bottom: 24px;
+  .glass-card {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(25px) saturate(180%);
+    -webkit-backdrop-filter: blur(25px) saturate(180%);
+  }
 
-      .card-title {
-        font-size: 20px;
-        font-weight: 700;
-        color: #2d3748;
-        margin: 0;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-
-        .el-icon {
-          color: #667eea;
-          font-size: 18px;
-        }
-      }
-    }
+  .card-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1a202c;
+    margin: 0 0 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
   }
 
   // 门票信息卡片
   .ticket-info-card {
     .ticket-info {
-      padding: 0 24px 24px;
+      padding: 0;
     }
 
     .ticket-header {
@@ -674,14 +693,15 @@ onMounted(() => {
       }
 
       .ticket-type-badge {
-        padding: 6px 12px;
-        border-radius: 12px;
+        padding: 6px 14px;
+        border-radius: 16px;
         font-size: 12px;
-        font-weight: 600;
-        background: linear-gradient(45deg, #667eea, #764ba2);
+        font-weight: 700;
+        background: linear-gradient(135deg, #67b6f5 0%, #5aa9e6 100%);
         color: white;
         margin-left: 16px;
         flex-shrink: 0;
+        box-shadow: 0 4px 12px rgba(103, 182, 245, 0.3);
       }
     }
 
@@ -771,18 +791,18 @@ onMounted(() => {
       .description-header {
         font-size: 16px;
         font-weight: 600;
-        color: #2d3748;
+        color: #1a202c;
         margin-bottom: 12px;
       }
 
       .description-content {
         font-size: 14px;
-        color: #64748b;
+        color: #5a6c7d;
         line-height: 1.6;
-        background: #f8fafc;
+        background: linear-gradient(135deg, rgba(103, 182, 245, 0.05) 0%, rgba(255, 193, 124, 0.05) 100%);
         padding: 16px;
-        border-radius: 8px;
-        border-left: 4px solid #667eea;
+        border-radius: 12px;
+        border-left: 4px solid #67b6f5;
       }
     }
   }
@@ -790,7 +810,7 @@ onMounted(() => {
   // 预订表单卡片
   .booking-form-card {
     .booking-form {
-      padding: 0 24px 24px;
+      padding: 0;
 
       .form-row {
         display: grid;
@@ -813,18 +833,22 @@ onMounted(() => {
 
         .form-input {
           :deep(.el-input__wrapper) {
-            border-radius: 8px;
-            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            border: 2px solid rgba(103, 182, 245, 0.2);
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             transition: all 0.3s ease;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 
             &:hover {
-              border-color: #667eea;
+              border-color: #67b6f5;
+              box-shadow: 0 4px 12px rgba(103, 182, 245, 0.15);
             }
 
             &.is-focus {
-              border-color: #667eea;
-              box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+              border-color: #67b6f5;
+              box-shadow: 0 6px 16px rgba(103, 182, 245, 0.25);
             }
           }
 
@@ -836,17 +860,21 @@ onMounted(() => {
             width: 100%;
 
             .el-input__wrapper {
-              border-radius: 8px;
-              border: 2px solid #e2e8f0;
+              border-radius: 12px;
+              border: 2px solid rgba(103, 182, 245, 0.2);
+              background: rgba(255, 255, 255, 0.9);
+              backdrop-filter: blur(10px);
+              -webkit-backdrop-filter: blur(10px);
               transition: all 0.3s ease;
 
               &:hover {
-                border-color: #667eea;
+                border-color: #67b6f5;
+                box-shadow: 0 4px 12px rgba(103, 182, 245, 0.15);
               }
 
               &.is-focus {
-                border-color: #667eea;
-                box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+                border-color: #67b6f5;
+                box-shadow: 0 6px 16px rgba(103, 182, 245, 0.25);
               }
             }
           }
@@ -896,39 +924,40 @@ onMounted(() => {
 
         .back-btn {
           border-radius: 12px;
-          border: 2px solid #e2e8f0;
-          color: #64748b;
-          background: white;
+          border: 2px solid rgba(103, 182, 245, 0.3);
+          color: #67b6f5;
+          background: rgba(255, 255, 255, 0.9);
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
           font-weight: 600;
           padding: 12px 24px;
           transition: all 0.3s ease;
 
           &:hover {
-            border-color: #667eea;
-            color: #667eea;
-            background: #f8fafc;
-            transform: translateY(-1px);
+            border-color: #67b6f5;
+            background: rgba(103, 182, 245, 0.1);
+            transform: translateY(-2px);
           }
         }
 
         .submit-btn {
-          background: linear-gradient(45deg, #667eea, #764ba2);
+          background: linear-gradient(135deg, #67b6f5 0%, #5aa9e6 100%);
           border: none;
           border-radius: 12px;
           font-weight: 600;
           padding: 12px 32px;
-          box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+          box-shadow: 0 6px 20px rgba(103, 182, 245, 0.3);
           transition: all 0.3s ease;
 
           &:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+            box-shadow: 0 8px 25px rgba(103, 182, 245, 0.4);
           }
 
           &:disabled {
             opacity: 0.6;
             transform: none;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+            box-shadow: 0 4px 15px rgba(103, 182, 245, 0.2);
           }
         }
       }
@@ -938,7 +967,7 @@ onMounted(() => {
   // 支付对话框样式
   :deep(.payment-dialog) {
     .el-dialog__header {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #67b6f5 0%, #5aa9e6 100%);
       color: white;
       padding: 20px 24px;
       margin: 0;
@@ -980,11 +1009,11 @@ onMounted(() => {
         gap: 8px;
         font-size: 16px;
         font-weight: 600;
-        color: #2d3748;
+        color: #1a202c;
         margin-bottom: 16px;
 
         .el-icon {
-          color: #667eea;
+          color: #67b6f5;
         }
       }
 
@@ -1045,11 +1074,11 @@ onMounted(() => {
         gap: 8px;
         font-size: 16px;
         font-weight: 600;
-        color: #2d3748;
+        color: #1a202c;
         margin-bottom: 16px;
 
         .el-icon {
-          color: #667eea;
+          color: #67b6f5;
         }
       }
 
@@ -1061,18 +1090,23 @@ onMounted(() => {
         :deep(.el-radio) {
           margin: 0;
           padding: 12px;
-          border: 2px solid #e2e8f0;
-          border-radius: 8px;
+          border: 2px solid rgba(103, 182, 245, 0.2);
+          border-radius: 12px;
+          background: rgba(255, 255, 255, 0.9);
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
           transition: all 0.3s ease;
 
           &:hover {
-            border-color: #667eea;
-            background: #f8fafc;
+            border-color: #67b6f5;
+            background: rgba(103, 182, 245, 0.05);
+            box-shadow: 0 4px 12px rgba(103, 182, 245, 0.1);
           }
 
           &.is-checked {
-            border-color: #667eea;
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border-color: #67b6f5;
+            background: linear-gradient(135deg, rgba(103, 182, 245, 0.1) 0%, rgba(90, 169, 230, 0.1) 100%);
+            box-shadow: 0 4px 12px rgba(103, 182, 245, 0.2);
           }
 
           .el-radio__input {
@@ -1098,7 +1132,7 @@ onMounted(() => {
             }
 
             &.bank-icon {
-              color: #667eea;
+              color: #67b6f5;
             }
           }
         }
@@ -1119,7 +1153,7 @@ onMounted(() => {
         margin-bottom: 16px;
 
         .el-icon {
-          color: #667eea;
+          color: #67b6f5;
         }
       }
 
@@ -1140,6 +1174,7 @@ onMounted(() => {
       opacity: 0;
       transform: translateY(30px);
     }
+
     to {
       opacity: 1;
       transform: translateY(0);
@@ -1153,8 +1188,8 @@ onMounted(() => {
       gap: 30px;
     }
 
-    .page-header {
-      padding: 40px 0 30px;
+    .page-hero {
+      padding: 30px 0 20px;
 
       .page-title {
         font-size: 28px;
@@ -1171,8 +1206,8 @@ onMounted(() => {
       }
     }
 
-    .page-header {
-      padding: 30px 0 20px;
+    .page-hero {
+      padding: 20px 0 15px;
 
       .page-title {
         font-size: 24px;
