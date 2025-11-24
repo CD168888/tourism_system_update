@@ -11,6 +11,7 @@ This is a full-stack Tourism Information System (旅游信息系统) built with:
 - **Authentication**: JWT-based authentication
 - **Caching**: Redis with custom AOP-based caching
 - **Payment**: Alipay sandbox integration
+- **AI**: Spring AI Alibaba with DashScope (通义千问) for intelligent chat
 
 ## Architecture
 
@@ -22,7 +23,7 @@ The backend follows a standard layered architecture:
 - **Service Layer** (`org.example.springboot.service`): Business logic implementation
 - **Mapper Layer** (`org.example.springboot.mapper`): MyBatis-Plus data access interfaces
 - **Entity Layer** (`org.example.springboot.entity`): Database entity models with Lombok annotations
-- **Config Layer** (`org.example.springboot.config`): Configuration classes for security, Redis, Alipay, etc.
+- **Config Layer** (`org.example.springboot.config`): Configuration classes for security, Redis, Alipay, AI, etc.
 - **Exception Layer** (`org.example.springboot.exception`): Custom exceptions and global exception handler
 - **DTO Layer** (`org.example.springboot.DTO`): Data transfer objects
 - **Util Layer** (`org.example.springboot.util`): Utility classes for JWT, Redis, file operations, etc.
@@ -62,6 +63,15 @@ The frontend is organized by feature:
    - CSRF disabled for API usage
    - Most endpoints currently permit all (development mode)
 
+5. **AI Chat Integration**:
+   - Spring AI Alibaba with DashScope API (通义千问)
+   - SSE (Server-Sent Events) for streaming chat responses
+   - ChatMemory for conversation context retention
+   - Supports multi-user isolation and session management
+   - Configuration in `AiConfig.java`
+   - Controller: `AiChatController.java`
+   - Test page: `/ai-test.html`
+
 ## Common Development Commands
 
 ### Backend (Spring Boot)
@@ -90,6 +100,7 @@ mvn package
 - Database: `tourism_system_update` on localhost:3306
 - Redis: localhost:6379
 - API documentation: http://localhost:1236/doc.html (Knife4j/Swagger)
+- AI Chat test page: http://localhost:1236/ai-test.html
 
 ### Frontend (Vue 3)
 
@@ -153,6 +164,7 @@ npm run lint
 
 **Environment Variables**:
 - `VUE_APP_BASE_API`: Backend API base URL (defaults to `/api` in request.js)
+- `AI_DASHSCOPE_API_KEY`: DashScope API key for AI chat (backend)
 
 ## Domain Model
 
@@ -170,6 +182,49 @@ Core entities in the system:
 - **Accommodation**: Lodging information
 - **AccommodationReview**: Reviews for accommodations
 - **Carousel**: Homepage carousel images
+
+## AI Chat Features
+
+The system integrates Spring AI Alibaba for intelligent chat functionality:
+
+### Setup
+
+1. **Get DashScope API Key**: 
+   - Visit https://bailian.console.aliyun.com/
+   - Create an API key in the console
+
+2. **Set Environment Variable**:
+   ```bash
+   # Windows
+   set AI_DASHSCOPE_API_KEY=sk-your-api-key
+   
+   # Linux/Mac
+   export AI_DASHSCOPE_API_KEY=sk-your-api-key
+   ```
+
+3. **Or configure directly in application.properties** (not recommended for production):
+   ```properties
+   spring.ai.dashscope.api-key=sk-your-actual-api-key
+   ```
+
+### API Endpoints
+
+- **Stream Chat** (SSE): `GET /api/chat/ai/generateStream?message=xxx&sessionId=xxx&userId=xxx`
+- **Sync Chat**: `GET /api/chat/ai/generate?message=xxx&sessionId=xxx&userId=xxx`
+- **Cancel Stream**: `POST /api/chat/ai/cancelStream?sessionId=xxx&userId=xxx`
+- **Clear Memory**: `DELETE /api/chat/ai/clearMemory?sessionId=xxx&userId=xxx`
+
+### Quick Test
+
+1. Start the backend with API key configured
+2. Open browser: http://localhost:1236/ai-test.html
+3. Start chatting with the AI assistant!
+
+### Frontend Integration
+
+See `vue3/src/views/frontend/ai/AiChat.vue` for a complete Vue 3 component example.
+
+For detailed documentation, see `springboot/AI_INTEGRATION_GUIDE.md`.
 
 ## Development Notes
 
