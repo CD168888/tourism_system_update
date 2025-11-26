@@ -58,6 +58,41 @@ public class AiChatController {
             throw new RuntimeException("未登录或登录已过期");
         }
     }
+        
+    /**
+     * 生成会话标题（异步）
+     * 根据用户问题和AI回复，生成一个5-6字的简短标题
+     */
+    private void generateSessionTitle(Long sessionId, String userMessage, String aiResponse) {
+        // 异步执行，不阻塞主流程
+        new Thread(() -> {
+            try {
+                String prompt = String.format(
+                    "请根据以下对话内容，生成一个5-6个字的简短标题，直接输出标题，不要其他说明。\n\n用户：%s\n\nAI：%s",
+                    userMessage.length() > 100 ? userMessage.substring(0, 100) : userMessage,
+                    aiResponse.length() > 200 ? aiResponse.substring(0, 200) : aiResponse
+                );
+                    
+                String title = dashScopeChatClient.prompt()
+                    .user(prompt)
+                    .call()
+                    .content()
+                    .trim();
+                    
+                // 限制长度为5-8字
+                if (title.length() > 8) {
+                    title = title.substring(0, 8);
+                }
+                    
+                // 更新会话标题
+                chatSessionService.updateSessionName(sessionId, title);
+                log.info("会话标题生成成功 - 会话ID: {}, 标题: {}", sessionId, title);
+                    
+            } catch (Exception e) {
+                log.error("生成会话标题失败 - 会话ID: {}", sessionId, e);
+            }
+        }).start();
+    }
 
     /**
      * 流式对话接口（2.0版本 - 需要登录，支持消息持久化）
@@ -136,6 +171,14 @@ public class AiChatController {
                     if (aiResponse.length() > 0) {
                         chatMessageService.saveMessage(sessionId, userId, 0, aiResponse.toString());
                     }
+                    
+                    // 如果是会话的第一次对话，生成会话标题（检查消息数量）
+                    // 此时已经保存了用户消息(1条)和AI回复(1条)，共2条
+                    List<ChatMessage> sessionMessages = chatMessageService.getSessionMessages(sessionId);
+                    if (sessionMessages.size() == 2) {
+                        generateSessionTitle(sessionId, message, aiResponse.toString());
+                    }
+                    
                     streamingStates.remove(chatId);
                     log.info("流式对话完成 [用户ID: {}, 会话ID: {}]", userId, sessionId);
                 })

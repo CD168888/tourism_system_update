@@ -54,6 +54,19 @@ public class ChatSessionService extends ServiceImpl<ChatSessionMapper, ChatSessi
     }
     
     /**
+     * 更新会话名称
+     */
+    public void updateSessionName(Long sessionId, String sessionName) {
+        ChatSession session = getById(sessionId);
+        if (session != null) {
+            session.setSessionName(sessionName);
+            session.setUpdateTime(LocalDateTime.now());
+            updateById(session);
+            log.info("更新会话名称 - 会话ID: {}, 新名称: {}", sessionId, sessionName);
+        }
+    }
+    
+    /**
      * 删除会话
      */
     public boolean deleteSession(Long sessionId, Long userId) {
