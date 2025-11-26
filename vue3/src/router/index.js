@@ -205,7 +205,7 @@ const frontendRoutes = [
         path: 'ai-chat',
         name: 'AiChat',
         component: () => import('@/views/frontend/ai/AiChat.vue'),
-        meta: { title: 'AI智能助手' },
+        meta: { title: 'AI智能助手', requiresAuth: true },
       },
     ],
   },

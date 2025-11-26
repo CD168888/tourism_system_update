@@ -31,9 +31,6 @@ public class WebConfig implements WebMvcConfigurer {
         "/api/file/**",         // 文件资源接口（带前缀）
         "/file/**",             // 文件资源接口（不带前缀）
         
-        // AI 聊天相关接口
-        "/api/ai/**",      // AI 聊天接口
-        
         // Swagger和API文档相关路径
         "/api/v3/api-docs/**",
         "/api/swagger-ui.html",
