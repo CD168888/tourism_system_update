@@ -382,14 +382,14 @@ const streamChat = (message) => {
       es.close()
       isStreaming.value = false
       scrollToBottom()
-      
+
       // 对话完成后，延迟2秒刷新会话列表（等待后端生成标题）
       setTimeout(async () => {
         try {
           const data = await request.get('/ai/sessions', { showDefaultMsg: false })
           const oldSessionId = currentSession.value?.id
           sessions.value = data || []
-          
+
           // 保持当前会话选中，但更新数据
           if (oldSessionId) {
             const updatedSession = sessions.value.find(s => s.id === oldSessionId)
@@ -401,7 +401,7 @@ const streamChat = (message) => {
           console.error('刷新会话列表失败', error)
         }
       }, 2000)
-      
+
       return
     }
 
