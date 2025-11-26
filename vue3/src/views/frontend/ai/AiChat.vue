@@ -18,8 +18,8 @@
         </el-button>
       </div>
       <div class="sessions-list">
-        <div v-for="session in sessions" :key="session.conversationId" class="session-item glass-effect"
-          :class="{ active: currentSession.conversationId === session.conversationId }" @click="selectSession(session)">
+        <div v-for="session in sessions" :key="session.id" class="session-item glass-effect"
+          :class="{ active: currentSession?.id === session.id }" @click="selectSession(session)">
           <div class="session-icon">
             <el-icon>
               <ChatDotRound />
@@ -28,6 +28,11 @@
           <div class="session-info">
             <span class="session-name">{{ session.sessionName }}</span>
           </div>
+          <el-button class="delete-btn" size="small" text @click="deleteSession(session, $event)">
+            <el-icon>
+              <Delete />
+            </el-icon>
+          </el-button>
         </div>
       </div>
     </div>
@@ -117,8 +122,10 @@
 </template>
 
 <script setup>
-import { ref, nextTick, onMounted } from 'vue'
-import { ElMessage } from 'element-plus'
+import { ref, nextTick, onMounted, computed } from 'vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import { useRouter } from 'vue-router'
+import request from '@/utils/request'
 import MarkdownIt from 'markdown-it'
 import hljs from 'highlight.js'
 import 'highlight.js/styles/github.css'
@@ -131,7 +138,8 @@ import {
   Promotion,
   VideoPause,
   Food,
-  Suitcase
+  Suitcase,
+  Delete
 } from '@element-plus/icons-vue'
 
 // 初始化 Markdown 解析器
@@ -158,44 +166,123 @@ const renderMarkdown = (content) => {
   return md.render(content)
 }
 
-// 响应式数据
+const router = useRouter()
 const chatMessages = ref(null)
 const sessions = ref([])
-const currentSession = ref({})
+const currentSession = ref(null)
 const newMessage = ref('')
 const messages = ref([])
 const isStreaming = ref(false)
 const eventSource = ref(null)
+const isLoading = ref(false)
 
-// 当前会话ID
-const conversationId = ref(Date.now())
+// 获取Token和用户信息
+const token = computed(() => {
+  return localStorage.getItem('token')
+})
 
-// 选择会话
-const selectSession = (session) => {
+const userInfo = computed(() => {
+  const userStr = localStorage.getItem('userInfo')
+  return userStr ? JSON.parse(userStr) : null
+})
+
+// 检查登录状态
+const checkLogin = () => {
+  if (!token.value || !userInfo.value) {
+    ElMessage.warning('请先登录后使用AI助手')
+    router.push('/login')
+    return false
+  }
+  return true
+}
+
+// 加载用户的会话列表
+const loadSessions = async () => {
+  try {
+    const data = await request.get('/ai/sessions')
+    sessions.value = data || []
+
+    // 如果有会话，选择最近的一个
+    if (sessions.value.length > 0) {
+      await selectSession(sessions.value[0])
+    }
+  } catch (error) {
+    console.error('加载会话列表失败', error)
+    ElMessage.error('加载会话列表失败')
+  }
+}
+
+// 选择会话并加载历史消息
+const selectSession = async (session) => {
+  if (isStreaming.value) {
+    ElMessage.warning('请等待当前对话完成')
+    return
+  }
+
   currentSession.value = session
-  conversationId.value = session.conversationId
-  // TODO: 加载该会话的历史消息
-  messages.value = session.messages || []
+  isLoading.value = true
+
+  try {
+    // 从后端加载历史消息（优先从Redis获取）
+    const data = await request.get(`/ai/messages/${session.id}`)
+    messages.value = (data || []).map(msg => ({
+      type: msg.messageType,
+      msg: msg.content
+    }))
+    nextTick(() => scrollToBottom())
+  } catch (error) {
+    console.error('加载历史消息失败', error)
+    messages.value = []
+  } finally {
+    isLoading.value = false
+  }
 }
 
 // 创建新会话
-const openNewSession = () => {
-  conversationId.value = Date.now()
-  newMessage.value = ''
-  messages.value = []
-  currentSession.value = {
-    conversationId: conversationId.value,
-    sessionName: `会话 ${new Date().toLocaleString()}`,
-    messages: []
+const openNewSession = async () => {
+  if (!checkLogin()) return
+
+  if (isStreaming.value) {
+    ElMessage.warning('请等待当前对话完成')
+    return
   }
-  sessions.value.push(currentSession.value)
-  ElMessage.success('已开启新会话')
+
+  try {
+    const sessionName = `会话 ${new Date().toLocaleString('zh-CN', {
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit'
+    })}`
+
+    const newSession = await request.post('/ai/createSession', null, {
+      params: { sessionName },
+      successMsg: '已开启新会话'
+    })
+
+    sessions.value.unshift(newSession)
+    currentSession.value = newSession
+    messages.value = []
+  } catch (error) {
+    console.error('创建会话失败', error)
+    if (error.code === 401) {
+      ElMessage.error('登录已过期，请重新登录')
+      router.push('/login')
+    }
+  }
 }
 
 // 发送消息
 const sendMessage = () => {
+  if (!checkLogin()) return
+
   const message = newMessage.value.trim()
   if (!message) {
+    return
+  }
+
+  if (!currentSession.value) {
+    ElMessage.warning('请先创建会话')
     return
   }
 
@@ -213,6 +300,44 @@ const sendMessage = () => {
 
   // 滚动到底部
   scrollToBottom()
+}
+
+// 删除会话
+const deleteSession = async (session, event) => {
+  event.stopPropagation()
+
+  try {
+    await ElMessageBox.confirm('确定要删除这个会话吗？', '提示', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning'
+    })
+
+    await request.delete(`/ai/session/${session.id}`, {
+      successMsg: '删除成功'
+    })
+
+    // 从列表中移除
+    const index = sessions.value.findIndex(s => s.id === session.id)
+    if (index > -1) {
+      sessions.value.splice(index, 1)
+    }
+
+    // 如果删除的是当前会话，清空消息
+    if (currentSession.value?.id === session.id) {
+      currentSession.value = null
+      messages.value = []
+
+      // 如果还有其他会话，选择第一个
+      if (sessions.value.length > 0) {
+        await selectSession(sessions.value[0])
+      }
+    }
+  } catch (error) {
+    if (error !== 'cancel') {
+      console.error('删除会话失败', error)
+    }
+  }
 }
 
 // 快速提问
@@ -241,8 +366,8 @@ const streamChat = (message) => {
   // 用于累积接收到的文本
   let messageOrigin = ''
 
-  // 构建请求 URL
-  const url = `/api/ai/chatStream?message=${encodeURIComponent(message)}&conversationId=${conversationId.value}`
+  // 构建请求 URL（使用新的参数名sessionId和token）
+  const url = `/api/ai/chatStream?message=${encodeURIComponent(message)}&sessionId=${currentSession.value.id}&token=${encodeURIComponent(token.value)}`
 
   // 创建 EventSource 连接
   const es = new EventSource(url)
@@ -263,7 +388,7 @@ const streamChat = (message) => {
     // 累积接收到的数据
     messageOrigin += data
 
-    // 更新消息内容（Markdown 会在渲染时自动处理）
+    // 更新消息内容
     messages.value[messages.value.length - 1].msg = messageOrigin
 
     // 滚动到底部
@@ -278,6 +403,10 @@ const streamChat = (message) => {
       ElMessage.error(event.data)
     } else {
       ElMessage.error('连接出错，请重试')
+      // 移除空的AI消息
+      if (messages.value[messages.value.length - 1].msg === '') {
+        messages.value.pop()
+      }
     }
     es.close()
     isStreaming.value = false
@@ -291,8 +420,8 @@ const cancelStream = () => {
     eventSource.value = null
   }
 
-  // 调用后端取消接口
-  fetch(`/api/ai/cancelStream?conversationId=${conversationId.value}`, {
+  // 调用后端取消接口（使用新的参数名sessionId）
+  fetch(`/api/ai/cancelStream?sessionId=${currentSession.value.id}`, {
     method: 'POST'
   }).catch(err => {
     console.error('取消请求失败', err)
@@ -311,9 +440,16 @@ const scrollToBottom = () => {
   })
 }
 
-// 组件挂载时初始化第一个会话
-onMounted(() => {
-  openNewSession()
+// 组件挂载时检查登录并加载会话列表
+onMounted(async () => {
+  if (!checkLogin()) return
+
+  await loadSessions()
+
+  // 如果没有会话，自动创建一个
+  if (sessions.value.length === 0) {
+    await openNewSession()
+  }
 })
 </script>
 
@@ -408,6 +544,7 @@ onMounted(() => {
       cursor: pointer;
       transition: all 0.3s ease;
       gap: 12px;
+      position: relative;
 
       .session-icon {
         width: 40px;
@@ -437,9 +574,24 @@ onMounted(() => {
         }
       }
 
+      .delete-btn {
+        opacity: 0;
+        transition: opacity 0.2s ease;
+        color: #f56c6c;
+        padding: 4px;
+
+        &:hover {
+          background: rgba(245, 108, 108, 0.1);
+        }
+      }
+
       &:hover {
         transform: translateX(4px);
         box-shadow: 0 4px 16px rgba(103, 182, 245, 0.15);
+
+        .delete-btn {
+          opacity: 1;
+        }
       }
 
       &.active {
@@ -453,6 +605,10 @@ onMounted(() => {
 
         .session-name {
           color: #67b6f5;
+        }
+
+        .delete-btn {
+          opacity: 1;
         }
       }
     }
