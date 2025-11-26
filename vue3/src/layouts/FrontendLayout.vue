@@ -45,6 +45,13 @@
             </el-icon>
             <span>门票预订</span>
           </el-menu-item>
+
+          <el-menu-item index="/ai-chat">
+            <el-icon>
+              <ChatDotRound />
+            </el-icon>
+            <span>AI助手</span>
+          </el-menu-item>
         </el-menu>
 
         <div class="user-actions">
@@ -112,7 +119,8 @@ import {
   Ticket,
   House,
   Place,
-  ArrowDown
+  ArrowDown,
+  ChatDotRound
 } from '@element-plus/icons-vue'
 
 const userStore = useUserStore()

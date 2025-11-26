@@ -3,6 +3,7 @@ package org.example.springboot.config;
 import jakarta.annotation.Resource;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -29,6 +30,9 @@ public class WebConfig implements WebMvcConfigurer {
         "/img/**",              // 图片资源接口（不带前缀）
         "/api/file/**",         // 文件资源接口（带前缀）
         "/file/**",             // 文件资源接口（不带前缀）
+        
+        // AI 聊天相关接口
+        "/api/ai/**",      // AI 聊天接口
         
         // Swagger和API文档相关路径
         "/api/v3/api-docs/**",
@@ -69,7 +73,8 @@ public class WebConfig implements WebMvcConfigurer {
         // 配置JWT拦截器
         registry.addInterceptor(jwtInterceptor)
                 .addPathPatterns(API_PREFIX + "/**")    // 拦截所有API请求
-                .excludePathPatterns("/api/**")
                 .excludePathPatterns(PUBLIC_PATHS);     // 排除公开接口
     }
+
+
 }
