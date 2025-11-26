@@ -28,11 +28,18 @@
           <div class="session-info">
             <span class="session-name">{{ session.sessionName }}</span>
           </div>
-          <el-button class="delete-btn" size="small" text @click="deleteSession(session, $event)">
-            <el-icon>
-              <Delete />
-            </el-icon>
-          </el-button>
+          <div class="session-actions">
+            <el-button class="edit-btn" size="small" text @click="editSessionTitle(session, $event)">
+              <el-icon>
+                <Edit />
+              </el-icon>
+            </el-button>
+            <el-button class="delete-btn" size="small" text @click="deleteSession(session, $event)">
+              <el-icon>
+                <Delete />
+              </el-icon>
+            </el-button>
+          </div>
         </div>
       </div>
     </div>
@@ -139,7 +146,8 @@ import {
   VideoPause,
   Food,
   Suitcase,
-  Delete
+  Delete,
+  Edit
 } from '@element-plus/icons-vue'
 
 // 初始化 Markdown 解析器
@@ -300,6 +308,48 @@ const sendMessage = () => {
 
   // 滚动到底部
   scrollToBottom()
+}
+
+// 编辑会话标题
+const editSessionTitle = async (session, event) => {
+  event.stopPropagation()
+
+  try {
+    const { value: newTitle } = await ElMessageBox.prompt('请输入新的会话标题', '编辑标题', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      inputValue: session.sessionName,
+      inputValidator: (value) => {
+        if (!value || !value.trim()) {
+          return '标题不能为空'
+        }
+        if (value.length > 50) {
+          return '标题长度不能超过50个字符'
+        }
+        return true
+      },
+      inputErrorMessage: '请输入有效的标题'
+    })
+
+    if (newTitle && newTitle.trim()) {
+      await request.put(`/ai/session/${session.id}/title`, null, {
+        params: { title: newTitle.trim() },
+        successMsg: '标题更新成功'
+      })
+
+      // 更新本地会话标题
+      session.sessionName = newTitle.trim()
+
+      // 如果是当前会话，同时更新当前会话对象
+      if (currentSession.value?.id === session.id) {
+        currentSession.value.sessionName = newTitle.trim()
+      }
+    }
+  } catch (error) {
+    if (error !== 'cancel') {
+      console.error('编辑会话标题失败', error)
+    }
+  }
 }
 
 // 删除会话
@@ -594,9 +644,23 @@ onMounted(async () => {
         }
       }
 
-      .delete-btn {
+      .session-actions {
+        display: flex;
+        gap: 4px;
         opacity: 0;
         transition: opacity 0.2s ease;
+      }
+
+      .edit-btn {
+        color: #67b6f5;
+        padding: 4px;
+
+        &:hover {
+          background: rgba(103, 182, 245, 0.1);
+        }
+      }
+
+      .delete-btn {
         color: #f56c6c;
         padding: 4px;
 
@@ -609,7 +673,7 @@ onMounted(async () => {
         transform: translateX(4px);
         box-shadow: 0 4px 16px rgba(103, 182, 245, 0.15);
 
-        .delete-btn {
+        .session-actions {
           opacity: 1;
         }
       }
@@ -627,7 +691,7 @@ onMounted(async () => {
           color: #67b6f5;
         }
 
-        .delete-btn {
+        .session-actions {
           opacity: 1;
         }
       }

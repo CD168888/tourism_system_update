@@ -302,4 +302,38 @@ public class AiChatController {
             return Result.error("删除会话失败: " + e.getMessage());
         }
     }
+    
+    /**
+     * 更新会话标题
+     */
+    @PutMapping("/session/{sessionId}/title")
+    public Result<String> updateSessionTitle(
+            @RequestHeader("token") String token,
+            @PathVariable Long sessionId,
+            @RequestParam(value = "title", required = true) String title) {
+        try {
+            Long userId = getUserIdFromToken(token);
+            
+            // 验证会话归属
+            ChatSession session = chatSessionService.getById(sessionId);
+            if (session == null || !session.getUserId().equals(userId)) {
+                return Result.error("会话不存在或无权访问");
+            }
+            
+            // 验证标题长度
+            if (title == null || title.trim().isEmpty()) {
+                return Result.error("标题不能为空");
+            }
+            if (title.length() > 50) {
+                return Result.error("标题长度不能超过50个字符");
+            }
+            
+            // 更新标题
+            chatSessionService.updateSessionName(sessionId, title.trim());
+            return Result.success("标题更新成功");
+        } catch (Exception e) {
+            log.error("更新会话标题失败", e);
+            return Result.error("更新会话标题失败: " + e.getMessage());
+        }
+    }
 }
