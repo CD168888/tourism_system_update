@@ -1,10 +1,26 @@
 <template>
   <div class="orders-container">
-    <!-- 现代化页面头部 -->
-    <div class="page-header">
-      <div class="header-content">
+    <!-- Hero顶部区域 -->
+    <div class="page-hero">
+      <div class="hero-background">
+        <div class="hero-gradient"></div>
+      </div>
+      <div class="hero-content">
+        <div class="breadcrumb">
+          <el-breadcrumb separator="/">
+            <el-breadcrumb-item @click="$router.push('/')">首页</el-breadcrumb-item>
+            <el-breadcrumb-item>我的订单</el-breadcrumb-item>
+          </el-breadcrumb>
+        </div>
         <h1 class="page-title">
-          <span class="title-icon">🎫</span>
+          <svg class="title-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+            <polyline points="10 9 9 9 8 9"></polyline>
+          </svg>
           我的订单
         </h1>
         <p class="page-subtitle">
@@ -16,16 +32,14 @@
     <!-- 现代化标签页区域 -->
     <div class="orders-section">
       <div class="section-container">
-        <div class="orders-tabs">
-          <el-tabs
-            v-model="activeTab"
-            @tab-click="handleTabClick"
-            class="modern-tabs"
-          >
+        <div class="orders-tabs glass-card">
+          <el-tabs v-model="activeTab" @tab-click="handleTabClick" class="modern-tabs">
             <el-tab-pane label="全部" name="all">
               <template #label>
                 <div class="tab-label">
-                  <el-icon><List /></el-icon>
+                  <el-icon>
+                    <List />
+                  </el-icon>
                   <span>全部</span>
                   <span class="tab-count">{{ orderStats.total || 0 }}</span>
                 </div>
@@ -34,7 +48,9 @@
             <el-tab-pane label="待支付" name="0">
               <template #label>
                 <div class="tab-label">
-                  <el-icon><Clock /></el-icon>
+                  <el-icon>
+                    <Clock />
+                  </el-icon>
                   <span>待支付</span>
                   <span class="tab-count">{{ orderStats.pending || 0 }}</span>
                 </div>
@@ -43,7 +59,9 @@
             <el-tab-pane label="已支付" name="1">
               <template #label>
                 <div class="tab-label">
-                  <el-icon><Check /></el-icon>
+                  <el-icon>
+                    <Check />
+                  </el-icon>
                   <span>已支付</span>
                   <span class="tab-count">{{ orderStats.paid || 0 }}</span>
                 </div>
@@ -52,7 +70,9 @@
             <el-tab-pane label="已取消" name="2">
               <template #label>
                 <div class="tab-label">
-                  <el-icon><Close /></el-icon>
+                  <el-icon>
+                    <Close />
+                  </el-icon>
                   <span>已取消</span>
                   <span class="tab-count">{{ orderStats.cancelled || 0 }}</span>
                 </div>
@@ -61,7 +81,9 @@
             <el-tab-pane label="已退款" name="3">
               <template #label>
                 <div class="tab-label">
-                  <el-icon><RefreshLeft /></el-icon>
+                  <el-icon>
+                    <RefreshLeft />
+                  </el-icon>
                   <span>已退款</span>
                   <span class="tab-count">{{ orderStats.refunded || 0 }}</span>
                 </div>
@@ -70,7 +92,9 @@
             <el-tab-pane label="已完成" name="4">
               <template #label>
                 <div class="tab-label">
-                  <el-icon><CircleCheck /></el-icon>
+                  <el-icon>
+                    <CircleCheck />
+                  </el-icon>
                   <span>已完成</span>
                   <span class="tab-count">{{ orderStats.completed || 0 }}</span>
                 </div>
@@ -89,23 +113,23 @@
             <h3 class="empty-title">暂无订单</h3>
             <p class="empty-desc">您还没有任何订单，快去预订门票吧</p>
             <el-button type="primary" @click="goToTicketList" class="empty-action">
-              <el-icon><Ticket /></el-icon>
+              <el-icon>
+                <Ticket />
+              </el-icon>
               浏览门票
             </el-button>
           </div>
 
           <!-- 订单列表 -->
           <div v-else class="orders-list">
-            <div
-              v-for="(order, index) in orderList"
-              :key="order.id"
-              class="order-card "
-              :class="`delay-${(index % 4 + 1) * 100}`"
-            >
+            <div v-for="(order, index) in orderList" :key="order.id" class="order-card glass-card-inner"
+              :class="`delay-${(index % 4 + 1) * 100}`">
               <div class="order-header">
                 <div class="order-info">
                   <div class="order-no">
-                    <el-icon><Document /></el-icon>
+                    <el-icon>
+                      <Document />
+                    </el-icon>
                     <span>{{ order.orderNo }}</span>
                   </div>
                   <div class="order-time">{{ formatTime(order.createTime) }}</div>
@@ -120,7 +144,9 @@
                   <div class="ticket-main">
                     <h3 class="ticket-name">{{ order.ticketName }}</h3>
                     <div class="scenic-info">
-                      <el-icon><MapLocation /></el-icon>
+                      <el-icon>
+                        <MapLocation />
+                      </el-icon>
                       <span>{{ order.scenicName }}</span>
                     </div>
                   </div>
@@ -128,12 +154,16 @@
                   <div class="order-details">
                     <div class="detail-row">
                       <div class="detail-item">
-                        <el-icon><Calendar /></el-icon>
+                        <el-icon>
+                          <Calendar />
+                        </el-icon>
                         <span>游玩日期</span>
                         <strong>{{ formatDate(order.visitDate) }}</strong>
                       </div>
                       <div class="detail-item">
-                        <el-icon><User /></el-icon>
+                        <el-icon>
+                          <User />
+                        </el-icon>
                         <span>数量</span>
                         <strong>{{ order.quantity }} 张</strong>
                       </div>
@@ -141,12 +171,16 @@
 
                     <div class="detail-row">
                       <div class="detail-item">
-                        <el-icon><UserFilled /></el-icon>
+                        <el-icon>
+                          <UserFilled />
+                        </el-icon>
                         <span>游客</span>
                         <strong>{{ order.visitorName }}</strong>
                       </div>
                       <div class="detail-item">
-                        <el-icon><Phone /></el-icon>
+                        <el-icon>
+                          <Phone />
+                        </el-icon>
                         <span>联系电话</span>
                         <strong>{{ order.visitorPhone }}</strong>
                       </div>
@@ -162,33 +196,30 @@
 
               <div class="order-footer">
                 <div class="payment-info" v-if="order.paymentTime">
-                  <el-icon><CreditCard /></el-icon>
+                  <el-icon>
+                    <CreditCard />
+                  </el-icon>
                   <span>支付时间: {{ formatTime(order.paymentTime) }}</span>
                 </div>
                 <div class="order-actions">
-                  <el-button
-                    v-if="order.status === 0"
-                    type="primary"
-                    @click="payOrder(order)"
-                    class="action-btn pay-btn"
-                  >
-                    <el-icon><CreditCard /></el-icon>
+                  <el-button v-if="order.status === 0" type="primary" @click="payOrder(order)"
+                    class="action-btn pay-btn">
+                    <el-icon>
+                      <CreditCard />
+                    </el-icon>
                     去支付
                   </el-button>
-                  <el-button
-                    v-if="order.status === 0"
-                    type="danger"
-                    @click="cancelOrder(order.id)"
-                    class="action-btn cancel-btn"
-                  >
-                    <el-icon><Close /></el-icon>
+                  <el-button v-if="order.status === 0" type="danger" @click="cancelOrder(order.id)"
+                    class="action-btn cancel-btn">
+                    <el-icon>
+                      <Close />
+                    </el-icon>
                     取消订单
                   </el-button>
-                  <el-button
-                    @click="viewOrderDetail(order.id)"
-                    class="action-btn detail-btn"
-                  >
-                    <el-icon><View /></el-icon>
+                  <el-button @click="viewOrderDetail(order.id)" class="action-btn detail-btn">
+                    <el-icon>
+                      <View />
+                    </el-icon>
                     查看详情
                   </el-button>
                 </div>
@@ -197,15 +228,8 @@
 
             <!-- 现代化分页 -->
             <div class="pagination-wrapper" v-if="total > 0">
-              <el-pagination
-                background
-                layout="total, prev, pager, next"
-                :total="total"
-                :page-size="pageSize"
-                :current-page="currentPage"
-                @current-change="handleCurrentChange"
-                class="modern-pagination"
-              />
+              <el-pagination background layout="total, prev, pager, next" :total="total" :page-size="pageSize"
+                :current-page="currentPage" @current-change="handleCurrentChange" class="modern-pagination" />
             </div>
           </div>
         </div>
@@ -213,12 +237,7 @@
     </div>
 
     <!-- 支付对话框 -->
-    <el-dialog
-      title="订单支付"
-      v-model="payDialogVisible"
-      width="500px"
-      :close-on-click-modal="false"
-    >
+    <el-dialog title="订单支付" v-model="payDialogVisible" width="500px" :close-on-click-modal="false">
       <div class="pay-dialog-content" v-if="currentOrder">
         <div class="order-info">
           <p><strong>订单号:</strong> {{ currentOrder.orderNo }}</p>
@@ -251,11 +270,7 @@
     </el-dialog>
 
     <!-- 详情对话框 -->
-    <el-dialog
-      title="订单详情"
-      v-model="detailDialogVisible"
-      width="600px"
-    >
+    <el-dialog title="订单详情" v-model="detailDialogVisible" width="600px">
       <div class="order-detail" v-if="currentOrder">
         <el-descriptions :column="1" border>
           <el-descriptions-item label="订单号">{{ currentOrder.orderNo }}</el-descriptions-item>
@@ -365,7 +380,7 @@ const fetchOrders = async () => {
   loading.value = true
   try {
     const status = activeTab.value === 'all' ? '' : activeTab.value
-    
+
     await request.get('/order/my', {
       status,
       currentPage: currentPage.value,
@@ -451,7 +466,7 @@ const confirmPayment = async () => {
     ElMessage.warning('请选择支付方式')
     return
   }
-  
+
   if (!currentOrder.value || !currentOrder.value.id) {
     ElMessage.error('订单数据无效')
     payDialogVisible.value = false
@@ -507,7 +522,7 @@ const cancelOrder = async (orderId) => {
     } finally {
       loading.value = false
     }
-  }).catch(() => {})
+  }).catch(() => { })
 }
 
 // 查看订单详情
@@ -544,9 +559,84 @@ onMounted(() => {
 <style lang="scss" scoped>
 .orders-container {
   min-height: 100vh;
-  background: #f8fafc;
-  font-family: "思源黑体", "Source Han Sans", "Noto Sans CJK SC", sans-serif;
-  color: #333;
+  font-family: "PingFang SC", "Helvetica Neue", Helvetica, Arial, "Microsoft YaHei", sans-serif;
+  color: #1a202c;
+
+  // Hero顶部区域
+  .page-hero {
+    position: relative;
+    background: linear-gradient(135deg, #67b6f5 0%, #5aa9e6 100%);
+    padding: 40px 0 30px;
+    overflow: hidden;
+    border-radius: 24px;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.15)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.15)"/><circle cx="50" cy="10" r="0.8" fill="rgba(255,255,255,0.1)"/><circle cx="20" cy="60" r="0.8" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="0.8" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+      opacity: 0.3;
+    }
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 20px;
+    color: white;
+  }
+
+  .breadcrumb {
+    margin-bottom: 20px;
+
+    :deep(.el-breadcrumb__item) {
+      .el-breadcrumb__inner {
+        color: rgba(255, 255, 255, 0.8);
+        cursor: pointer;
+
+        &:hover {
+          color: white;
+        }
+      }
+
+      &:last-child .el-breadcrumb__inner {
+        color: white;
+      }
+    }
+
+    :deep(.el-breadcrumb__separator) {
+      color: rgba(255, 255, 255, 0.6);
+    }
+  }
+
+  .page-title {
+    font-size: 36px;
+    font-weight: 800;
+    margin: 0 0 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+
+  .title-icon {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+  }
+
+  .page-subtitle {
+    font-size: 16px;
+    opacity: 0.9;
+    margin: 0;
+    text-align: center;
+  }
 
   // 通用容器样式
   .section-container {
@@ -555,65 +645,39 @@ onMounted(() => {
     padding: 40px 20px;
   }
 
-  // 页面头部
-  .page-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 40px;
-    padding: 40px 0 20px;
-    border-bottom: 1px solid #e2e8f0;
-  }
-
-  .header-content {
-    flex: 1;
-  }
-
-  .page-title {
-    font-size: 36px;
-    font-weight: 700;
-    margin: 0 0 8px;
-    color: #2d3748;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-
-    .title-icon {
-      font-size: 32px;
-    }
-  }
-
-  .page-subtitle {
-    font-size: 16px;
-    color: #64748b;
-    text-align: left;
-    margin: 0;
-  }
-
 
 
 
   // 订单区域
   .orders-section {
-    background: white;
-    margin: 0;
-    padding-top: 20px;
+    padding: 20px 0 60px;
   }
 
-  .orders-tabs {
-    background: white;
-    border-radius: 16px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  .glass-card {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
     overflow: hidden;
-    border: 1px solid #e2e8f0;
+  }
+
+  .glass-card-inner {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
   }
 
   // 现代化标签页样式
   .modern-tabs {
     :deep(.el-tabs__header) {
       margin: 0;
-      background: #f8fafc;
-      border-bottom: 1px solid #e2e8f0;
+      background: linear-gradient(135deg, rgba(103, 182, 245, 0.05) 0%, rgba(90, 169, 230, 0.05) 100%);
+      border-bottom: 1px solid rgba(103, 182, 245, 0.2);
     }
 
     :deep(.el-tabs__nav-wrap) {
@@ -624,22 +688,23 @@ onMounted(() => {
       padding: 20px 0;
       font-size: 16px;
       font-weight: 600;
-      color: #64748b;
+      color: #5a6c7d;
       border: none;
       margin-right: 40px;
 
       &.is-active {
-        color: #667eea;
+        color: #67b6f5;
       }
 
       &:hover {
-        color: #667eea;
+        color: #67b6f5;
       }
     }
 
     :deep(.el-tabs__active-bar) {
-      background: linear-gradient(45deg, #667eea, #764ba2);
+      background: linear-gradient(135deg, #67b6f5 0%, #5aa9e6 100%);
       height: 3px;
+      border-radius: 3px;
     }
 
     :deep(.el-tabs__content) {
@@ -652,7 +717,7 @@ onMounted(() => {
       gap: 8px;
 
       .tab-count {
-        background: #667eea;
+        background: linear-gradient(135deg, #67b6f5 0%, #5aa9e6 100%);
         color: white;
         padding: 2px 8px;
         border-radius: 12px;
@@ -691,11 +756,18 @@ onMounted(() => {
     }
 
     .empty-action {
-      background: linear-gradient(45deg, #667eea, #764ba2);
+      background: linear-gradient(135deg, #67b6f5 0%, #5aa9e6 100%);
       border: none;
-      border-radius: 20px;
-      padding: 12px 24px;
+      border-radius: 12px;
+      padding: 12px 32px;
       font-weight: 600;
+      box-shadow: 0 6px 20px rgba(103, 182, 245, 0.3);
+      transition: all 0.3s ease;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(103, 182, 245, 0.4);
+      }
     }
   }
 
@@ -707,16 +779,12 @@ onMounted(() => {
   }
 
   .order-card {
-    background: white;
-    border-radius: 16px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    border: 1px solid #e2e8f0;
     overflow: hidden;
     transition: all 0.3s ease;
 
     &:hover {
       transform: translateY(-4px);
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+      box-shadow: 0 12px 40px rgba(103, 182, 245, 0.2);
     }
   }
 
@@ -725,8 +793,8 @@ onMounted(() => {
     justify-content: space-between;
     align-items: center;
     padding: 20px 24px;
-    background: #f8fafc;
-    border-bottom: 1px solid #e2e8f0;
+    background: linear-gradient(135deg, rgba(103, 182, 245, 0.08) 0%, rgba(90, 169, 230, 0.08) 100%);
+    border-bottom: 1px solid rgba(103, 182, 245, 0.2);
 
     .order-info {
       .order-no {
@@ -735,48 +803,49 @@ onMounted(() => {
         gap: 8px;
         font-size: 16px;
         font-weight: 600;
-        color: #2d3748;
+        color: #1a202c;
         margin-bottom: 4px;
 
         .el-icon {
-          color: #667eea;
+          color: #67b6f5;
         }
       }
 
       .order-time {
         font-size: 12px;
-        color: #64748b;
+        color: #5a6c7d;
       }
     }
 
     .order-status-badge {
-      padding: 6px 12px;
-      border-radius: 12px;
-      font-size: 12px;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 13px;
       font-weight: 600;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 
       &.pending {
-        background: linear-gradient(45deg, #f59e0b, #d97706);
+        background: linear-gradient(135deg, #f59e0b, #d97706);
         color: white;
       }
 
       &.paid {
-        background: linear-gradient(45deg, #10b981, #059669);
+        background: linear-gradient(135deg, #10b981, #059669);
         color: white;
       }
 
       &.cancelled {
-        background: linear-gradient(45deg, #ef4444, #dc2626);
+        background: linear-gradient(135deg, #ef4444, #dc2626);
         color: white;
       }
 
       &.refunded {
-        background: linear-gradient(45deg, #8b5cf6, #7c3aed);
+        background: linear-gradient(135deg, #8b5cf6, #7c3aed);
         color: white;
       }
 
       &.completed {
-        background: linear-gradient(45deg, #06b6d4, #0891b2);
+        background: linear-gradient(135deg, #06b6d4, #0891b2);
         color: white;
       }
     }
@@ -799,7 +868,7 @@ onMounted(() => {
       .ticket-name {
         font-size: 20px;
         font-weight: 700;
-        color: #2d3748;
+        color: #1a202c;
         margin: 0 0 8px;
         line-height: 1.3;
       }
@@ -809,10 +878,10 @@ onMounted(() => {
         align-items: center;
         gap: 6px;
         font-size: 14px;
-        color: #64748b;
+        color: #5a6c7d;
 
         .el-icon {
-          color: #667eea;
+          color: #67b6f5;
         }
       }
     }
@@ -834,15 +903,15 @@ onMounted(() => {
         align-items: center;
         gap: 8px;
         font-size: 14px;
-        color: #64748b;
+        color: #5a6c7d;
 
         .el-icon {
-          color: #667eea;
+          color: #67b6f5;
           flex-shrink: 0;
         }
 
         strong {
-          color: #2d3748;
+          color: #1a202c;
           font-weight: 600;
           margin-left: auto;
         }
@@ -856,14 +925,17 @@ onMounted(() => {
 
     .price-label {
       font-size: 14px;
-      color: #64748b;
+      color: #5a6c7d;
       margin-bottom: 4px;
     }
 
     .price-amount {
       font-size: 28px;
       font-weight: 700;
-      color: #e53e3e;
+      background: linear-gradient(135deg, #f56565, #e53e3e);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
   }
 
@@ -872,18 +944,18 @@ onMounted(() => {
     justify-content: space-between;
     align-items: center;
     padding: 16px 24px;
-    background: #f8fafc;
-    border-top: 1px solid #e2e8f0;
+    background: linear-gradient(135deg, rgba(103, 182, 245, 0.05) 0%, rgba(90, 169, 230, 0.05) 100%);
+    border-top: 1px solid rgba(103, 182, 245, 0.2);
 
     .payment-info {
       display: flex;
       align-items: center;
       gap: 6px;
       font-size: 12px;
-      color: #64748b;
+      color: #5a6c7d;
 
       .el-icon {
-        color: #667eea;
+        color: #67b6f5;
       }
     }
 
@@ -892,41 +964,44 @@ onMounted(() => {
       gap: 8px;
 
       .action-btn {
-        border-radius: 8px;
+        border-radius: 12px;
         font-weight: 600;
         transition: all 0.3s ease;
 
         &.pay-btn {
-          background: linear-gradient(45deg, #667eea, #764ba2);
+          background: linear-gradient(135deg, #67b6f5 0%, #5aa9e6 100%);
           border: none;
           color: white;
+          box-shadow: 0 6px 20px rgba(103, 182, 245, 0.3);
 
           &:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(103, 182, 245, 0.4);
           }
         }
 
         &.cancel-btn {
-          background: #f56565;
+          background: linear-gradient(135deg, #f56565, #e53e3e);
           border: none;
           color: white;
+          box-shadow: 0 6px 20px rgba(245, 101, 101, 0.3);
 
           &:hover {
-            background: #e53e3e;
-            transform: translateY(-1px);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(245, 101, 101, 0.4);
           }
         }
 
         &.detail-btn {
-          background: white;
-          border: 2px solid #e2e8f0;
-          color: #64748b;
+          background: rgba(255, 255, 255, 0.6);
+          backdrop-filter: blur(10px);
+          border: 2px solid rgba(103, 182, 245, 0.2);
+          color: #5a6c7d;
 
           &:hover {
-            border-color: #667eea;
-            color: #667eea;
-            background: #f8fafc;
+            border-color: #67b6f5;
+            color: #67b6f5;
+            background: rgba(255, 255, 255, 0.8);
           }
         }
       }
@@ -943,58 +1018,70 @@ onMounted(() => {
   .modern-pagination {
     :deep(.el-pagination) {
       .el-pager li {
-        border-radius: 8px;
+        border-radius: 12px;
         margin: 0 4px;
         transition: all 0.3s ease;
 
         &:hover {
-          background: #667eea;
+          background: #67b6f5;
           color: white;
         }
 
         &.is-active {
-          background: linear-gradient(45deg, #667eea, #764ba2);
+          background: linear-gradient(135deg, #67b6f5 0%, #5aa9e6 100%);
           color: white;
+          box-shadow: 0 4px 12px rgba(103, 182, 245, 0.3);
         }
       }
 
       .btn-prev,
       .btn-next {
-        border-radius: 8px;
+        border-radius: 12px;
         transition: all 0.3s ease;
 
         &:hover {
-          background: #667eea;
+          background: #67b6f5;
           color: white;
         }
       }
     }
   }
 
- 
+
   .hover-lift {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
 
   // 延迟动画类
-  .delay-100 { animation-delay: 0.1s; }
-  .delay-200 { animation-delay: 0.2s; }
-  .delay-300 { animation-delay: 0.3s; }
-  .delay-400 { animation-delay: 0.4s; }
+  .delay-100 {
+    animation-delay: 0.1s;
+  }
+
+  .delay-200 {
+    animation-delay: 0.2s;
+  }
+
+  .delay-300 {
+    animation-delay: 0.3s;
+  }
+
+  .delay-400 {
+    animation-delay: 0.4s;
+  }
 
   @keyframes fadeInUp {
     from {
       opacity: 0;
       transform: translateY(30px);
     }
+
     to {
       opacity: 1;
       transform: translateY(0);
     }
   }
 
- 
+
 
 }
-
 </style>
