@@ -139,6 +139,7 @@ import { ref, reactive, onMounted, computed } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { useUserStore } from '@/store/user'
 import request from '@/utils/request'
+import { getImageUrl } from '@/utils/uploadConfig'
 
 const baseAPI = process.env.VUE_APP_BASE_API || '/api'
 const userStore = useUserStore()
@@ -161,7 +162,7 @@ const form = reactive({
 
 // 头像地址
 const avatarUrl = computed(() => {
-  return form.avatar ? baseAPI + form.avatar : '';
+  return getImageUrl(form.avatar)
 })
 
 // 密码表单

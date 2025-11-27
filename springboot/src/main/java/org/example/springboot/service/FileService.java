@@ -5,9 +5,11 @@ import io.micrometer.common.util.StringUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import org.example.springboot.common.Result;
 import org.example.springboot.enumClass.FileType;
+import org.example.springboot.util.AliOssUtil;
 import org.example.springboot.util.FileUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,24 +20,41 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class FileService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FileService.class);
 
+    @Autowired
+    private AliOssUtil aliOssUtil;
+
     @Operation(summary = "文件上传")
-    public Result<?> upLoad(MultipartFile file,FileType fileType) {
+    public Result<?> upLoad(MultipartFile file, FileType fileType) {
         if (com.baomidou.mybatisplus.core.toolkit.StringUtils.isBlank(file.getOriginalFilename())) {
             LOGGER.error("文件不存在");
             return Result.error("-1", "文件不存在！");
         }
-        LOGGER.info("upload FILE:" + file.getOriginalFilename());
-        String path = FileUtil.saveFile(file,null,fileType.getTypeName());
-        if (com.baomidou.mybatisplus.core.toolkit.StringUtils.isNotBlank(path)) {
-            return Result.success(path);
-        } else {
-            return Result.error("-1", "文件上传失败");
+        
+        try {
+            LOGGER.info("upload FILE to OSS:" + file.getOriginalFilename());
+            String originalFilename = file.getOriginalFilename();
+            // 截取原始文件名的后缀
+            String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+            // 构造新文件名称
+            String objectName = UUID.randomUUID().toString() + extension;
+            // 上传到阿里云OSS
+            String filePath = aliOssUtil.upload(file.getBytes(), objectName);
+            
+            if (com.baomidou.mybatisplus.core.toolkit.StringUtils.isNotBlank(filePath)) {
+                return Result.success(filePath);
+            } else {
+                return Result.error("-1", "文件上传失败");
+            }
+        } catch (Exception e) {
+            LOGGER.error("文件上传到OSS失败: " + e.getMessage(), e);
+            return Result.error("-1", "文件上传失败: " + e.getMessage());
         }
     }
     @DeleteMapping("/remove/{filename}")

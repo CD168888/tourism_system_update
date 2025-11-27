@@ -141,6 +141,7 @@ import {
   Picture,
   Star
 } from '@element-plus/icons-vue'
+import { getImageUrl } from '@/utils/uploadConfig'
 
 const router = useRouter()
 const userStore = useUserStore()
@@ -157,7 +158,7 @@ const roleLabel = computed(() => {
 })
 
 const avatarUrl = computed(() => {
-  return userInfo.value?.avatar ? baseAPI + userInfo.value.avatar : '';
+  return getImageUrl(userInfo.value?.avatar)
 })
 
 // 当前时间
