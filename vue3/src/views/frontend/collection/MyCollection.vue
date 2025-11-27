@@ -1,10 +1,24 @@
 <template>
   <div class="my-collection-container">
-    <!-- 现代化页面头部 -->
-    <div class="page-header">
-      <div class="header-content">
+    <!-- Hero顶部区域 -->
+    <div class="page-hero">
+      <div class="hero-background">
+        <div class="hero-gradient"></div>
+      </div>
+      <div class="hero-content">
+        <div class="breadcrumb">
+          <el-breadcrumb separator="/">
+            <el-breadcrumb-item @click="$router.push('/')">首页</el-breadcrumb-item>
+            <el-breadcrumb-item>我的收藏</el-breadcrumb-item>
+          </el-breadcrumb>
+        </div>
         <h1 class="page-title">
-          <span class="title-icon">❤️</span>
+          <svg class="title-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path
+              d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+            </path>
+          </svg>
           我的收藏
         </h1>
         <p class="page-subtitle">
@@ -16,17 +30,15 @@
     <!-- 现代化标签页区域 -->
     <div class="collection-section">
       <div class="section-container">
-        <div class="collection-tabs">
-          <el-tabs
-            v-model="activeTab"
-            @tab-change="handleTabChange"
-            class="modern-tabs"
-          >
+        <div class="collection-tabs glass-card">
+          <el-tabs v-model="activeTab" @tab-change="handleTabChange" class="modern-tabs">
             <!-- 景点收藏标签页 -->
             <el-tab-pane label="景点收藏" name="scenic">
               <template #label>
                 <div class="tab-label">
-                  <el-icon><MapLocation /></el-icon>
+                  <el-icon>
+                    <MapLocation />
+                  </el-icon>
                   <span>景点收藏</span>
                   <span class="tab-count">{{ scenicTotal }}</span>
                 </div>
@@ -43,26 +55,27 @@
                 <h3 class="empty-title">暂无收藏景点</h3>
                 <p class="empty-desc">快去发现心仪的景点并收藏吧</p>
                 <el-button type="primary" @click="goToScenicList" class="empty-action">
-                  <el-icon><Search /></el-icon>
+                  <el-icon>
+                    <Search />
+                  </el-icon>
                   浏览景点
                 </el-button>
               </div>
 
               <!-- 景点收藏网格 -->
               <div v-else class="collection-grid">
-                <div
-                  v-for="(collection, index) in scenicCollections"
-                  :key="collection.id"
-                  class="collection-card scenic-collection hover-lift"
-                  :class="`delay-${(index % 6 + 1) * 100}`"
-                  @click="goToScenicDetail(collection.scenicInfo.id)"
-                >
+                <div v-for="(collection, index) in scenicCollections" :key="collection.id"
+                  class="collection-card scenic-collection glass-card-inner hover-lift"
+                  :class="`delay-${(index % 6 + 1) * 100}`" @click="goToScenicDetail(collection.scenicInfo.id)">
                   <div class="card-image">
-                    <img :src="getImageUrl(collection.scenicInfo.imageUrl)" :alt="collection.scenicInfo.name" />
+                    <img :src="getImageUrl(collection.scenicInfo.imageUrl)" :alt="collection.scenicInfo.name"
+                      style="border-radius: 12px;" />
                     <div class="image-overlay">
                       <div class="overlay-content">
                         <div class="collection-time">
-                          <el-icon><Clock /></el-icon>
+                          <el-icon>
+                            <Clock />
+                          </el-icon>
                           {{ formatDate(collection.createTime) }}
                         </div>
                       </div>
@@ -82,7 +95,9 @@
                     <h3 class="item-name">{{ collection.scenicInfo.name }}</h3>
 
                     <div class="item-location">
-                      <el-icon><Location /></el-icon>
+                      <el-icon>
+                        <Location />
+                      </el-icon>
                       <span>{{ collection.scenicInfo.location }}</span>
                     </div>
 
@@ -91,21 +106,15 @@
                         收藏于 {{ formatDate(collection.createTime) }}
                       </div>
                       <div class="card-actions">
-                        <el-button
-                          type="primary"
-                          size="small"
-                          @click.stop="goToScenicDetail(collection.scenicInfo.id)"
-                          class="detail-btn"
-                        >
+                        <el-button type="primary" size="small" @click.stop="goToScenicDetail(collection.scenicInfo.id)"
+                          class="detail-btn">
                           查看详情
                         </el-button>
-                        <el-button
-                          type="danger"
-                          size="small"
-                          @click.stop="handleCancelScenicCollection(collection.scenicInfo.id)"
-                          class="cancel-btn"
-                        >
-                          <el-icon><Delete /></el-icon>
+                        <el-button type="danger" size="small"
+                          @click.stop="handleCancelScenicCollection(collection.scenicInfo.id)" class="cancel-btn">
+                          <el-icon>
+                            <Delete />
+                          </el-icon>
                         </el-button>
                       </div>
                     </div>
@@ -115,15 +124,9 @@
 
               <!-- 景点收藏分页 -->
               <div class="pagination-wrapper" v-if="scenicTotal > 0">
-                <el-pagination
-                  background
-                  layout="total, prev, pager, next"
-                  :total="scenicTotal"
-                  :page-size="scenicPageSize"
-                  :current-page="scenicCurrentPage"
-                  @current-change="handleScenicPageChange"
-                  class="modern-pagination"
-                />
+                <el-pagination background layout="total, prev, pager, next" :total="scenicTotal"
+                  :page-size="scenicPageSize" :current-page="scenicCurrentPage" @current-change="handleScenicPageChange"
+                  class="modern-pagination" />
               </div>
             </el-tab-pane>
 
@@ -131,7 +134,9 @@
             <el-tab-pane label="攻略收藏" name="guide">
               <template #label>
                 <div class="tab-label">
-                  <el-icon><Document /></el-icon>
+                  <el-icon>
+                    <Document />
+                  </el-icon>
                   <span>攻略收藏</span>
                   <span class="tab-count">{{ guideTotal }}</span>
                 </div>
@@ -148,26 +153,27 @@
                 <h3 class="empty-title">暂无收藏攻略</h3>
                 <p class="empty-desc">快去发现精彩的旅游攻略并收藏吧</p>
                 <el-button type="primary" @click="goToGuideList" class="empty-action">
-                  <el-icon><Search /></el-icon>
+                  <el-icon>
+                    <Search />
+                  </el-icon>
                   浏览攻略
                 </el-button>
               </div>
 
               <!-- 攻略收藏网格 -->
               <div v-else class="collection-grid">
-                <div
-                  v-for="(collection, index) in guideCollections"
-                  :key="collection.id"
-                  class="collection-card guide-collection hover-lift"
-                  :class="`delay-${(index % 6 + 1) * 100}`"
-                  @click="goToGuideDetail(collection.guideId)"
-                >
+                <div v-for="(collection, index) in guideCollections" :key="collection.id"
+                  class="collection-card guide-collection glass-card-inner hover-lift"
+                  :class="`delay-${(index % 6 + 1) * 100}`" @click="goToGuideDetail(collection.guideId)">
                   <div class="card-image">
-                    <img :src="getImageUrl(collection.guideCoverImage)" :alt="collection.guideTitle" />
+                    <img :src="getImageUrl(collection.guideCoverImage)" :alt="collection.guideTitle"
+                      style="border-radius: 12px;" />
                     <div class="image-overlay">
                       <div class="overlay-content">
                         <div class="guide-views">
-                          <el-icon><View /></el-icon>
+                          <el-icon>
+                            <View />
+                          </el-icon>
                           {{ collection.guideViews || 0 }}
                         </div>
                       </div>
@@ -182,11 +188,15 @@
 
                     <div class="guide-meta">
                       <div class="meta-item">
-                        <el-icon><View /></el-icon>
+                        <el-icon>
+                          <View />
+                        </el-icon>
                         <span>{{ collection.guideViews || 0 }} 浏览</span>
                       </div>
                       <div class="meta-item">
-                        <el-icon><User /></el-icon>
+                        <el-icon>
+                          <User />
+                        </el-icon>
                         <span>{{ collection.username || collection.userNickname }}</span>
                       </div>
                     </div>
@@ -196,21 +206,15 @@
                         收藏于 {{ formatDate(collection.createTime) }}
                       </div>
                       <div class="card-actions">
-                        <el-button
-                          type="primary"
-                          size="small"
-                          @click.stop="goToGuideDetail(collection.guideId)"
-                          class="detail-btn"
-                        >
+                        <el-button type="primary" size="small" @click.stop="goToGuideDetail(collection.guideId)"
+                          class="detail-btn">
                           查看详情
                         </el-button>
-                        <el-button
-                          type="danger"
-                          size="small"
-                          @click.stop="handleCancelGuideCollection(collection.guideId)"
-                          class="cancel-btn"
-                        >
-                          <el-icon><Delete /></el-icon>
+                        <el-button type="danger" size="small"
+                          @click.stop="handleCancelGuideCollection(collection.guideId)" class="cancel-btn">
+                          <el-icon>
+                            <Delete />
+                          </el-icon>
                         </el-button>
                       </div>
                     </div>
@@ -220,15 +224,9 @@
 
               <!-- 攻略收藏分页 -->
               <div class="pagination-wrapper" v-if="guideTotal > 0">
-                <el-pagination
-                  background
-                  layout="total, prev, pager, next"
-                  :total="guideTotal"
-                  :page-size="guidePageSize"
-                  :current-page="guideCurrentPage"
-                  @current-change="handleGuidePageChange"
-                  class="modern-pagination"
-                />
+                <el-pagination background layout="total, prev, pager, next" :total="guideTotal"
+                  :page-size="guidePageSize" :current-page="guideCurrentPage" @current-change="handleGuidePageChange"
+                  class="modern-pagination" />
               </div>
             </el-tab-pane>
           </el-tabs>
@@ -428,9 +426,84 @@ onMounted(() => {
 <style lang="scss" scoped>
 .my-collection-container {
   min-height: 100vh;
-  background: #f8fafc;
-  font-family: "思源黑体", "Source Han Sans", "Noto Sans CJK SC", sans-serif;
-  color: #333;
+  font-family: "PingFang SC", "Helvetica Neue", Helvetica, Arial, "Microsoft YaHei", sans-serif;
+  color: #1a202c;
+
+  // Hero顶部区域
+  .page-hero {
+    position: relative;
+    background: linear-gradient(135deg, #67b6f5 0%, #5aa9e6 100%);
+    padding: 40px 0 30px;
+    overflow: hidden;
+    border-radius: 24px;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.15)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.15)"/><circle cx="50" cy="10" r="0.8" fill="rgba(255,255,255,0.1)"/><circle cx="20" cy="60" r="0.8" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="0.8" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+      opacity: 0.3;
+    }
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 20px;
+    color: white;
+  }
+
+  .breadcrumb {
+    margin-bottom: 20px;
+
+    :deep(.el-breadcrumb__item) {
+      .el-breadcrumb__inner {
+        color: rgba(255, 255, 255, 0.8);
+        cursor: pointer;
+
+        &:hover {
+          color: white;
+        }
+      }
+
+      &:last-child .el-breadcrumb__inner {
+        color: white;
+      }
+    }
+
+    :deep(.el-breadcrumb__separator) {
+      color: rgba(255, 255, 255, 0.6);
+    }
+  }
+
+  .page-title {
+    font-size: 36px;
+    font-weight: 800;
+    margin: 0 0 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+
+  .title-icon {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+  }
+
+  .page-subtitle {
+    font-size: 16px;
+    opacity: 0.9;
+    margin: 0;
+    text-align: center;
+  }
 
   // 通用容器样式
   .section-container {
@@ -439,69 +512,38 @@ onMounted(() => {
     padding: 40px 20px;
   }
 
-  // 页面头部
-  .page-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 40px;
-    padding: 40px 0 20px;
-    border-bottom: 1px solid #e2e8f0;
-  }
-
-  .header-content {
-    flex: 1;
-  }
-
-  .page-title {
-    font-size: 36px;
-    font-weight: 700;
-    margin: 0 0 8px;
-    color: #2d3748;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-
-    .title-icon {
-      font-size: 32px;
-    }
-  }
-
-  .page-subtitle {
-    font-size: 16px;
-    color: #64748b;
-    text-align: left;
-    margin: 0;
-  }
-
-  .header-stats {
-    display: flex;
-    gap: 24px;
-  }
-
 
 
   // 收藏区域
   .collection-section {
-    background: white;
-    margin: 0;
-    padding-top: 20px;
+    padding: 20px 0 60px;
   }
 
-  .collection-tabs {
-    background: white;
-    border-radius: 16px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  .glass-card {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
     overflow: hidden;
-    border: 1px solid #e2e8f0;
+  }
+
+  .glass-card-inner {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
   }
 
   // 现代化标签页样式
   .modern-tabs {
     :deep(.el-tabs__header) {
       margin: 0;
-      background: #f8fafc;
-      border-bottom: 1px solid #e2e8f0;
+      background: linear-gradient(135deg, rgba(103, 182, 245, 0.05) 0%, rgba(90, 169, 230, 0.05) 100%);
+      border-bottom: 1px solid rgba(103, 182, 245, 0.2);
     }
 
     :deep(.el-tabs__nav-wrap) {
@@ -512,22 +554,23 @@ onMounted(() => {
       padding: 20px 0;
       font-size: 16px;
       font-weight: 600;
-      color: #64748b;
+      color: #5a6c7d;
       border: none;
       margin-right: 40px;
 
       &.is-active {
-        color: #667eea;
+        color: #67b6f5;
       }
 
       &:hover {
-        color: #667eea;
+        color: #67b6f5;
       }
     }
 
     :deep(.el-tabs__active-bar) {
-      background: linear-gradient(45deg, #667eea, #764ba2);
+      background: linear-gradient(135deg, #67b6f5 0%, #5aa9e6 100%);
       height: 3px;
+      border-radius: 3px;
     }
 
     :deep(.el-tabs__content) {
@@ -540,7 +583,7 @@ onMounted(() => {
       gap: 8px;
 
       .tab-count {
-        background: #667eea;
+        background: linear-gradient(135deg, #67b6f5 0%, #5aa9e6 100%);
         color: white;
         padding: 2px 8px;
         border-radius: 12px;
@@ -579,11 +622,18 @@ onMounted(() => {
     }
 
     .empty-action {
-      background: linear-gradient(45deg, #667eea, #764ba2);
+      background: linear-gradient(135deg, #67b6f5 0%, #5aa9e6 100%);
       border: none;
-      border-radius: 20px;
-      padding: 12px 24px;
+      border-radius: 12px;
+      padding: 12px 32px;
       font-weight: 600;
+      box-shadow: 0 6px 20px rgba(103, 182, 245, 0.3);
+      transition: all 0.3s ease;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(103, 182, 245, 0.4);
+      }
     }
   }
 
@@ -596,10 +646,7 @@ onMounted(() => {
   }
 
   .collection-card {
-    border-radius: 16px;
     overflow: hidden;
-    background: #fff;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     transition: all 0.4s ease;
     cursor: pointer;
     position: relative;
@@ -609,7 +656,7 @@ onMounted(() => {
 
     &:hover {
       transform: translateY(-8px);
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 12px 40px rgba(103, 182, 245, 0.25);
 
       .card-image img {
         transform: scale(1.1);
@@ -625,6 +672,8 @@ onMounted(() => {
     height: 220px;
     overflow: hidden;
     position: relative;
+    border-radius: 12px;
+    margin: 12px;
 
     img {
       width: 100%;
@@ -675,29 +724,31 @@ onMounted(() => {
   }
 
   .badge {
-    padding: 4px 8px;
+    padding: 4px 10px;
     border-radius: 12px;
     font-size: 12px;
     font-weight: 600;
     backdrop-filter: blur(10px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 
     &.category {
-      background: linear-gradient(45deg, #667eea, #764ba2);
+      background: linear-gradient(135deg, #67b6f5 0%, #5aa9e6 100%);
       color: white;
     }
 
     &.free {
-      background: linear-gradient(45deg, #10b981, #059669);
+      background: linear-gradient(135deg, #10b981, #059669);
       color: white;
     }
 
     &.price {
-      background: rgba(255, 255, 255, 0.9);
-      color: #333;
+      background: rgba(255, 255, 255, 0.95);
+      color: #1a202c;
+      font-weight: 700;
     }
 
     &.guide {
-      background: linear-gradient(45deg, #f59e0b, #d97706);
+      background: linear-gradient(135deg, #f59e0b, #d97706);
       color: white;
     }
   }
@@ -713,7 +764,7 @@ onMounted(() => {
     margin: 0 0 12px;
     font-size: 18px;
     font-weight: 700;
-    color: #2d3748;
+    color: #1a202c;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
@@ -725,12 +776,12 @@ onMounted(() => {
     display: flex;
     align-items: center;
     font-size: 14px;
-    color: #64748b;
+    color: #5a6c7d;
     margin-bottom: 12px;
     gap: 4px;
 
     .el-icon {
-      color: #667eea;
+      color: #67b6f5;
     }
   }
 
@@ -743,11 +794,11 @@ onMounted(() => {
       display: flex;
       align-items: center;
       font-size: 12px;
-      color: #64748b;
+      color: #5a6c7d;
       gap: 4px;
 
       .el-icon {
-        color: #667eea;
+        color: #67b6f5;
       }
     }
   }
@@ -769,16 +820,17 @@ onMounted(() => {
       gap: 8px;
 
       .detail-btn {
-        border-radius: 20px;
-        background: linear-gradient(45deg, #667eea, #764ba2);
+        border-radius: 12px;
+        background: linear-gradient(135deg, #67b6f5 0%, #5aa9e6 100%);
         border: none;
         font-weight: 600;
         padding: 8px 16px;
         flex: 1;
+        box-shadow: 0 4px 12px rgba(103, 182, 245, 0.2);
 
         &:hover {
-          transform: translateY(-1px);
-          box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+          transform: translateY(-2px);
+          box-shadow: 0 6px 16px rgba(103, 182, 245, 0.35);
         }
       }
 
@@ -787,13 +839,14 @@ onMounted(() => {
         width: 36px;
         height: 36px;
         padding: 0;
-        background: #f56565;
+        background: linear-gradient(135deg, #f56565, #e53e3e);
         border: none;
         color: white;
+        box-shadow: 0 4px 12px rgba(245, 101, 101, 0.2);
 
         &:hover {
-          background: #e53e3e;
           transform: scale(1.1);
+          box-shadow: 0 6px 16px rgba(245, 101, 101, 0.35);
         }
       }
     }
@@ -809,28 +862,29 @@ onMounted(() => {
   .modern-pagination {
     :deep(.el-pagination) {
       .el-pager li {
-        border-radius: 8px;
+        border-radius: 12px;
         margin: 0 4px;
         transition: all 0.3s ease;
 
         &:hover {
-          background: #667eea;
+          background: #67b6f5;
           color: white;
         }
 
         &.is-active {
-          background: linear-gradient(45deg, #667eea, #764ba2);
+          background: linear-gradient(135deg, #67b6f5 0%, #5aa9e6 100%);
           color: white;
+          box-shadow: 0 4px 12px rgba(103, 182, 245, 0.3);
         }
       }
 
       .btn-prev,
       .btn-next {
-        border-radius: 8px;
+        border-radius: 12px;
         transition: all 0.3s ease;
 
         &:hover {
-          background: #667eea;
+          background: #67b6f5;
           color: white;
         }
       }
