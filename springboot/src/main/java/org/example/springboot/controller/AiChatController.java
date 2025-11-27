@@ -80,9 +80,8 @@ public class AiChatController {
                     .trim();
                     
                 // 限制长度为5-8字
-                if (title.length() > 8) {
-                    title = title.substring(0, 8);
-                }
+                title = title.replaceAll("[^\\p{L}\\p{N}]", "");
+                if (title.length() > 8) title = title.substring(0, 8);
                     
                 // 更新会话标题
                 chatSessionService.updateSessionName(sessionId, title);
