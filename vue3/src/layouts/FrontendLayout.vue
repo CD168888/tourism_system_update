@@ -122,6 +122,7 @@ import {
   ArrowDown,
   ChatDotRound
 } from '@element-plus/icons-vue'
+import { getImageUrl } from '@/utils/uploadConfig'
 
 const userStore = useUserStore()
 const router = useRouter()
@@ -134,8 +135,7 @@ const userInitial = computed(() => {
 })
 
 const userAvatar = computed(() => {
-  const baseAPI = process.env.VUE_APP_BASE_API || '/api'
-  return userStore.userInfo?.avatar ? baseAPI + userStore.userInfo.avatar : ''
+  return getImageUrl(userStore.userInfo?.avatar)
 })
 
 const handleCommand = (command) => {

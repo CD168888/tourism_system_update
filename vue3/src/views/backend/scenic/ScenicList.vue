@@ -112,12 +112,12 @@
         <el-table-column prop="imageUrl" label="图片" width="120" align="center">
           <template #default="scope">
             <el-image 
-              :src="baseAPI + scope.row.imageUrl" 
+              :src="getImageUrl(scope.row.imageUrl)" 
               style="width: 80px; height: 60px; border-radius: 4px" 
               fit="cover" 
               :preview-teleported="true"
               v-if="scope.row.imageUrl"
-              :preview-src-list="[baseAPI + scope.row.imageUrl]"
+              :preview-src-list="[getImageUrl(scope.row.imageUrl)]"
             >
               <template #error>
                 <div class="image-error">
@@ -255,7 +255,7 @@
               </div>
               <el-image 
                 v-else 
-                :src="baseAPI + scenicForm.imageUrl" 
+                :src="getImageUrl(scenicForm.imageUrl)" 
                 class="preview-image" 
                 fit="cover" 
               />
@@ -344,6 +344,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import request from '@/utils/request'
 import { formatDate } from '@/utils/dateUtils'
 import ChinaRegionData from '@/assets/中国地区数据.json'
+import { getImageUrl } from '@/utils/uploadConfig'
 
 const baseAPI = process.env.VUE_APP_BASE_API || '/api'
 
@@ -612,6 +613,7 @@ const customUploadImage = async (options) => {
     const { file } = options
     const formData = new FormData()
     formData.append('file', file)
+    
     await request.post('/file/upload/img', formData, {
       headers: {
         token: localStorage.getItem('token') || ''

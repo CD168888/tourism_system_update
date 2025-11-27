@@ -8,6 +8,7 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
 import '@wangeditor/editor/dist/css/style.css'
+import { isOssUrl } from '@/utils/uploadConfig'
 
 const props = defineProps({
   modelValue: {
@@ -66,7 +67,13 @@ const createEditor = async () => {
             },
             customInsert(res, insertFn) {
               const url = res.data
-              insertFn(url.startsWith('/') ? `/api${url}` : `/api/${url}`)
+              // OSS链接直接使用
+              if (isOssUrl(url)) {
+                insertFn(url)
+              } else {
+                // 兼容旧数据
+                insertFn(url.startsWith('/') ? `/api${url}` : `/api/${url}`)
+              }
             },
             onSuccess(file, res) {
               console.log('图片上传成功', res)

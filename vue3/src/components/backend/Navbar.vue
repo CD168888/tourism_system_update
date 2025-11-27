@@ -60,6 +60,7 @@ import { useUserStore } from '@/store/user'
 import { useAppStore } from '@/store/app'
 import { ElMessageBox } from 'element-plus'
 import { Expand, Fold, ArrowDown, User, SwitchButton, FullScreen, Aim } from '@element-plus/icons-vue'
+import { getImageUrl } from '@/utils/uploadConfig'
 
 const router = useRouter()
 const route = useRoute()
@@ -73,7 +74,7 @@ const toggleSidebar = () => {
   appStore.toggleSidebar()
 }
 const avatarUrl = computed(() => {
-  return userInfo.value?.avatar ? baseAPI + userInfo.value.avatar : '';
+  return getImageUrl(userInfo.value?.avatar)
 })
 const toggleFullScreen = () => {
   if (!document.fullscreenElement) {
