@@ -129,7 +129,7 @@ onMounted(async () => {
     // 动态引入wangeditor
     const wangEditor = await import('@wangeditor/editor')
     window.wangEditor = wangEditor
-    
+
     // 等待DOM更新后创建编辑器
     nextTick(() => {
       createEditor()
@@ -169,11 +169,11 @@ defineExpose({
   border: 1px solid #dcdfe6;
   border-radius: 4px;
   overflow: hidden;
-  
+
   .toolbar-container {
     border-bottom: 1px solid #dcdfe6;
   }
-  
+
   .editor-container {
     width: 100%;
     min-height: v-bind('props.height');
@@ -182,15 +182,24 @@ defineExpose({
 
 // 穿透到编辑器内部样式
 :deep(.w-e-text-container) {
+
   // 设置编辑区域的默认样式
   .w-e-text {
     text-align: left !important; // 强制左对齐
-    p, div, h1, h2, h3, h4, h5, h6 {
+
+    p,
+    div,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
       text-align: left !important; // 确保所有文本元素左对齐
       margin: 0; // 移除默认边距
       padding: 0; // 移除默认内边距
     }
-    
+
     // 移除任何可能的居中或居右样式
     [style*="text-align: center"],
     [style*="text-align: right"],
@@ -198,7 +207,7 @@ defineExpose({
     [style*="text-align:right"] {
       text-align: left !important;
     }
-    
+
     // 确保图片也默认左对齐
     img {
       margin: 5px 0;
