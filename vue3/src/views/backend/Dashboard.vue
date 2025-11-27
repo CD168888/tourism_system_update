@@ -21,11 +21,15 @@
           </div>
           <div class="welcome-info">
             <h2>
-              <el-icon class="welcome-icon"><Sunny /></el-icon>
+              <el-icon class="welcome-icon">
+                <Sunny />
+              </el-icon>
               欢迎回来, {{ userInfo?.name || userInfo?.username }}
             </h2>
             <p>
-              <el-icon><Clock /></el-icon>
+              <el-icon>
+                <Clock />
+              </el-icon>
               {{ currentTime }}
             </p>
             <p class="welcome-subtitle">开启美好的旅游管理之旅</p>
@@ -34,7 +38,9 @@
       </template>
       <div class="role-info">
         <el-tag type="success" effect="light" size="large">
-          <el-icon><User /></el-icon>
+          <el-icon>
+            <User />
+          </el-icon>
           {{ roleLabel }}
         </el-tag>
       </div>
@@ -46,7 +52,9 @@
         <el-col :span="6">
           <el-card class="action-card scenic-card" @click="navigateTo('/back/scenic')">
             <div class="action-content">
-              <el-icon class="action-icon"><MapLocation /></el-icon>
+              <el-icon class="action-icon">
+                <MapLocation />
+              </el-icon>
               <h3>景点管理</h3>
               <p>管理旅游景点信息</p>
             </div>
@@ -55,7 +63,9 @@
         <el-col :span="6">
           <el-card class="action-card accommodation-card" @click="navigateTo('/back/accommodation')">
             <div class="action-content">
-              <el-icon class="action-icon"><House /></el-icon>
+              <el-icon class="action-icon">
+                <House />
+              </el-icon>
               <h3>住宿管理</h3>
               <p>管理酒店住宿信息</p>
             </div>
@@ -64,7 +74,9 @@
         <el-col :span="6">
           <el-card class="action-card guide-card" @click="navigateTo('/back/guide')">
             <div class="action-content">
-              <el-icon class="action-icon"><Document /></el-icon>
+              <el-icon class="action-icon">
+                <Document />
+              </el-icon>
               <h3>攻略管理</h3>
               <p>管理旅游攻略内容</p>
             </div>
@@ -73,20 +85,24 @@
         <el-col :span="6">
           <el-card class="action-card user-card" @click="navigateTo('/back/user')">
             <div class="action-content">
-              <el-icon class="action-icon"><UserFilled /></el-icon>
+              <el-icon class="action-icon">
+                <UserFilled />
+              </el-icon>
               <h3>用户管理</h3>
               <p>管理系统用户信息</p>
             </div>
           </el-card>
         </el-col>
       </el-row>
-      
+
       <!-- 新增第二行管理功能 -->
       <el-row :gutter="20" style="margin-top: 20px;">
         <el-col :span="6">
           <el-card class="action-card comment-card" @click="navigateTo('/back/comment')">
             <div class="action-content">
-              <el-icon class="action-icon"><ChatDotRound /></el-icon>
+              <el-icon class="action-icon">
+                <ChatDotRound />
+              </el-icon>
               <h3>评论管理</h3>
               <p>管理用户评论信息</p>
             </div>
@@ -95,7 +111,9 @@
         <el-col :span="6">
           <el-card class="action-card ticket-card" @click="navigateTo('/back/ticket')">
             <div class="action-content">
-              <el-icon class="action-icon"><Ticket /></el-icon>
+              <el-icon class="action-icon">
+                <Ticket />
+              </el-icon>
               <h3>门票管理</h3>
               <p>管理景点门票信息</p>
             </div>
@@ -104,7 +122,9 @@
         <el-col :span="6">
           <el-card class="action-card carousel-card" @click="navigateTo('/back/carousel')">
             <div class="action-content">
-              <el-icon class="action-icon"><Picture /></el-icon>
+              <el-icon class="action-icon">
+                <Picture />
+              </el-icon>
               <h3>轮播图管理</h3>
               <p>管理首页轮播图片</p>
             </div>
@@ -113,7 +133,9 @@
         <el-col :span="6">
           <el-card class="action-card collection-card" @click="navigateTo('/back/collection')">
             <div class="action-content">
-              <el-icon class="action-icon"><Star /></el-icon>
+              <el-icon class="action-icon">
+                <Star />
+              </el-icon>
               <h3>收藏管理</h3>
               <p>管理用户收藏信息</p>
             </div>
@@ -128,13 +150,13 @@
 import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/store/user'
-import { 
-  Sunny, 
-  Clock, 
-  User, 
-  MapLocation, 
-  House, 
-  Document, 
+import {
+  Sunny,
+  Clock,
+  User,
+  MapLocation,
+  House,
+  Document,
   UserFilled,
   ChatDotRound,
   Ticket,
@@ -167,10 +189,10 @@ let timeInterval = null
 
 const updateTime = () => {
   const now = new Date()
-  const options = { 
-    year: 'numeric', 
-    month: 'long', 
-    day: 'numeric', 
+  const options = {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
     weekday: 'long',
     hour: '2-digit',
     minute: '2-digit'
@@ -218,7 +240,8 @@ onUnmounted(() => {
       border-radius: 50px;
       animation: float 6s ease-in-out infinite;
 
-      &::before, &::after {
+      &::before,
+      &::after {
         content: '';
         position: absolute;
         background: rgba(255, 255, 255, 0.1);
@@ -296,7 +319,7 @@ onUnmounted(() => {
       position: absolute;
       bottom: 0;
       background: rgba(255, 255, 255, 0.05);
-      
+
       &.mountain-1 {
         left: 0;
         width: 0;
@@ -329,20 +352,20 @@ onUnmounted(() => {
     border: 1px solid rgba(255, 255, 255, 0.2);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
-    
+
     &:hover {
       transform: translateY(-5px);
       box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
     }
-    
+
     .welcome-header {
       display: flex;
       align-items: center;
       gap: 25px;
-      
+
       .avatar-container {
         position: relative;
-        
+
         .el-avatar {
           background: linear-gradient(135deg, #667eea, #764ba2);
           transition: transform 0.3s ease;
@@ -361,7 +384,7 @@ onUnmounted(() => {
           animation: pulse 2s infinite;
         }
       }
-      
+
       .welcome-info {
         h2 {
           margin: 0 0 8px 0;
@@ -394,10 +417,10 @@ onUnmounted(() => {
         }
       }
     }
-    
+
     .role-info {
       margin-top: 20px;
-      
+
       .el-tag {
         padding: 8px 16px;
         border-radius: 20px;
@@ -417,7 +440,7 @@ onUnmounted(() => {
       transition: all 0.3s ease;
       background: rgba(255, 255, 255, 0.9);
       backdrop-filter: blur(10px);
-      
+
       &:hover {
         transform: translateY(-8px) scale(1.02);
         box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
@@ -482,18 +505,41 @@ onUnmounted(() => {
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-20px); }
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-20px);
+  }
 }
 
 @keyframes pulse {
-  0% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.1); opacity: 0.7; }
-  100% { transform: scale(1); opacity: 1; }
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  50% {
+    transform: scale(1.1);
+    opacity: 0.7;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 @keyframes rotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 </style>

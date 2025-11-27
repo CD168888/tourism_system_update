@@ -27,29 +27,16 @@
         <!-- 添加头像上传部分 -->
         <div class="avatar-container">
           <el-avatar :size="100" :src="avatarUrl" @error="() => false" />
-          <el-upload
-            class="avatar-uploader"
-            action="#"
-            :auto-upload="true"
-            :show-file-list="false"
-            :http-request="customUploadAvatar"
-            :before-upload="beforeAvatarUpload"
-            :disabled="!isEditing"
-          >
+          <el-upload class="avatar-uploader" action="#" :auto-upload="true" :show-file-list="false"
+            :http-request="customUploadAvatar" :before-upload="beforeAvatarUpload" :disabled="!isEditing">
             <el-button size="small" type="primary" plain :disabled="!isEditing" class="avatar-btn">
               <i class="el-icon-camera"></i> 更换头像
             </el-button>
           </el-upload>
         </div>
 
-        <el-form 
-          ref="formRef"
-          :model="form"
-          :rules="rules"
-          label-width="100px"
-          :disabled="!isEditing"
-          class="info-form"
-        >
+        <el-form ref="formRef" :model="form" :rules="rules" label-width="100px" :disabled="!isEditing"
+          class="info-form">
           <el-form-item label="用户名" prop="username">
             <el-input v-model="form.username" disabled />
           </el-form-item>
@@ -84,48 +71,23 @@
         </div>
       </template>
 
-      <el-form
-        ref="passwordFormRef"
-        :model="passwordForm"
-        :rules="passwordRules"
-        label-width="100px"
-        class="password-form"
-      >
+      <el-form ref="passwordFormRef" :model="passwordForm" :rules="passwordRules" label-width="100px"
+        class="password-form">
         <el-form-item label="原密码" prop="oldPassword">
-          <el-input 
-            v-model="passwordForm.oldPassword" 
-            type="password"
-            placeholder="请输入原密码"
-            show-password
-          />
+          <el-input v-model="passwordForm.oldPassword" type="password" placeholder="请输入原密码" show-password />
         </el-form-item>
 
         <el-form-item label="新密码" prop="newPassword">
-          <el-input 
-            v-model="passwordForm.newPassword" 
-            type="password"
-            placeholder="请输入新密码"
-            show-password
-          />
+          <el-input v-model="passwordForm.newPassword" type="password" placeholder="请输入新密码" show-password />
         </el-form-item>
 
         <el-form-item label="确认密码" prop="confirmPassword">
-          <el-input 
-            v-model="passwordForm.confirmPassword" 
-            type="password"
-            placeholder="请再次输入新密码"
-            show-password
-          />
+          <el-input v-model="passwordForm.confirmPassword" type="password" placeholder="请再次输入新密码" show-password />
         </el-form-item>
 
         <el-form-item>
-          <el-button 
-            type="primary" 
-            plain
-            @click="handleChangePassword"
-            :loading="changingPassword"
-            class="password-btn"
-          >
+          <el-button type="primary" plain @click="handleChangePassword" :loading="changingPassword"
+            class="password-btn">
             <i class="el-icon-key"></i> 修改密码
           </el-button>
         </el-form-item>
@@ -223,7 +185,7 @@ const fetchUserInfo = async () => {
     const res = await request.get(`/user/${userId}`, null, {
       showDefaultMsg: false
     })
-    
+
     // 直接更新表单数据
     form.id = res.id || userStore.userInfo.id
     form.username = res.username || ''
@@ -232,7 +194,7 @@ const fetchUserInfo = async () => {
     form.phone = res.phone || ''
     form.sex = res.sex || '男'
     form.avatar = res.avatar || ''
-    
+
     console.log('用户信息加载成功:', form)
   } catch (error) {
     console.error('获取用户信息失败:', error)
@@ -344,11 +306,11 @@ const handleCancel = () => {
 // 保存信息
 const handleSave = async () => {
   if (!formRef.value) return
-  
+
   try {
     await formRef.value.validate()
     saving.value = true
-    
+
     await request.put(
       `/user/${form.id}`,
       {
@@ -405,7 +367,7 @@ const handleChangePassword = async () => {
         onSuccess: (data) => {
           // 清空密码表单
           passwordFormRef.value.resetFields()
-          
+
           // 提示用户重新登录
           ElMessageBox.confirm('密码已修改，需要重新登录', '提示', {
             confirmButtonText: '重新登录',
@@ -441,18 +403,18 @@ onMounted(() => {
   padding: 20px;
   background-color: #f9fafc;
   min-height: calc(100vh - 120px);
-  
+
   .page-header {
     margin-bottom: 24px;
     text-align: left;
-    
+
     .page-title {
       font-size: 24px;
       color: #34495e;
       margin: 0 0 8px 0;
       font-weight: 500;
     }
-    
+
     .page-subtitle {
       font-size: 14px;
       color: #7f8c8d;
@@ -460,7 +422,7 @@ onMounted(() => {
       font-style: italic;
     }
   }
-  
+
   .info-card,
   .password-card {
     margin-bottom: 20px;
@@ -468,30 +430,30 @@ onMounted(() => {
     background-color: #fff;
     box-shadow: none;
     overflow: hidden;
-    
+
     .card-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 15px 20px;
       border-bottom: 1px solid #ecf0f1;
-      
+
       .card-title {
         font-size: 18px;
         color: #34495e;
         font-weight: 500;
       }
-      
+
       .action-btn {
         margin-left: 8px;
       }
     }
-    
+
     :deep(.el-card__header) {
       padding: 0;
       border-bottom: none;
     }
-    
+
     :deep(.el-card__body) {
       padding: 30px 20px;
     }
@@ -501,33 +463,34 @@ onMounted(() => {
     display: flex;
     flex-direction: column;
     gap: 30px;
-    
+
     @media (min-width: 768px) {
       flex-direction: row;
     }
   }
-  
+
   .avatar-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 15px;
-    
+
     .avatar-uploader {
       text-align: center;
       margin-top: 10px;
     }
-    
+
     .avatar-btn {
       background-color: #3498db;
       border-color: #3498db;
-      
-      &:hover, &:focus {
+
+      &:hover,
+      &:focus {
         background-color: #2980b9;
         border-color: #2980b9;
         color: white;
       }
-      
+
       &:disabled {
         background-color: #f5f7fa;
         border-color: #e4e7ed;
@@ -535,17 +498,17 @@ onMounted(() => {
       }
     }
   }
-  
+
   .info-form {
     flex: 1;
     max-width: 500px;
     margin: 0 auto;
-    
+
     :deep(.el-form-item__label) {
       font-weight: 500;
       color: #34495e;
     }
-    
+
     :deep(.el-input__inner) {
       border-radius: 4px;
     }
@@ -554,17 +517,18 @@ onMounted(() => {
   .password-form {
     max-width: 500px;
     margin: 0 auto;
-    
+
     :deep(.el-form-item__label) {
       font-weight: 500;
       color: #34495e;
     }
-    
+
     .password-btn {
       background-color: #3498db;
       border-color: #3498db;
-      
-      &:hover, &:focus {
+
+      &:hover,
+      &:focus {
         background-color: #2980b9;
         border-color: #2980b9;
         color: white;
@@ -572,4 +536,4 @@ onMounted(() => {
     }
   }
 }
-</style> 
+</style>
