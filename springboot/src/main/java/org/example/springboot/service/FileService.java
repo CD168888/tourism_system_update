@@ -59,6 +59,7 @@ public class FileService {
     }
     @DeleteMapping("/remove/{filename}")
     public Result<?> fileRemove(@PathVariable String filename){
+<<<<<<< HEAD
         try {
             // 从OSS删除文件
             boolean res = aliOssUtil.delete(filename);
@@ -67,6 +68,14 @@ public class FileService {
             LOGGER.error("文件删除失败: " + e.getMessage(), e);
             return Result.error("-1", "删除失败: " + e.getMessage());
         }
+=======
+        String filePath="\\img\\"+filename;
+
+        boolean res = FileUtil.deleteFile(filePath);
+
+        return res? Result.success():Result.error("-1","删除失败！");
+
+>>>>>>> d8bcea05440b3cc1e83e15c8380c711dc7411ddd
     }
 
     public List<String> uploadMultiple(List<MultipartFile> files) {
@@ -76,12 +85,16 @@ public class FileService {
         }
 
         List<String> successPaths = new ArrayList<>();
+<<<<<<< HEAD
         List<String> uploadedObjectNames = new ArrayList<>();
+=======
+>>>>>>> d8bcea05440b3cc1e83e15c8380c711dc7411ddd
         List<String> failedFiles = new ArrayList<>();
 
         for (MultipartFile file : files) {
             try {
                 if (StringUtils.isEmpty(file.getOriginalFilename())) {
+<<<<<<< HEAD
                     failedFiles.add("未知文件: 文件不存在");
                     continue;
                 }
@@ -105,12 +118,27 @@ public class FileService {
                 }
             } catch (Exception e) {
                 LOGGER.error("文件上传到OSS时发生异常: " + e.getMessage(), e);
+=======
+                    failedFiles.add(file.getOriginalFilename() + ": 文件不存在");
+                    continue;
+                }
+                LOGGER.info("upload FILE:" + file.getOriginalFilename());
+                String path = FileUtil.saveFile(file,null,FileType.COMMON.getTypeName());
+                if (StringUtils.isNotBlank(path)) {
+                    successPaths.add(path);
+                } else {
+                    failedFiles.add(file.getOriginalFilename() + ": 文件上传失败");
+                }
+            } catch (Exception e) {
+                LOGGER.error("文件上传时发生异常: " + e.getMessage(), e);
+>>>>>>> d8bcea05440b3cc1e83e15c8380c711dc7411ddd
                 failedFiles.add(file.getOriginalFilename() + ": 文件上传时发生异常");
             }
         }
 
         // 检查是否所有文件都成功上传
         if (!failedFiles.isEmpty()) {
+<<<<<<< HEAD
             // 如果有文件上传失败，删除OSS上所有成功上传的文件
             for (String objectName : uploadedObjectNames) {
                 try {
@@ -121,11 +149,25 @@ public class FileService {
                     }
                 } catch (Exception e) {
                     LOGGER.error("删除OSS文件时发生异常: " + e.getMessage(), e);
+=======
+            // 如果有文件上传失败，删除所有成功上传的文件
+            for (String path : successPaths) {
+                File uploadedFile = new File(path);
+                if (uploadedFile.exists() && uploadedFile.isFile()) {
+                    if (uploadedFile.delete()) {
+                        LOGGER.info("Deleted successfully uploaded file: " + path);
+                    } else {
+                        LOGGER.warn("Failed to delete file: " + path);
+                    }
+>>>>>>> d8bcea05440b3cc1e83e15c8380c711dc7411ddd
                 }
             }
 
             // 返回错误信息
+<<<<<<< HEAD
             LOGGER.error("部分文件上传失败: " + String.join(", ", failedFiles));
+=======
+>>>>>>> d8bcea05440b3cc1e83e15c8380c711dc7411ddd
             return null;
         } else {
             // 如果全部成功，则只返回成功路径

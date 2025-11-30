@@ -8,7 +8,11 @@
       </div>
       <div class="hero-content">
         <div class="hero-glass-card">
+<<<<<<< HEAD
           <h1 class="hero-title">探索江门 · 发现美好</h1>
+=======
+          <h1 class="hero-title">探索世界 · 发现美好</h1>
+>>>>>>> d8bcea05440b3cc1e83e15c8380c711dc7411ddd
           <p class="hero-subtitle">每一次旅行,都是一场心灵的修行</p>
           <div class="hero-search">
             <smart-search placeholder="搜索目的地、景点、攻略..." @search="handleSearch" />
@@ -265,7 +269,11 @@ const fetchHotScenics = async () => {
   scenicLoading.value = true
   try {
     await request.get('/scenic/hot', {
+<<<<<<< HEAD
       limit: 6
+=======
+      limit: 4
+>>>>>>> d8bcea05440b3cc1e83e15c8380c711dc7411ddd
     }, {
       showDefaultMsg: false,
       onSuccess: (data) => {
