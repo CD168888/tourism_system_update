@@ -59,12 +59,14 @@ public class FileService {
     }
     @DeleteMapping("/remove/{filename}")
     public Result<?> fileRemove(@PathVariable String filename){
-        String filePath="\\img\\"+filename;
-
-        boolean res = FileUtil.deleteFile(filePath);
-
-        return res? Result.success():Result.error("-1","删除失败！");
-
+        try {
+            // 从OSS删除文件
+            boolean res = aliOssUtil.delete(filename);
+            return res ? Result.success() : Result.error("-1", "删除失败！");
+        } catch (Exception e) {
+            LOGGER.error("文件删除失败: " + e.getMessage(), e);
+            return Result.error("-1", "删除失败: " + e.getMessage());
+        }
     }
 
     public List<String> uploadMultiple(List<MultipartFile> files) {
@@ -74,42 +76,56 @@ public class FileService {
         }
 
         List<String> successPaths = new ArrayList<>();
+        List<String> uploadedObjectNames = new ArrayList<>();
         List<String> failedFiles = new ArrayList<>();
 
         for (MultipartFile file : files) {
             try {
                 if (StringUtils.isEmpty(file.getOriginalFilename())) {
-                    failedFiles.add(file.getOriginalFilename() + ": 文件不存在");
+                    failedFiles.add("未知文件: 文件不存在");
                     continue;
                 }
-                LOGGER.info("upload FILE:" + file.getOriginalFilename());
-                String path = FileUtil.saveFile(file,null,FileType.COMMON.getTypeName());
-                if (StringUtils.isNotBlank(path)) {
-                    successPaths.add(path);
+                
+                LOGGER.info("upload FILE to OSS: " + file.getOriginalFilename());
+                
+                String originalFilename = file.getOriginalFilename();
+                // 截取原始文件名的后缀
+                String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+                // 构造新文件名称
+                String objectName = UUID.randomUUID().toString() + extension;
+                
+                // 上传到阿里云OSS
+                String filePath = aliOssUtil.upload(file.getBytes(), objectName);
+                
+                if (com.baomidou.mybatisplus.core.toolkit.StringUtils.isNotBlank(filePath)) {
+                    successPaths.add(filePath);
+                    uploadedObjectNames.add(objectName);
                 } else {
-                    failedFiles.add(file.getOriginalFilename() + ": 文件上传失败");
+                    failedFiles.add(originalFilename + ": 文件上传失败");
                 }
             } catch (Exception e) {
-                LOGGER.error("文件上传时发生异常: " + e.getMessage(), e);
+                LOGGER.error("文件上传到OSS时发生异常: " + e.getMessage(), e);
                 failedFiles.add(file.getOriginalFilename() + ": 文件上传时发生异常");
             }
         }
 
         // 检查是否所有文件都成功上传
         if (!failedFiles.isEmpty()) {
-            // 如果有文件上传失败，删除所有成功上传的文件
-            for (String path : successPaths) {
-                File uploadedFile = new File(path);
-                if (uploadedFile.exists() && uploadedFile.isFile()) {
-                    if (uploadedFile.delete()) {
-                        LOGGER.info("Deleted successfully uploaded file: " + path);
+            // 如果有文件上传失败，删除OSS上所有成功上传的文件
+            for (String objectName : uploadedObjectNames) {
+                try {
+                    if (aliOssUtil.delete(objectName)) {
+                        LOGGER.info("Deleted successfully uploaded file from OSS: " + objectName);
                     } else {
-                        LOGGER.warn("Failed to delete file: " + path);
+                        LOGGER.warn("Failed to delete file from OSS: " + objectName);
                     }
+                } catch (Exception e) {
+                    LOGGER.error("删除OSS文件时发生异常: " + e.getMessage(), e);
                 }
             }
 
             // 返回错误信息
+            LOGGER.error("部分文件上传失败: " + String.join(", ", failedFiles));
             return null;
         } else {
             // 如果全部成功，则只返回成功路径
