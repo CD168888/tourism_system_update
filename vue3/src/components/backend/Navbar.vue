@@ -59,14 +59,13 @@ import { useRouter, useRoute } from 'vue-router'
 import { useUserStore } from '@/store/user'
 import { useAppStore } from '@/store/app'
 import { ElMessageBox } from 'element-plus'
-import { Expand, Fold, ArrowDown, User, SwitchButton, FullScreen, Aim } from '@element-plus/icons-vue'
+import { Expand, Fold, ArrowDown, SwitchButton, FullScreen, Aim } from '@element-plus/icons-vue'
 import { getImageUrl } from '@/utils/uploadConfig'
 
 const router = useRouter()
 const route = useRoute()
 const userStore = useUserStore()
 const appStore = useAppStore()
-const baseAPI = process.env.VUE_APP_BASE_API || '/api'
 const userInfo = computed(() => userStore.userInfo)
 const isFullscreen = ref(false)
 

@@ -21,7 +21,6 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
 import { useUserStore } from '@/store/user'
 import { useRouter } from 'vue-router'
 import Sidebar from '@/components/backend/Sidebar.vue'
@@ -29,7 +28,6 @@ import Navbar from '@/components/backend/Navbar.vue'
 const userStore = useUserStore()
 const router = useRouter()
 
-const isAdmin = computed(() => userStore.role === 'admin')
 
 const handleLogout = () => {
   userStore.clearUserInfo()

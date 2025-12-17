@@ -103,7 +103,6 @@ import { useUserStore } from '@/store/user'
 import request from '@/utils/request'
 import { getImageUrl } from '@/utils/uploadConfig'
 
-const baseAPI = process.env.VUE_APP_BASE_API || '/api'
 const userStore = useUserStore()
 const formRef = ref(null)
 const passwordFormRef = ref(null)
@@ -274,7 +273,7 @@ const updateUserAvatar = async (avatarPath) => {
       {
         showDefaultMsg: false,
         successMsg: '头像更新成功',
-        onSuccess: (data) => {
+        onSuccess: () => {
           // 更新本地用户信息
           const updatedUserInfo = { ...userStore.userInfo, avatar: avatarPath }
           userStore.updateUserInfo(updatedUserInfo)
@@ -322,7 +321,7 @@ const handleSave = async () => {
       {
         showDefaultMsg: false,
         successMsg: '个人信息更新成功',
-        onSuccess: (data) => {
+        onSuccess: () => {
           isEditing.value = false
           // 更新store中的用户信息
           userStore.updateUserInfo({
@@ -364,7 +363,7 @@ const handleChangePassword = async () => {
       {
         showDefaultMsg: false,
         successMsg: '密码修改成功',
-        onSuccess: (data) => {
+        onSuccess: () => {
           // 清空密码表单
           passwordFormRef.value.resetFields()
 

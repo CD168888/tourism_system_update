@@ -1,10 +1,6 @@
 <template>
   <div class="payment-result-container">
-    <el-result
-      :icon="resultInfo.icon"
-      :title="resultInfo.title"
-      :sub-title="resultInfo.subTitle"
-    >
+    <el-result :icon="resultInfo.icon" :title="resultInfo.title" :sub-title="resultInfo.subTitle">
       <template #extra>
         <el-button type="primary" @click="goToOrders">查看我的订单</el-button>
         <el-button @click="goToTickets">继续浏览门票</el-button>
@@ -16,7 +12,6 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { ElMessage } from 'element-plus'
 import request from '@/utils/request'
 
 const router = useRouter()
@@ -61,15 +56,15 @@ const checkPaymentResult = async () => {
       paymentStatus.value = 'failed'
       return
     }
-    
+
     // 从URL获取支付宝回调参数
     const outTradeNo = route.query.out_trade_no
-    
+
     if (!outTradeNo) {
       paymentStatus.value = 'failed'
       return
     }
-    
+
     // 如果URL中没有明确的状态，则查询订单状态
     await request.get('/order/status', {
       orderNo: outTradeNo
@@ -83,7 +78,7 @@ const checkPaymentResult = async () => {
           paymentStatus.value = 'failed'
         }
       },
-      onError: (error) => {
+      onError: () => {
         paymentStatus.value = 'failed'
       }
     })

@@ -84,13 +84,6 @@ import { useRouter } from 'vue-router'
 import { Search, Location, Document, User } from '@element-plus/icons-vue'
 import request from '@/utils/request'
 
-const props = defineProps({
-  placeholder: {
-    type: String,
-    default: '搜索目的地、景点、攻略...'
-  }
-})
-
 const emit = defineEmits(['search'])
 
 const router = useRouter()

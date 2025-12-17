@@ -61,13 +61,7 @@
         <el-table-column prop="content" label="内容" show-overflow-tooltip />
         <el-table-column prop="rating" label="评分" width="80" align="center">
           <template #default="scope">
-            <el-rate
-              v-model="scope.row.rating"
-              disabled
-              text-color="#ff9900"
-              score-template="{value}"
-              :max="5"
-            />
+            <el-rate v-model="scope.row.rating" disabled text-color="#ff9900" score-template="{value}" :max="5" />
           </template>
         </el-table-column>
         <el-table-column label="点赞" width="80" align="center">
@@ -93,14 +87,8 @@
 
       <!-- 分页 -->
       <div class="pagination-container">
-        <el-pagination
-          background
-          layout="total, prev, pager, next"
-          :current-page="currentPage"
-          :page-size="pageSize"
-          :total="total"
-          @current-change="handleCurrentChange"
-        />
+        <el-pagination background layout="total, prev, pager, next" :current-page="currentPage" :page-size="pageSize"
+          :total="total" @current-change="handleCurrentChange" />
       </div>
     </el-card>
   </div>
@@ -108,7 +96,7 @@
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { ElMessageBox } from 'element-plus'
 import request from '@/utils/request'
 import { formatDate } from '@/utils/dateUtils'
 
@@ -133,16 +121,16 @@ const fetchComments = async () => {
       currentPage: currentPage.value,
       size: pageSize.value
     }
-    
+
     if (searchForm.scenicName) params.scenicName = searchForm.scenicName
     if (searchForm.userName) params.userName = searchForm.userName
     if (searchForm.content) params.content = searchForm.content
-    
+
     await request.get('/comment/page', params, {
       showDefaultMsg: false,
       onSuccess: (res) => {
-        tableData.value = res.records||[]
-        total.value = res.total||0
+        tableData.value = res.records || []
+        total.value = res.total || 0
       }
     })
   } catch (error) {
@@ -180,7 +168,7 @@ const deleteComment = (row) => {
       successMsg: '删除成功',
       onSuccess: () => fetchComments()
     })
-  }).catch(() => {})
+  }).catch(() => { })
 }
 
 onMounted(fetchComments)
@@ -195,14 +183,14 @@ onMounted(fetchComments)
   .page-header {
     margin-bottom: 24px;
     text-align: left;
-    
+
     .page-title {
       font-size: 24px;
       color: #34495e;
       margin: 0 0 8px 0;
       font-weight: 500;
     }
-    
+
     .page-subtitle {
       font-size: 14px;
       color: #7f8c8d;
@@ -216,33 +204,35 @@ onMounted(fetchComments)
     border-radius: 8px;
     background-color: #fff;
     box-shadow: none;
-    
+
     .search-form {
       padding: 10px 0;
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      
+
       .el-form-item {
         margin-bottom: 0;
         margin-right: 16px;
       }
-      
+
       .search-btn {
         background-color: #3498db;
         border-color: #3498db;
-        
-        &:hover, &:focus {
+
+        &:hover,
+        &:focus {
           background-color: #2980b9;
           border-color: #2980b9;
         }
       }
-      
+
       .reset-btn {
         color: #7f8c8d;
         border-color: #bdc3c7;
-        
-        &:hover, &:focus {
+
+        &:hover,
+        &:focus {
           color: #34495e;
           border-color: #95a5a6;
           background-color: #f5f5f5;
@@ -250,19 +240,19 @@ onMounted(fetchComments)
       }
     }
   }
-  
+
   .table-card {
     border-radius: 8px;
     overflow: hidden;
     box-shadow: none;
-    
+
     .comment-table {
       border-radius: 4px;
       overflow: hidden;
-      
+
       :deep(thead) {
         background-color: #ecf0f1;
-        
+
         th {
           background-color: #ecf0f1;
           color: #34495e;
@@ -270,47 +260,47 @@ onMounted(fetchComments)
           padding: 12px 0;
         }
       }
-      
+
       :deep(tbody tr) {
         transition: all 0.3s;
-        
+
         &:hover {
           background-color: #f8f9fa;
         }
       }
-      
+
       .user-info {
         display: flex;
         align-items: center;
-        
+
         .user-name {
           margin-left: 8px;
           font-weight: 500;
         }
       }
-      
+
       .scenic-name {
         color: #2980b9;
         font-weight: 500;
       }
-      
+
       .like-info {
         display: flex;
         align-items: center;
         justify-content: center;
         color: #e67e22;
-        
+
         i {
           margin-right: 5px;
           font-size: 16px;
         }
       }
-      
+
       .date-text {
         color: #7f8c8d;
         font-size: 12px;
       }
-      
+
       .delete-btn {
         padding: 5px 12px;
       }
@@ -324,4 +314,4 @@ onMounted(fetchComments)
     padding: 0 20px;
   }
 }
-</style> 
+</style>

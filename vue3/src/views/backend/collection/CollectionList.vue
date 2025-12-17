@@ -5,7 +5,7 @@
       <h1 class="page-title">收藏管理</h1>
       <p class="page-subtitle">Collection Management</p>
     </div>
-    
+
     <!-- 搜索区域 -->
     <el-card class="search-card" shadow="never">
       <el-form :inline="true" :model="searchForm" class="search-form">
@@ -33,7 +33,7 @@
         </el-form-item>
       </el-form>
     </el-card>
-    
+
     <!-- 表格区域 -->
     <el-card class="table-card" shadow="never">
       <el-table :data="tableData" style="width: 100%" v-loading="loading" border class="collection-table">
@@ -74,17 +74,11 @@
           </template>
         </el-table-column>
       </el-table>
-      
+
       <!-- 分页 -->
       <div class="pagination-container">
-        <el-pagination
-          background
-          layout="total, prev, pager, next"
-          :current-page="currentPage"
-          :page-size="pageSize"
-          :total="total"
-          @current-change="handleCurrentChange"
-        />
+        <el-pagination background layout="total, prev, pager, next" :current-page="currentPage" :page-size="pageSize"
+          :total="total" @current-change="handleCurrentChange" />
       </div>
     </el-card>
   </div>
@@ -94,7 +88,7 @@
 import { ref, reactive, onMounted } from 'vue'
 import request from '@/utils/request'
 import { formatDate } from '@/utils/dateUtils'
-import { ElMessageBox, ElMessage } from 'element-plus'
+import { ElMessageBox } from 'element-plus'
 
 const baseAPI = process.env.VUE_APP_BASE_API || '/api'
 const tableData = ref([])
@@ -118,8 +112,8 @@ const fetchCollections = async () => {
     }, {
       showDefaultMsg: false,
       onSuccess: (res) => {
-        tableData.value = res.records||[]
-        total.value = res.total||0
+        tableData.value = res.records || []
+        total.value = res.total || 0
       }
     })
   } catch (error) {
@@ -152,13 +146,13 @@ const handleDelete = (row) => {
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
-    request.delete(`/collection/admin/${row.id}`,  {
+    request.delete(`/collection/admin/${row.id}`, {
       successMsg: '删除成功',
       onSuccess: () => {
         fetchCollections()
       }
     })
-  }).catch(() => {})
+  }).catch(() => { })
 }
 
 onMounted(fetchCollections)
@@ -173,14 +167,14 @@ onMounted(fetchCollections)
   .page-header {
     margin-bottom: 24px;
     text-align: left;
-    
+
     .page-title {
       font-size: 24px;
       color: #34495e;
       margin: 0 0 8px 0;
       font-weight: 500;
     }
-    
+
     .page-subtitle {
       font-size: 14px;
       color: #7f8c8d;
@@ -194,33 +188,35 @@ onMounted(fetchCollections)
     border-radius: 8px;
     background-color: #fff;
     box-shadow: none;
-    
+
     .search-form {
       padding: 10px 0;
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      
+
       .el-form-item {
         margin-bottom: 0;
         margin-right: 16px;
       }
-      
+
       .search-btn {
         background-color: #3498db;
         border-color: #3498db;
-        
-        &:hover, &:focus {
+
+        &:hover,
+        &:focus {
           background-color: #2980b9;
           border-color: #2980b9;
         }
       }
-      
+
       .reset-btn {
         color: #7f8c8d;
         border-color: #bdc3c7;
-        
-        &:hover, &:focus {
+
+        &:hover,
+        &:focus {
           color: #34495e;
           border-color: #95a5a6;
           background-color: #f5f5f5;
@@ -228,19 +224,19 @@ onMounted(fetchCollections)
       }
     }
   }
-  
+
   .table-card {
     border-radius: 8px;
     overflow: hidden;
     box-shadow: none;
-    
+
     .collection-table {
       border-radius: 4px;
       overflow: hidden;
-      
+
       :deep(thead) {
         background-color: #ecf0f1;
-        
+
         th {
           background-color: #ecf0f1;
           color: #34495e;
@@ -248,56 +244,56 @@ onMounted(fetchCollections)
           padding: 12px 0;
         }
       }
-      
+
       :deep(tbody tr) {
         transition: all 0.3s;
-        
+
         &:hover {
           background-color: #f8f9fa;
         }
       }
-      
+
       .user-info {
         display: flex;
         align-items: center;
-        
+
         .el-avatar {
           margin-right: 10px;
           flex-shrink: 0;
         }
-        
+
         .user-details {
           display: flex;
           flex-direction: column;
-          
+
           .username {
             font-weight: 500;
             font-size: 14px;
             color: #2980b9;
           }
-          
+
           .nickname {
             font-size: 12px;
             color: #909399;
           }
         }
       }
-      
+
       .guide-title {
         color: #2c3e50;
         font-weight: 500;
       }
-      
+
       .view-count {
         color: #7f8c8d;
         font-size: 14px;
       }
-      
+
       .date-text {
         color: #7f8c8d;
         font-size: 12px;
       }
-      
+
       .delete-btn {
         padding: 5px 12px;
       }

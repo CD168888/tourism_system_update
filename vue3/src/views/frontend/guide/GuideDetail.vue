@@ -123,7 +123,7 @@ import request from '@/utils/request'
 import { formatDate } from '@/utils/dateUtils'
 import { useUserStore } from '@/store/user'
 import { ElMessage } from 'element-plus'
-import { View, Calendar, Star, StarFilled, Share, User, ArrowRight } from '@element-plus/icons-vue'
+import { View, Calendar, Star, StarFilled, Share, User } from '@element-plus/icons-vue'
 import MarkdownIt from 'markdown-it'
 
 const baseAPI = process.env.VUE_APP_BASE_API || '/api'

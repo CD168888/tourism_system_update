@@ -168,7 +168,6 @@ import { getImageUrl } from '@/utils/uploadConfig'
 const router = useRouter()
 const userStore = useUserStore()
 const userInfo = computed(() => userStore.userInfo)
-const baseAPI = process.env.VUE_APP_BASE_API || '/api'
 
 // 角色标签
 const roleLabel = computed(() => {

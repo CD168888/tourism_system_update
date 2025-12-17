@@ -208,7 +208,7 @@ import { ref, reactive, computed, onMounted, watch } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { useUserStore } from "@/store/user";
 import request from "@/utils/request";
-import { User, Edit, Lock, Key, Check, Camera, Male, Female, Phone, Message, EditPen } from '@element-plus/icons-vue'
+import { User, Lock, Key, Check, Camera, Male, Female, Phone, Message, EditPen } from '@element-plus/icons-vue'
 
 const baseAPI = process.env.VUE_APP_BASE_API || "/api";
 const userStore = useUserStore();
@@ -391,7 +391,7 @@ const updateUserAvatar = async (avatarPath) => {
       { avatar: avatarPath },
       {
         showDefaultMsg: false,
-        onSuccess: (data) => {
+        onSuccess: () => {
           // 更新本地用户信息
           const updatedUserInfo = { ...userStore.userInfo, avatar: avatarPath };
           userStore.updateUserInfo(updatedUserInfo);
@@ -428,7 +428,7 @@ const submitUserInfo = async () => {
       {
         showDefaultMsg: false,
         successMsg: "个人信息更新成功!",
-        onSuccess: (data) => {
+        onSuccess: () => {
           // 更新本地用户信息
           const updatedUserInfo = {
             ...userStore.userInfo,
@@ -469,7 +469,7 @@ const submitPassword = async () => {
       {
         showDefaultMsg: false,
 
-        onSuccess: (data) => {
+        onSuccess: () => {
           // 清空表单
           passwordForm.oldPassword = "";
           passwordForm.newPassword = "";

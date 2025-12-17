@@ -307,7 +307,6 @@ import {
   Ticket,
   Calendar,
   Goods,
-  Edit,
   User,
   Phone,
   CreditCard,
@@ -517,11 +516,6 @@ const formatDate = (dateStr) => {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
 }
 
-// 二维码占位图（模拟支付二维码）
-const qrcodePlaceholder = computed(() => {
-  // 生成一个简单的二维码占位图URL
-  return 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB4PSI1MCIgeT0iNTAiIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBzdHlsZT0iZmlsbDojZjBmMGYwO3N0cm9rZS13aWR0aDo0O3N0cm9rZTojZGRkIiAvPjxyZWN0IHg9IjcwIiB5PSI3MCIgd2lkdGg9IjYwIiBoZWlnaHQ9IjYwIiBzdHlsZT0iZmlsbDojZjhmOGY4O3N0cm9rZS13aWR0aDoyO3N0cm9rZTojY2NjIiAvPjx0ZXh0IHg9IjEwMCIgeT0iMTI3IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBzdHlsZT0iZm9udC1mYW1pbHk6QXJpYWwsIHNhbnMtc2VyaWY7Zm9udC1zaXplOjEycHg7ZmlsbDojOTk5OTk5OyI+5pSv5LuY5LqM57u056CBPC90ZXh0Pjwvc3ZnPg=='
-})
 
 // 页面加载时获取门票详情
 onMounted(() => {

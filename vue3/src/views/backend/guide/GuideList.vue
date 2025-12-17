@@ -23,16 +23,8 @@
 
     <!-- 表格区域 -->
     <el-card shadow="never" class="table-card">
-      <el-table 
-        :data="tableData" 
-        v-loading="loading" 
-        border 
-        stripe 
-        highlight-current-row
-        @row-click="handleRowClick"
-        row-key="id"
-        class="guide-table"
-      >
+      <el-table :data="tableData" v-loading="loading" border stripe highlight-current-row @row-click="handleRowClick"
+        row-key="id" class="guide-table">
         <el-table-column prop="id" label="ID" width="60" />
         <el-table-column label="作者" width="180">
           <template #default="scope">
@@ -45,14 +37,9 @@
         <el-table-column prop="title" label="标题" show-overflow-tooltip />
         <el-table-column label="封面" width="120">
           <template #default="scope">
-            <el-image 
-              v-if="scope.row.coverImage" 
-              :src="baseAPI + scope.row.coverImage" 
-              fit="cover"
-              style="width:80px;height:50px;border-radius:4px;"
-              :preview-src-list="[baseAPI + scope.row.coverImage]"
-              preview-teleported
-            />
+            <el-image v-if="scope.row.coverImage" :src="baseAPI + scope.row.coverImage" fit="cover"
+              style="width:80px;height:50px;border-radius:4px;" :preview-src-list="[baseAPI + scope.row.coverImage]"
+              preview-teleported />
             <div v-else class="no-image">无封面</div>
           </template>
         </el-table-column>
@@ -73,34 +60,16 @@
         </el-table-column>
         <el-table-column label="操作" width="200" fixed="right">
           <template #default="scope">
-            <el-button 
-              size="small" 
-              type="primary" 
-              :icon="Edit" 
-              plain
-              @click.stop="handleEdit(scope.row)"
-              class="action-btn"
-            >
+            <el-button size="small" type="primary" :icon="Edit" plain @click.stop="handleEdit(scope.row)"
+              class="action-btn">
               编辑
             </el-button>
-            <el-button 
-              size="small" 
-              type="danger" 
-              :icon="Delete" 
-              plain
-              @click.stop="deleteGuide(scope.row)"
-              class="action-btn"
-            >
+            <el-button size="small" type="danger" :icon="Delete" plain @click.stop="deleteGuide(scope.row)"
+              class="action-btn">
               删除
             </el-button>
-            <el-button 
-              size="small" 
-              type="info" 
-              :icon="View" 
-              plain
-              @click.stop="previewGuide(scope.row)"
-              class="action-btn"
-            >
+            <el-button size="small" type="info" :icon="View" plain @click.stop="previewGuide(scope.row)"
+              class="action-btn">
               预览
             </el-button>
           </template>
@@ -109,28 +78,14 @@
 
       <!-- 分页 -->
       <div class="pagination-container">
-        <el-pagination
-          background
-          layout="total, sizes, prev, pager, next, jumper"
-          :current-page="currentPage"
-          :page-size="pageSize"
-          :page-sizes="[10, 20, 50, 100]"
-          :total="total"
-          @current-change="handleCurrentChange"
-          @size-change="handleSizeChange"
-        />
+        <el-pagination background layout="total, sizes, prev, pager, next, jumper" :current-page="currentPage"
+          :page-size="pageSize" :page-sizes="[10, 20, 50, 100]" :total="total" @current-change="handleCurrentChange"
+          @size-change="handleSizeChange" />
       </div>
     </el-card>
 
     <!-- 预览对话框 -->
-    <el-dialog 
-      v-model="previewDialogVisible" 
-      title="攻略预览" 
-      width="70%" 
-      destroy-on-close
-      fullscreen
-      class="guide-dialog"
-    >
+    <el-dialog v-model="previewDialogVisible" title="攻略预览" width="70%" destroy-on-close fullscreen class="guide-dialog">
       <div class="guide-preview" v-if="previewGuideData">
         <h1 class="preview-title">{{ previewGuideData.title }}</h1>
         <div class="preview-info">
@@ -144,83 +99,55 @@
     </el-dialog>
 
     <!-- 编辑/创建对话框 -->
-    <el-dialog
-      v-model="formDialogVisible"
-      :title="isEdit ? '编辑攻略' : '新建攻略'"
-      width="75%"
-      destroy-on-close
-      :close-on-click-modal="false"
-      :before-close="handleDialogClose"
-      class="guide-dialog"
-    >
-      <el-form 
-        ref="guideFormRef" 
-        :model="guideForm" 
-        :rules="guideFormRules" 
-        label-width="80px"
-        label-position="top"
-        :disabled="submitLoading"
-      >
+    <el-dialog v-model="formDialogVisible" :title="isEdit ? '编辑攻略' : '新建攻略'" width="75%" destroy-on-close
+      :close-on-click-modal="false" :before-close="handleDialogClose" class="guide-dialog">
+      <el-form ref="guideFormRef" :model="guideForm" :rules="guideFormRules" label-width="80px" label-position="top"
+        :disabled="submitLoading">
         <!-- 标题区域 -->
         <el-form-item label="攻略标题" prop="title" required>
-          <el-input 
-            v-model="guideForm.title" 
-            placeholder="请输入攻略标题" 
-            maxlength="100" 
-            show-word-limit
-          />
+          <el-input v-model="guideForm.title" placeholder="请输入攻略标题" maxlength="100" show-word-limit />
         </el-form-item>
-        
+
         <!-- 两列布局 -->
         <el-row :gutter="20">
           <!-- 左侧 - 封面图片 -->
           <el-col :span="8">
             <el-form-item label="封面图片" prop="coverImage">
-              <el-upload
-                class="cover-upload"
-                action="#"
-                :auto-upload="true"
-                :show-file-list="false"
-                :http-request="customUploadCover"
-                :before-upload="beforeCoverUpload"
-              >
+              <el-upload class="cover-upload" action="#" :auto-upload="true" :show-file-list="false"
+                :http-request="customUploadCover" :before-upload="beforeCoverUpload">
                 <div v-if="coverImageUrl" class="cover-preview">
                   <img :src="coverImageUrl" class="preview-image" />
                   <div class="hover-mask">
-                    <el-icon><Camera /></el-icon>
+                    <el-icon>
+                      <Camera />
+                    </el-icon>
                     <span>更换图片</span>
                   </div>
                 </div>
                 <div v-else class="upload-placeholder">
-                  <el-icon><Picture /></el-icon>
+                  <el-icon>
+                    <Picture />
+                  </el-icon>
                   <span>点击上传封面</span>
                   <div class="upload-tips">支持JPG、PNG (800×450px)</div>
                 </div>
               </el-upload>
             </el-form-item>
           </el-col>
-          
+
           <!-- 右侧 - 文本编辑器 -->
           <el-col :span="16">
             <el-form-item label="攻略内容" prop="content" required>
-              <wang-editor
-                v-model="guideForm.content"
-                :height="'450px'"
-                :placeholder="'请输入攻略内容...'"
-              />
+              <wang-editor v-model="guideForm.content" :height="'450px'" :placeholder="'请输入攻略内容...'" />
             </el-form-item>
           </el-col>
         </el-row>
       </el-form>
-      
+
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="handleDialogClose">取消</el-button>
-          <el-button 
-            type="primary" 
-            @click="submitGuideForm" 
-            :loading="submitLoading"
-          >
+          <el-button type="primary" @click="submitGuideForm" :loading="submitLoading">
             {{ isEdit ? '保存' : '创建' }}
           </el-button>
         </span>
@@ -234,7 +161,7 @@ import { ref, reactive, onMounted, computed } from 'vue'
 import request from '@/utils/request'
 import { formatDate } from '@/utils/dateUtils'
 import { ElMessageBox, ElMessage } from 'element-plus'
-import { Search, Refresh, Edit, Delete, View, Plus, Close, Check, CircleCheckFilled, EditPen, Camera, InfoFilled, Warning, Upload, Picture } from '@element-plus/icons-vue'
+import { Search, Refresh, Edit, Delete, View, Plus, Camera, Picture } from '@element-plus/icons-vue'
 import WangEditor from '@/components/WangEditor.vue'
 import { useUserStore } from '@/store/user'
 
@@ -295,8 +222,8 @@ const fetchGuides = async () => {
       size: pageSize.value
     }, {
       onSuccess: (res) => {
-        tableData.value = res.records||[]
-        total.value = res.total||0
+        tableData.value = res.records || []
+        total.value = res.total || 0
       },
       onError: (error) => {
         ElMessage.error('获取攻略列表失败')
@@ -375,13 +302,13 @@ const handleRowClick = (row) => {
 // 内容预览处理
 const getContentPreview = (content) => {
   if (!content) return '暂无内容'
-  
+
   // 移除HTML标签，仅保留纯文本
   const textContent = content.replace(/<[^>]+>/g, '')
-  
+
   // 返回前200个字符
-  return textContent.length > 200 
-    ? textContent.substring(0, 200) + '...' 
+  return textContent.length > 200
+    ? textContent.substring(0, 200) + '...'
     : textContent
 }
 
@@ -411,7 +338,7 @@ const resetGuideForm = () => {
   guideForm.title = ''
   guideForm.content = ''
   guideForm.coverImage = ''
-  
+
   // 如果表单引用存在，重置校验状态
   if (guideFormRef.value) {
     guideFormRef.value.resetFields()
@@ -526,14 +453,14 @@ const handleDialogClose = () => {
   .page-header {
     margin-bottom: 24px;
     text-align: left;
-    
+
     .page-title {
       font-size: 24px;
       color: #34495e;
       margin: 0 0 8px 0;
       font-weight: 500;
     }
-    
+
     .page-subtitle {
       font-size: 14px;
       color: #7f8c8d;
@@ -541,73 +468,76 @@ const handleDialogClose = () => {
       font-style: italic;
     }
   }
-  
+
   .filter-container {
     margin-bottom: 16px;
   }
-  
+
   .search-card {
     border-radius: 8px;
     background-color: #fff;
     box-shadow: none;
-    
+
     .search-form {
       padding: 10px 0;
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      
+
       .el-form-item {
         margin-bottom: 0;
         margin-right: 16px;
       }
-      
+
       .search-btn {
         background-color: #3498db;
         border-color: #3498db;
-        
-        &:hover, &:focus {
+
+        &:hover,
+        &:focus {
           background-color: #2980b9;
           border-color: #2980b9;
         }
       }
-      
+
       .reset-btn {
         color: #7f8c8d;
         border-color: #bdc3c7;
-        
-        &:hover, &:focus {
+
+        &:hover,
+        &:focus {
           color: #34495e;
           border-color: #95a5a6;
           background-color: #f5f5f5;
         }
       }
-      
+
       .add-btn {
         background-color: #2ecc71;
         border-color: #2ecc71;
-        
-        &:hover, &:focus {
+
+        &:hover,
+        &:focus {
           background-color: #27ae60;
           border-color: #27ae60;
         }
       }
     }
   }
-  
+
   .table-card {
     margin-bottom: 16px;
     border-radius: 8px;
     overflow: hidden;
     box-shadow: none;
-    
+
     .guide-table {
       border-radius: 4px;
       overflow: hidden;
-      
+
       :deep(thead) {
         background-color: #ecf0f1;
-        
+
         th {
           background-color: #ecf0f1;
           color: #34495e;
@@ -615,24 +545,24 @@ const handleDialogClose = () => {
           padding: 12px 0;
         }
       }
-      
+
       :deep(tbody tr) {
         transition: all 0.3s;
-        
+
         &:hover {
           background-color: #f8f9fa;
         }
       }
     }
   }
-  
+
   .pagination-container {
     margin-top: 20px;
     display: flex;
     justify-content: flex-end;
     padding: 0 20px;
   }
-  
+
   .content-preview {
     max-height: 80px;
     overflow: hidden;
@@ -641,17 +571,17 @@ const handleDialogClose = () => {
     word-break: break-all;
     line-height: 1.5;
   }
-  
+
   .author-info {
     display: flex;
     align-items: center;
-    
+
     .author-name {
       margin-left: 8px;
       font-size: 14px;
     }
   }
-  
+
   .no-image {
     width: 80px;
     height: 50px;
@@ -663,72 +593,73 @@ const handleDialogClose = () => {
     font-size: 12px;
     border-radius: 4px;
   }
-  
+
   .date-text {
     color: #7f8c8d;
     font-size: 12px;
   }
-  
+
   .action-btn {
     margin-right: 5px;
   }
-  
+
   // 预览样式
   .guide-preview {
     padding: 0 20px;
-    
+
     .preview-title {
       font-size: 24px;
       font-weight: bold;
       text-align: center;
       margin-bottom: 16px;
     }
-    
+
     .preview-info {
       display: flex;
       justify-content: center;
       color: #909399;
       font-size: 14px;
       margin-bottom: 20px;
-      
+
       span {
         margin: 0 10px;
       }
     }
-    
+
     .preview-content {
       line-height: 1.8;
       font-size: 16px;
       text-align: left;
+
       :deep(img) {
         max-width: 100%;
         height: auto;
       }
     }
   }
-  
+
   .guide-dialog {
     :deep(.el-dialog__header) {
       border-bottom: 1px solid #ecf0f1;
       padding: 20px;
-      
+
       .el-dialog__title {
         font-size: 18px;
         color: #34495e;
         font-weight: 500;
       }
     }
-    
+
     :deep(.el-dialog__body) {
       padding: 30px 20px;
     }
-    
+
     :deep(.el-dialog__footer) {
       border-top: 1px solid #ecf0f1;
       padding: 15px 20px;
     }
   }
-  
+
   // 封面上传
   .cover-upload {
     width: 100%;
@@ -737,18 +668,18 @@ const handleDialogClose = () => {
     border-radius: 4px;
     overflow: hidden;
     position: relative;
-    
+
     .cover-preview {
       width: 100%;
       height: 100%;
       position: relative;
-      
+
       .preview-image {
         width: 100%;
         height: 100%;
         object-fit: cover;
       }
-      
+
       .hover-mask {
         position: absolute;
         top: 0;
@@ -763,22 +694,22 @@ const handleDialogClose = () => {
         color: white;
         opacity: 0;
         transition: all 0.3s;
-        
+
         .el-icon {
           font-size: 32px;
           margin-bottom: 12px;
         }
-        
+
         span {
           font-size: 16px;
         }
       }
-      
+
       &:hover .hover-mask {
         opacity: 1;
       }
     }
-    
+
     .upload-placeholder {
       width: 100%;
       height: 100%;
@@ -790,43 +721,43 @@ const handleDialogClose = () => {
       border: 2px dashed #dcdfe6;
       border-radius: 4px;
       transition: all 0.3s;
-      
+
       .el-icon {
         font-size: 48px;
         color: #c0c4cc;
         margin-bottom: 16px;
       }
-      
+
       span {
         font-size: 16px;
         color: #606266;
         margin-bottom: 8px;
       }
-      
+
       .upload-tips {
         font-size: 13px;
         color: #909399;
       }
-      
+
       &:hover {
         border-color: #409EFF;
         background-color: #f0f7ff;
-        
+
         .el-icon {
           color: #409EFF;
         }
       }
     }
   }
-  
+
   .dialog-footer {
     display: flex;
     justify-content: flex-end;
-    
+
     .el-button {
       padding: 10px 24px;
       font-size: 14px;
     }
   }
 }
-</style> 
+</style>

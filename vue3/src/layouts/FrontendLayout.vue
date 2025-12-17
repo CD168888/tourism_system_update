@@ -109,12 +109,8 @@ import { useUserStore } from '@/store/user'
 import { useRouter } from 'vue-router'
 import {
   HomeFilled,
-  User,
   Bicycle,
   Reading,
-  Notebook,
-  Star,
-  SwitchButton,
   Key,
   Ticket,
   House,

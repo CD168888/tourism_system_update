@@ -180,7 +180,7 @@ import { ref, reactive, onMounted, computed, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import request from '@/utils/request'
 import { useUserStore } from '@/store/user'
-import { Search, Location, Refresh, Star, Grid } from '@element-plus/icons-vue'
+import { Search, Location, Refresh, Star } from '@element-plus/icons-vue'
 
 const baseAPI = process.env.VUE_APP_BASE_API || '/api'
 const router = useRouter()
@@ -375,12 +375,6 @@ const formatReviewCount = (count) => {
   if (!count || count === 0) return '暂无评价'
   if (count === 1) return '1条评价'
   return `${count}条评价`
-}
-
-// 获取评分显示
-const getDisplayRating = (rating) => {
-  if (!rating) return '4.5'
-  return parseFloat(rating).toFixed(1)
 }
 
 // 批量获取评论统计信息

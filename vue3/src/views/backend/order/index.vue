@@ -39,13 +39,7 @@
 
     <!-- 订单列表表格 -->
     <el-card class="table-card" shadow="never">
-      <el-table
-        v-loading="loading"
-        :data="orderList"
-        border
-        style="width: 100%"
-        class="order-table"
-      >
+      <el-table v-loading="loading" :data="orderList" border style="width: 100%" class="order-table">
         <el-table-column prop="orderNo" label="订单号" width="180" />
         <el-table-column prop="ticketName" label="门票名称" min-width="150" />
         <el-table-column prop="visitorName" label="游客姓名" width="100" />
@@ -78,34 +72,16 @@
             <el-button type="primary" size="small" plain @click="handleViewDetail(scope.row)" class="action-btn">
               <i class="el-icon-view"></i> 查看详情
             </el-button>
-            <el-button 
-              v-if="scope.row.status === 1"
-              type="warning" 
-              size="small"
-              plain
-              @click="handleRefund(scope.row)"
-              class="action-btn"
-            >
+            <el-button v-if="scope.row.status === 1" type="warning" size="small" plain @click="handleRefund(scope.row)"
+              class="action-btn">
               <i class="el-icon-money"></i> 退款
             </el-button>
-            <el-button 
-              v-if="scope.row.status === 1"
-              type="success" 
-              size="small"
-              plain
-              @click="handleComplete(scope.row)"
-              class="action-btn"
-            >
+            <el-button v-if="scope.row.status === 1" type="success" size="small" plain
+              @click="handleComplete(scope.row)" class="action-btn">
               <i class="el-icon-check"></i> 标记完成
             </el-button>
-            <el-button 
-              v-if="[2, 3, 4].includes(scope.row.status)"
-              type="danger" 
-              size="small"
-              plain
-              @click="handleDelete(scope.row)"
-              class="action-btn"
-            >
+            <el-button v-if="[2, 3, 4].includes(scope.row.status)" type="danger" size="small" plain
+              @click="handleDelete(scope.row)" class="action-btn">
               <i class="el-icon-delete"></i> 删除
             </el-button>
           </template>
@@ -114,26 +90,14 @@
 
       <!-- 分页 -->
       <div class="pagination-container">
-        <el-pagination
-          background
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="total"
-          :page-size="pageSize"
-          :page-sizes="[10, 20, 50, 100]"
-          :current-page="currentPage"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-        />
+        <el-pagination background layout="total, sizes, prev, pager, next, jumper" :total="total" :page-size="pageSize"
+          :page-sizes="[10, 20, 50, 100]" :current-page="currentPage" @size-change="handleSizeChange"
+          @current-change="handleCurrentChange" />
       </div>
     </el-card>
 
     <!-- 订单详情对话框 -->
-    <el-dialog
-      title="订单详情"
-      v-model="detailDialogVisible"
-      width="650px"
-      class="order-dialog"
-    >
+    <el-dialog title="订单详情" v-model="detailDialogVisible" width="650px" class="order-dialog">
       <div class="order-detail" v-if="currentOrder">
         <el-descriptions title="订单信息" :column="1" border>
           <el-descriptions-item label="订单号">{{ currentOrder.orderNo }}</el-descriptions-item>
@@ -143,7 +107,7 @@
           <el-descriptions-item label="购买数量">{{ currentOrder.quantity }}</el-descriptions-item>
           <el-descriptions-item label="订单金额">¥{{ currentOrder.totalAmount }}</el-descriptions-item>
         </el-descriptions>
-        
+
         <el-descriptions title="游客信息" :column="1" border style="margin-top: 20px">
           <el-descriptions-item label="游客姓名">{{ currentOrder.visitorName }}</el-descriptions-item>
           <el-descriptions-item label="联系电话">{{ currentOrder.visitorPhone }}</el-descriptions-item>
@@ -151,7 +115,7 @@
             {{ currentOrder.idCard || '未提供' }}
           </el-descriptions-item>
         </el-descriptions>
-        
+
         <el-descriptions title="订单状态" :column="1" border style="margin-top: 20px">
           <el-descriptions-item label="订单状态">
             <el-tag :type="getOrderStatusType(currentOrder.status)">
@@ -168,7 +132,7 @@
             {{ getPaymentMethodText(currentOrder.paymentMethod) }}
           </el-descriptions-item>
         </el-descriptions>
-        
+
         <el-descriptions title="用户信息" :column="1" border style="margin-top: 20px">
           <el-descriptions-item label="用户ID">{{ currentOrder.userId }}</el-descriptions-item>
           <el-descriptions-item label="用户名">{{ currentOrder.username }}</el-descriptions-item>
@@ -177,28 +141,16 @@
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="detailDialogVisible = false">关闭</el-button>
-          <el-button 
-            v-if="currentOrder && currentOrder.status === 1" 
-            type="warning" 
-            plain
-            @click="handleRefund(currentOrder)"
-          >
+          <el-button v-if="currentOrder && currentOrder.status === 1" type="warning" plain
+            @click="handleRefund(currentOrder)">
             <i class="el-icon-money"></i> 退款
           </el-button>
-          <el-button 
-            v-if="currentOrder && currentOrder.status === 1" 
-            type="success" 
-            plain
-            @click="handleComplete(currentOrder)"
-          >
+          <el-button v-if="currentOrder && currentOrder.status === 1" type="success" plain
+            @click="handleComplete(currentOrder)">
             <i class="el-icon-check"></i> 标记完成
           </el-button>
-          <el-button 
-            v-if="currentOrder && [2, 3, 4].includes(currentOrder.status)" 
-            type="danger" 
-            plain
-            @click="handleDelete(currentOrder)"
-          >
+          <el-button v-if="currentOrder && [2, 3, 4].includes(currentOrder.status)" type="danger" plain
+            @click="handleDelete(currentOrder)">
             <i class="el-icon-delete"></i> 删除
           </el-button>
         </span>
@@ -209,7 +161,7 @@
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { ElMessageBox } from 'element-plus'
 import request from '@/utils/request'
 
 // 分页参数
@@ -320,7 +272,7 @@ const handleRefund = (row) => {
     } catch (error) {
       console.error('订单退款失败:', error)
     }
-  }).catch(() => {})
+  }).catch(() => { })
 }
 
 // 完成订单操作
@@ -343,7 +295,7 @@ const handleComplete = (row) => {
     } catch (error) {
       console.error('标记订单完成失败:', error)
     }
-  }).catch(() => {})
+  }).catch(() => { })
 }
 
 // 删除订单操作
@@ -366,7 +318,7 @@ const handleDelete = (row) => {
     } catch (error) {
       console.error('删除订单失败:', error)
     }
-  }).catch(() => {})
+  }).catch(() => { })
 }
 
 // 获取订单状态文本
@@ -432,14 +384,14 @@ onMounted(() => {
   .page-header {
     margin-bottom: 24px;
     text-align: left;
-    
+
     .page-title {
       font-size: 24px;
       color: #34495e;
       margin: 0 0 8px 0;
       font-weight: 500;
     }
-    
+
     .page-subtitle {
       font-size: 14px;
       color: #7f8c8d;
@@ -453,33 +405,35 @@ onMounted(() => {
     border-radius: 8px;
     background-color: #fff;
     box-shadow: none;
-    
+
     .search-form {
       padding: 10px 0;
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      
+
       .el-form-item {
         margin-bottom: 0;
         margin-right: 16px;
       }
-      
+
       .search-btn {
         background-color: #3498db;
         border-color: #3498db;
-        
-        &:hover, &:focus {
+
+        &:hover,
+        &:focus {
           background-color: #2980b9;
           border-color: #2980b9;
         }
       }
-      
+
       .reset-btn {
         color: #7f8c8d;
         border-color: #bdc3c7;
-        
-        &:hover, &:focus {
+
+        &:hover,
+        &:focus {
           color: #34495e;
           border-color: #95a5a6;
           background-color: #f5f5f5;
@@ -487,19 +441,19 @@ onMounted(() => {
       }
     }
   }
-  
+
   .table-card {
     border-radius: 8px;
     overflow: hidden;
     box-shadow: none;
-    
+
     .order-table {
       border-radius: 4px;
       overflow: hidden;
-      
+
       :deep(thead) {
         background-color: #ecf0f1;
-        
+
         th {
           background-color: #ecf0f1;
           color: #34495e;
@@ -507,25 +461,25 @@ onMounted(() => {
           padding: 12px 0;
         }
       }
-      
+
       :deep(tbody tr) {
         transition: all 0.3s;
-        
+
         &:hover {
           background-color: #f8f9fa;
         }
       }
-      
+
       .amount {
         font-weight: 600;
         color: #e74c3c;
       }
-      
+
       .date-text {
         color: #7f8c8d;
         font-size: 12px;
       }
-      
+
       .action-btn {
         margin-right: 5px;
       }
@@ -543,27 +497,27 @@ onMounted(() => {
     :deep(.el-dialog__header) {
       border-bottom: 1px solid #ecf0f1;
       padding: 20px;
-      
+
       .el-dialog__title {
         font-size: 18px;
         color: #34495e;
         font-weight: 500;
       }
     }
-    
+
     :deep(.el-dialog__body) {
       padding: 30px 20px;
     }
-    
+
     :deep(.el-dialog__footer) {
       border-top: 1px solid #ecf0f1;
       padding: 15px 20px;
     }
-    
+
     .dialog-footer {
       display: flex;
       justify-content: flex-end;
     }
   }
 }
-</style> 
+</style>

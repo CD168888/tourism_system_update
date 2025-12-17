@@ -164,7 +164,7 @@ import { useRouter } from 'vue-router'
 import request from '@/utils/request'
 import { formatDate } from '@/utils/dateUtils'
 import {
-  Search, View, Calendar, Edit, User, Reading, RefreshLeft
+  Search, View, Calendar, Edit, User, RefreshLeft
 } from '@element-plus/icons-vue'
 
 const baseAPI = process.env.VUE_APP_BASE_API || '/api'
@@ -694,7 +694,6 @@ const goEdit = () => {
       font-weight: 700;
       color: #1a202c;
       display: -webkit-box;
-      -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
       line-height: 1.4;

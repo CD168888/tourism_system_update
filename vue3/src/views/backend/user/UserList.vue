@@ -51,14 +51,7 @@
 
     <!-- 表格区域 -->
     <el-card class="table-card" shadow="never">
-      <el-table
-        v-loading="loading"
-        :data="tableData"
-        border
-        stripe
-        style="width: 100%"
-        class="user-table"
-      >
+      <el-table v-loading="loading" :data="tableData" border stripe style="width: 100%" class="user-table">
         <el-table-column prop="id" label="ID" width="80" align="center"></el-table-column>
         <el-table-column prop="username" label="用户名" width="120">
           <template #default="scope">
@@ -82,12 +75,8 @@
         </el-table-column>
         <el-table-column prop="status" label="状态" width="100" align="center">
           <template #default="scope">
-            <el-switch
-              v-model="scope.row.status"
-              :active-value="1"
-              :inactive-value="0"
-              @change="handleStatusChange(scope.row)"
-            ></el-switch>
+            <el-switch v-model="scope.row.status" :active-value="1" :inactive-value="0"
+              @change="handleStatusChange(scope.row)"></el-switch>
           </template>
         </el-table-column>
         <el-table-column prop="createTime" label="创建时间" width="180" align="center">
@@ -112,34 +101,15 @@
 
       <!-- 分页 -->
       <div class="pagination-container">
-        <el-pagination
-          background
-          layout="total, sizes, prev, pager, next, jumper"
-          :current-page="currentPage"
-          :page-sizes="[10, 20, 50, 100]"
-          :page-size="pageSize"
-          :total="total"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-        ></el-pagination>
+        <el-pagination background layout="total, sizes, prev, pager, next, jumper" :current-page="currentPage"
+          :page-sizes="[10, 20, 50, 100]" :page-size="pageSize" :total="total" @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"></el-pagination>
       </div>
     </el-card>
 
     <!-- 用户表单对话框 -->
-    <el-dialog
-      :title="dialogTitle"
-      v-model="dialogVisible"
-      width="500px"
-      @close="resetForm"
-      class="user-dialog"
-    >
-      <el-form
-        ref="userFormRef"
-        :model="userForm"
-        :rules="userFormRules"
-        label-width="100px"
-        class="user-form"
-      >
+    <el-dialog :title="dialogTitle" v-model="dialogVisible" width="500px" @close="resetForm" class="user-dialog">
+      <el-form ref="userFormRef" :model="userForm" :rules="userFormRules" label-width="100px" class="user-form">
         <el-form-item label="用户名" prop="username">
           <el-input v-model="userForm.username" placeholder="请输入用户名"></el-input>
         </el-form-item>
@@ -168,11 +138,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="状态" prop="status">
-          <el-switch
-            v-model="userForm.status"
-            :active-value="1"
-            :inactive-value="0"
-          ></el-switch>
+          <el-switch v-model="userForm.status" :active-value="1" :inactive-value="0"></el-switch>
         </el-form-item>
       </el-form>
       <template #footer>
@@ -184,18 +150,9 @@
     </el-dialog>
 
     <!-- 重置密码对话框 -->
-    <el-dialog
-      title="重置密码"
-      v-model="resetPasswordDialogVisible"
-      width="400px"
-      class="reset-password-dialog"
-    >
-      <el-form
-        ref="resetPasswordFormRef"
-        :model="resetPasswordForm"
-        :rules="resetPasswordFormRules"
-        label-width="100px"
-      >
+    <el-dialog title="重置密码" v-model="resetPasswordDialogVisible" width="400px" class="reset-password-dialog">
+      <el-form ref="resetPasswordFormRef" :model="resetPasswordForm" :rules="resetPasswordFormRules"
+        label-width="100px">
         <el-form-item label="新密码" prop="newPassword">
           <el-input v-model="resetPasswordForm.newPassword" type="password" placeholder="请输入新密码"></el-input>
         </el-form-item>
@@ -215,7 +172,7 @@
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { ElMessageBox } from 'element-plus'
 import request from '@/utils/request'
 import { formatDate } from '@/utils/dateUtils'
 
@@ -316,18 +273,18 @@ const fetchUsers = async () => {
   loading.value = true
   try {
     await request.get('/user/page', {
-   
-        username: searchForm.username,
-        nickname: searchForm.nickname,
-        roleCode: searchForm.roleCode,
-        currentPage: currentPage.value,
-        size: pageSize.value
-      },{
+
+      username: searchForm.username,
+      nickname: searchForm.nickname,
+      roleCode: searchForm.roleCode,
+      currentPage: currentPage.value,
+      size: pageSize.value
+    }, {
       onSuccess: (res) => {
-        tableData.value = res.records||[]
-        total.value = res.total||0
+        tableData.value = res.records || []
+        total.value = res.total || 0
       }
-      }
+    }
     )
   } catch (error) {
     console.error('获取用户列表失败:', error)
@@ -396,7 +353,7 @@ const handleDelete = (row) => {
     } catch (error) {
       console.error('删除用户失败:', error)
     }
-  }).catch(() => {})
+  }).catch(() => { })
 }
 
 // 状态变更
@@ -495,14 +452,14 @@ const resetForm = () => {
   .page-header {
     margin-bottom: 24px;
     text-align: left;
-    
+
     .page-title {
       font-size: 24px;
       color: #34495e;
       margin: 0 0 8px 0;
       font-weight: 500;
     }
-    
+
     .page-subtitle {
       font-size: 14px;
       color: #7f8c8d;
@@ -515,18 +472,19 @@ const resetForm = () => {
     margin-bottom: 20px;
     display: flex;
     justify-content: flex-end;
-    
+
     .action-right {
       display: flex;
       justify-content: flex-end;
     }
-    
+
     .add-btn {
       background-color: #2ecc71;
       border-color: #2ecc71;
       margin-right: 10px;
-      
-      &:hover, &:focus {
+
+      &:hover,
+      &:focus {
         background-color: #27ae60;
         border-color: #27ae60;
       }
@@ -538,33 +496,35 @@ const resetForm = () => {
     border-radius: 8px;
     background-color: #fff;
     box-shadow: none;
-    
+
     .search-form {
       padding: 10px 0;
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      
+
       .el-form-item {
         margin-bottom: 0;
         margin-right: 16px;
       }
-      
+
       .search-btn {
         background-color: #3498db;
         border-color: #3498db;
-        
-        &:hover, &:focus {
+
+        &:hover,
+        &:focus {
           background-color: #2980b9;
           border-color: #2980b9;
         }
       }
-      
+
       .reset-btn {
         color: #7f8c8d;
         border-color: #bdc3c7;
-        
-        &:hover, &:focus {
+
+        &:hover,
+        &:focus {
           color: #34495e;
           border-color: #95a5a6;
           background-color: #f5f5f5;
@@ -572,19 +532,19 @@ const resetForm = () => {
       }
     }
   }
-  
+
   .table-card {
     border-radius: 8px;
     overflow: hidden;
     box-shadow: none;
-    
+
     .user-table {
       border-radius: 4px;
       overflow: hidden;
-      
+
       :deep(thead) {
         background-color: #ecf0f1;
-        
+
         th {
           background-color: #ecf0f1;
           color: #34495e;
@@ -592,25 +552,25 @@ const resetForm = () => {
           padding: 12px 0;
         }
       }
-      
+
       :deep(tbody tr) {
         transition: all 0.3s;
-        
+
         &:hover {
           background-color: #f8f9fa;
         }
       }
-      
+
       .user-name {
         font-weight: 500;
         color: #2980b9;
       }
-      
+
       .date-text {
         color: #7f8c8d;
         font-size: 12px;
       }
-      
+
       .edit-btn {
         margin-right: 8px;
       }
@@ -624,26 +584,27 @@ const resetForm = () => {
     padding: 0 20px;
   }
 
-  .user-dialog, .reset-password-dialog {
+  .user-dialog,
+  .reset-password-dialog {
     :deep(.el-dialog__header) {
       border-bottom: 1px solid #ecf0f1;
       padding: 20px;
-      
+
       .el-dialog__title {
         font-size: 18px;
         color: #34495e;
         font-weight: 500;
       }
     }
-    
+
     :deep(.el-dialog__body) {
       padding: 30px 20px;
     }
-    
+
     :deep(.el-dialog__footer) {
       border-top: 1px solid #ecf0f1;
       padding: 15px 20px;
     }
   }
 }
-</style> 
+</style>

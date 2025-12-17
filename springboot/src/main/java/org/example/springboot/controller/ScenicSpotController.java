@@ -81,11 +81,7 @@ public class ScenicSpotController {
     @Operation(summary = "获取热门景点")
     @GetMapping("/hot")
     public Result<?> getHotScenics(
-<<<<<<< HEAD
             @RequestParam(required = false, defaultValue = "6") Integer limit) {
-=======
-            @RequestParam(required = false, defaultValue = "4") Integer limit) {
->>>>>>> d8bcea05440b3cc1e83e15c8380c711dc7411ddd
         List<ScenicSpot> hotScenics = scenicSpotService.getHotScenics(limit);
         return Result.success(hotScenics);
     }

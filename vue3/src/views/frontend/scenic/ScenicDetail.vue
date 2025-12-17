@@ -330,8 +330,8 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import { useUserStore } from '@/store/user'
 import axios from 'axios'
 import {
-  Location, CollectionTag, Money, Timer, Sunny, Loading, Star, StarFilled,
-  Document, InfoFilled, CopyDocument, Share, Ticket, Tickets, ChatDotRound
+  Location, CollectionTag, Money, Timer, Loading, Star, StarFilled,
+  CopyDocument, Share, Tickets,
 } from '@element-plus/icons-vue'
 
 const baseAPI = process.env.VUE_APP_BASE_API || '/api'
@@ -507,7 +507,7 @@ const fetchWeatherInfo = async (location) => {
     })
 
     if (locationResponse.data.code === '200' && locationResponse.data.location && locationResponse.data.location.length > 0) {
-      const locationId = locationResponse.data.location[0].id
+
       const lon = locationResponse.data.location[0].lon
       const lat = locationResponse.data.location[0].lat
 

@@ -137,13 +137,13 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, computed } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessageBox } from 'element-plus'
 import request from '@/utils/request'
 import { formatDate } from '@/utils/dateUtils'
 import { useUserStore } from '@/store/user'
-import { Edit, View, Calendar, Delete, EditPen } from '@element-plus/icons-vue'
+import { Edit, View, Calendar, Delete } from '@element-plus/icons-vue'
 
 const baseAPI = process.env.VUE_APP_BASE_API || '/api'
 const router = useRouter()
@@ -153,24 +153,6 @@ const loading = ref(false)
 const currentPage = ref(1)
 const pageSize = ref(12)
 const total = ref(0)
-
-// 计算总浏览量
-const totalViews = computed(() => {
-  return tableData.value.reduce((sum, guide) => sum + (guide.views || 0), 0)
-})
-
-// 计算本月新增攻略数量
-const newGuideCount = computed(() => {
-  const now = new Date()
-  const currentMonth = now.getMonth()
-  const currentYear = now.getFullYear()
-
-  return tableData.value.filter(guide => {
-    if (!guide.createTime) return false
-    const createDate = new Date(guide.createTime)
-    return createDate.getMonth() === currentMonth && createDate.getFullYear() === currentYear
-  }).length
-})
 
 // 获取图片完整URL
 const getImageUrl = (url) => {
@@ -214,16 +196,6 @@ onMounted(fetchGuides)
 const handleCurrentChange = (page) => {
   currentPage.value = page
   fetchGuides()
-}
-
-const handleSizeChange = (size) => {
-  pageSize.value = size
-  currentPage.value = 1
-  fetchGuides()
-}
-
-const handleRowClick = (row) => {
-  viewGuide(row)
 }
 
 const viewGuide = (row) => {

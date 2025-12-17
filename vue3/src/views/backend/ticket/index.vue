@@ -28,18 +28,8 @@
           </el-select>
         </el-form-item>
         <el-form-item label="景点">
-          <el-select 
-            v-model="searchForm.scenicId" 
-            placeholder="请选择景点" 
-            clearable
-            filterable
-          >
-            <el-option
-              v-for="item in allScenicSpots"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
-            />
+          <el-select v-model="searchForm.scenicId" placeholder="请选择景点" clearable filterable>
+            <el-option v-for="item in allScenicSpots" :key="item.id" :label="item.name" :value="item.id" />
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -55,13 +45,7 @@
 
     <!-- 门票列表表格 -->
     <el-card shadow="never" class="table-card">
-      <el-table
-        v-loading="loading"
-        :data="ticketList"
-        border
-        style="width: 100%"
-        class="ticket-table"
-      >
+      <el-table v-loading="loading" :data="ticketList" border style="width: 100%" class="ticket-table">
         <el-table-column prop="id" label="ID" width="80" />
         <el-table-column prop="ticketName" label="门票名称" min-width="150" />
         <el-table-column prop="scenicId" label="所属景点" width="150">
@@ -102,13 +86,8 @@
             <el-button type="primary" size="small" plain @click="handleEdit(scope.row)" class="action-btn">
               <i class="el-icon-edit"></i> 编辑
             </el-button>
-            <el-button 
-              :type="scope.row.status === 1 ? 'warning' : 'success'" 
-              size="small"
-              plain
-              @click="handleToggleStatus(scope.row)"
-              class="action-btn"
-            >
+            <el-button :type="scope.row.status === 1 ? 'warning' : 'success'" size="small" plain
+              @click="handleToggleStatus(scope.row)" class="action-btn">
               <i :class="scope.row.status === 1 ? 'el-icon-close' : 'el-icon-check'"></i>
               {{ scope.row.status === 1 ? '下架' : '上架' }}
             </el-button>
@@ -121,46 +100,18 @@
 
       <!-- 分页 -->
       <div class="pagination-container">
-        <el-pagination
-          background
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="total"
-          :page-size="pageSize"
-          :page-sizes="[10, 20, 50, 100]"
-          :current-page="currentPage"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-        />
+        <el-pagination background layout="total, sizes, prev, pager, next, jumper" :total="total" :page-size="pageSize"
+          :page-sizes="[10, 20, 50, 100]" :current-page="currentPage" @size-change="handleSizeChange"
+          @current-change="handleCurrentChange" />
       </div>
     </el-card>
 
     <!-- 添加/编辑门票对话框 -->
-    <el-dialog
-      :title="isEdit ? '编辑门票' : '添加门票'"
-      v-model="dialogVisible"
-      width="60%"
-      class="ticket-dialog"
-    >
-      <el-form 
-        ref="ticketFormRef" 
-        :model="ticketForm" 
-        :rules="ticketRules" 
-        label-width="120px"
-        :disabled="formLoading"
-      >
+    <el-dialog :title="isEdit ? '编辑门票' : '添加门票'" v-model="dialogVisible" width="60%" class="ticket-dialog">
+      <el-form ref="ticketFormRef" :model="ticketForm" :rules="ticketRules" label-width="120px" :disabled="formLoading">
         <el-form-item label="关联景点" prop="scenicId">
-          <el-select
-            v-model="ticketForm.scenicId"
-            placeholder="请选择关联景点"
-            filterable
-            style="width: 100%"
-          >
-            <el-option
-              v-for="item in allScenicSpots"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
-            />
+          <el-select v-model="ticketForm.scenicId" placeholder="请选择关联景点" filterable style="width: 100%">
+            <el-option v-for="item in allScenicSpots" :key="item.id" :label="item.name" :value="item.id" />
           </el-select>
         </el-form-item>
         <el-form-item label="门票名称" prop="ticketName">
@@ -188,13 +139,8 @@
           <el-input-number v-model="ticketForm.stock" :min="0" :step="10" style="width: 100%" />
         </el-form-item>
         <el-form-item label="门票状态" prop="status">
-          <el-switch
-            v-model="ticketForm.status"
-            :active-value="1"
-            :inactive-value="0"
-            active-text="可预订"
-            inactive-text="不可预订"
-          />
+          <el-switch v-model="ticketForm.status" :active-value="1" :inactive-value="0" active-text="可预订"
+            inactive-text="不可预订" />
         </el-form-item>
         <el-form-item label="门票描述">
           <el-input v-model="ticketForm.description" type="textarea" :rows="4" placeholder="请输入门票描述信息" />
@@ -212,7 +158,7 @@
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { ElMessageBox } from 'element-plus'
 import request from '@/utils/request'
 
 // 分页参数
@@ -312,7 +258,7 @@ const fetchScenicOptions = async (query) => {
       return
     }
   }
-  
+
   scenicLoading.value = true
   try {
     if (query === '') {
@@ -401,14 +347,14 @@ const showAddDialog = () => {
 const handleEdit = (row) => {
   isEdit.value = true
   resetForm()
-  
+
   // 填充表单数据
   Object.keys(ticketForm).forEach(key => {
     if (row[key] !== undefined) {
       ticketForm[key] = row[key]
     }
   })
-  
+
   // 确保景点选项已加载
   if (allScenicSpots.value.length === 0) {
     fetchAllScenicSpots().then(() => {
@@ -423,7 +369,7 @@ const handleEdit = (row) => {
 const handleToggleStatus = async (row) => {
   const newStatus = row.status === 1 ? 0 : 1
   const statusText = newStatus === 1 ? '上架' : '下架'
-  
+
   try {
     await request.put(`/ticket/${row.id}`, {
       status: newStatus
@@ -455,7 +401,7 @@ const handleDelete = (row) => {
     } catch (error) {
       console.error('删除门票失败:', error)
     }
-  }).catch(() => {})
+  }).catch(() => { })
 }
 
 // 重置表单
@@ -463,7 +409,7 @@ const resetForm = () => {
   if (ticketFormRef.value) {
     ticketFormRef.value.resetFields()
   }
-  
+
   ticketForm.id = null
   ticketForm.scenicId = null
   ticketForm.ticketName = ''
@@ -481,7 +427,7 @@ const submitForm = async () => {
   ticketFormRef.value.validate(async (valid) => {
     if (valid) {
       formLoading.value = true
-      
+
       try {
         if (isEdit.value) {
           // 更新门票
@@ -535,14 +481,14 @@ onMounted(() => {
   .page-header {
     margin-bottom: 24px;
     text-align: left;
-    
+
     .page-title {
       font-size: 24px;
       color: #34495e;
       margin: 0 0 8px 0;
       font-weight: 500;
     }
-    
+
     .page-subtitle {
       font-size: 14px;
       color: #7f8c8d;
@@ -555,17 +501,18 @@ onMounted(() => {
     margin-bottom: 20px;
     display: flex;
     justify-content: flex-end;
-    
+
     .action-right {
       display: flex;
       justify-content: flex-end;
     }
-    
+
     .add-btn {
       background-color: #2ecc71;
       border-color: #2ecc71;
-      
-      &:hover, &:focus {
+
+      &:hover,
+      &:focus {
         background-color: #27ae60;
         border-color: #27ae60;
       }
@@ -577,33 +524,35 @@ onMounted(() => {
     border-radius: 8px;
     background-color: #fff;
     box-shadow: none;
-    
+
     .search-form {
       padding: 10px 0;
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      
+
       .el-form-item {
         margin-bottom: 0;
         margin-right: 16px;
       }
-      
+
       .search-btn {
         background-color: #3498db;
         border-color: #3498db;
-        
-        &:hover, &:focus {
+
+        &:hover,
+        &:focus {
           background-color: #2980b9;
           border-color: #2980b9;
         }
       }
-      
+
       .reset-btn {
         color: #7f8c8d;
         border-color: #bdc3c7;
-        
-        &:hover, &:focus {
+
+        &:hover,
+        &:focus {
           color: #34495e;
           border-color: #95a5a6;
           background-color: #f5f5f5;
@@ -611,19 +560,19 @@ onMounted(() => {
       }
     }
   }
-  
+
   .table-card {
     border-radius: 8px;
     overflow: hidden;
     box-shadow: none;
-    
+
     .ticket-table {
       border-radius: 4px;
       overflow: hidden;
-      
+
       :deep(thead) {
         background-color: #ecf0f1;
-        
+
         th {
           background-color: #ecf0f1;
           color: #34495e;
@@ -631,34 +580,34 @@ onMounted(() => {
           padding: 12px 0;
         }
       }
-      
+
       :deep(tbody tr) {
         transition: all 0.3s;
-        
+
         &:hover {
           background-color: #f8f9fa;
         }
       }
-      
+
       .scenic-name {
         color: #2980b9;
         font-weight: 500;
       }
-      
+
       .price {
         font-weight: 600;
         color: #e74c3c;
       }
-      
+
       .discount-price {
         font-weight: 600;
         color: #27ae60;
       }
-      
+
       .stock {
         font-weight: 500;
       }
-      
+
       .action-btn {
         margin-right: 5px;
       }
@@ -682,27 +631,27 @@ onMounted(() => {
     :deep(.el-dialog__header) {
       border-bottom: 1px solid #ecf0f1;
       padding: 20px;
-      
+
       .el-dialog__title {
         font-size: 18px;
         color: #34495e;
         font-weight: 500;
       }
     }
-    
+
     :deep(.el-dialog__body) {
       padding: 30px 20px;
     }
-    
+
     :deep(.el-dialog__footer) {
       border-top: 1px solid #ecf0f1;
       padding: 15px 20px;
     }
-    
+
     .dialog-footer {
       display: flex;
       justify-content: flex-end;
     }
   }
 }
-</style> 
+</style>

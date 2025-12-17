@@ -189,10 +189,10 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, computed } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import request from '@/utils/request'
-import { Location, Star, Picture, Search, Refresh, MapLocation } from '@element-plus/icons-vue'
+import { Location, Star, Search, Refresh, MapLocation } from '@element-plus/icons-vue'
 
 const router = useRouter()
 const baseAPI = process.env.VUE_APP_BASE_API || '/api'
@@ -306,16 +306,6 @@ const resetSearch = () => {
   filters.minRating = 0
   currentPage.value = 1
   fetchAccommodations()
-}
-
-// 筛选处理（保持兼容性）
-const handleFilter = () => {
-  handleSearch()
-}
-
-// 重置筛选条件（保持兼容性）
-const resetFilter = () => {
-  resetSearch()
 }
 
 // 分页处理

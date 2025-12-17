@@ -1,117 +1,70 @@
 <template>
-  <Auth 
-    :formData="activeTab === 'account' ? registerForm : emailRegisterForm" 
-    :rules="activeTab === 'account' ? accountRules : emailRules" 
-    :loading="loading"
-    submitText="注册"
-    @submit="handleSubmit"
-    ref="authFormRef"
-  >
+  <Auth :formData="activeTab === 'account' ? registerForm : emailRegisterForm"
+    :rules="activeTab === 'account' ? accountRules : emailRules" :loading="loading" submitText="注册"
+    @submit="handleSubmit" ref="authFormRef">
     <template #form-items>
       <el-tabs v-model="activeTab" @tab-click="handleTabClick">
         <el-tab-pane label="账号密码注册" name="account">
           <el-form-item prop="username">
-            <el-input 
-              v-model="registerForm.username"
-              :prefix-icon="User"
-              placeholder="请输入用户名">
+            <el-input v-model="registerForm.username" :prefix-icon="User" placeholder="请输入用户名">
             </el-input>
           </el-form-item>
           <el-form-item prop="password">
-            <el-input 
-              v-model="registerForm.password"
-              :prefix-icon="Lock"
-              type="password"
-              placeholder="请输入密码">
+            <el-input v-model="registerForm.password" :prefix-icon="Lock" type="password" placeholder="请输入密码">
             </el-input>
           </el-form-item>
           <el-form-item prop="confirmPassword">
-            <el-input 
-              v-model="registerForm.confirmPassword"
-              :prefix-icon="Lock"
-              type="password"
-              placeholder="请确认密码">
+            <el-input v-model="registerForm.confirmPassword" :prefix-icon="Lock" type="password" placeholder="请确认密码">
             </el-input>
           </el-form-item>
           <el-form-item prop="email">
-            <el-input 
-              v-model="registerForm.email"
-              :prefix-icon="Message"
-              placeholder="请输入邮箱">
+            <el-input v-model="registerForm.email" :prefix-icon="Message" placeholder="请输入邮箱">
             </el-input>
           </el-form-item>
           <el-form-item prop="phone">
-            <el-input 
-              v-model="registerForm.phone"
-              :prefix-icon="Phone"
-              placeholder="请输入手机号（选填）">
+            <el-input v-model="registerForm.phone" :prefix-icon="Phone" placeholder="请输入手机号（选填）">
             </el-input>
           </el-form-item>
           <el-form-item prop="nickname">
-            <el-input 
-              v-model="registerForm.nickname"
-              :prefix-icon="UserFilled"
-              placeholder="请输入昵称">
+            <el-input v-model="registerForm.nickname" :prefix-icon="UserFilled" placeholder="请输入昵称">
             </el-input>
           </el-form-item>
         </el-tab-pane>
 
         <el-tab-pane label="邮箱验证码注册" name="email">
           <el-form-item prop="email">
-            <el-input 
-              v-model="emailRegisterForm.email"
-              :prefix-icon="Message"
-              placeholder="请输入邮箱">
+            <el-input v-model="emailRegisterForm.email" :prefix-icon="Message" placeholder="请输入邮箱">
               <template #append>
-                <el-button 
-                  :disabled="isSendingEmailCode || emailCountdown > 0" 
-                  @click="sendEmailVerifyCode"
-                >
+                <el-button :disabled="isSendingEmailCode || emailCountdown > 0" @click="sendEmailVerifyCode">
                   {{ emailCountdown > 0 ? `${emailCountdown}秒后重新获取` : '获取验证码' }}
                 </el-button>
               </template>
             </el-input>
           </el-form-item>
-          
+
           <el-form-item prop="verifyCode">
-            <el-input 
-              v-model="emailRegisterForm.verifyCode"
-              :prefix-icon="Key"
-              placeholder="请输入验证码">
+            <el-input v-model="emailRegisterForm.verifyCode" :prefix-icon="Key" placeholder="请输入验证码">
             </el-input>
           </el-form-item>
-          
+
           <el-form-item prop="password">
-            <el-input 
-              v-model="emailRegisterForm.password"
-              :prefix-icon="Lock"
-              type="password"
-              placeholder="请输入密码">
+            <el-input v-model="emailRegisterForm.password" :prefix-icon="Lock" type="password" placeholder="请输入密码">
             </el-input>
           </el-form-item>
-          
+
           <el-form-item prop="confirmPassword">
-            <el-input 
-              v-model="emailRegisterForm.confirmPassword"
-              :prefix-icon="Lock"
-              type="password"
+            <el-input v-model="emailRegisterForm.confirmPassword" :prefix-icon="Lock" type="password"
               placeholder="请确认密码">
             </el-input>
           </el-form-item>
-          
+
           <el-form-item prop="username">
-            <el-input 
-              v-model="emailRegisterForm.username"
-              :prefix-icon="User"
-              placeholder="请输入用户名（选填）">
+            <el-input v-model="emailRegisterForm.username" :prefix-icon="User" placeholder="请输入用户名（选填）">
             </el-input>
           </el-form-item>
 
           <el-form-item prop="nickname">
-            <el-input 
-              v-model="emailRegisterForm.nickname"
-              :prefix-icon="UserFilled"
-              placeholder="请输入昵称（选填）">
+            <el-input v-model="emailRegisterForm.nickname" :prefix-icon="UserFilled" placeholder="请输入昵称（选填）">
             </el-input>
           </el-form-item>
         </el-tab-pane>
@@ -180,7 +133,7 @@ const validateEmail = (rule, value, callback) => {
     callback(new Error('邮箱不能为空'))
     return
   }
-  
+
   const emailRegex = /^[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)*@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/
   if (!emailRegex.test(value)) {
     callback(new Error('邮箱格式不正确'))
@@ -254,7 +207,7 @@ const handleTabClick = () => {
   if (authFormRef.value && authFormRef.value.formRef) {
     authFormRef.value.formRef.resetFields()
   }
-  
+
   if (activeTab.value === 'account') {
     // 重置账号密码注册表单
     Object.assign(registerForm, {
@@ -295,13 +248,13 @@ const sendEmailVerifyCode = async () => {
     ElMessage.error('请输入邮箱')
     return
   }
-  
+
   const emailRegex = /^[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)*@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/
   if (!emailRegex.test(emailRegisterForm.email)) {
     ElMessage.error('邮箱格式不正确')
     return
   }
-  
+
   isSendingEmailCode.value = true
   try {
     await request.get(`/email/code/${emailRegisterForm.email}`, null, {
@@ -326,12 +279,12 @@ const handleSubmit = () => {
   }
 
   const formRef = authFormRef.value.formRef
-  
+
   formRef.validate(async (valid) => {
     if (!valid) return
-    
+
     loading.value = true
-    
+
     try {
       if (activeTab.value === 'account') {
         const { confirmPassword, ...registerData } = registerForm
@@ -345,7 +298,7 @@ const handleSubmit = () => {
       } else if (activeTab.value === 'email') {
         // 从表单数据中提取验证码和用户数据
         const { confirmPassword, verifyCode, ...userData } = emailRegisterForm
-        
+
         // 使用查询参数传递验证码，而不是包含在请求体中
         await request.post("/user/register/email?verifyCode=" + verifyCode, userData, {
           successMsg: "注册成功",
@@ -365,5 +318,4 @@ const handleSubmit = () => {
 </script>
 
 <style lang="scss" scoped>
-// 如有必要，可添加特定于注册页面的样式
-</style> 
+// 如有必要，可添加特定于注册页面的样式</style>

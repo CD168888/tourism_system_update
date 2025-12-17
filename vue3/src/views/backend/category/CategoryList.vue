@@ -69,31 +69,15 @@
 
       <!-- 分页 -->
       <div class="pagination-container">
-        <el-pagination
-          background
-          layout="total, prev, pager, next"
-          :current-page="currentPage"
-          :page-size="pageSize"
-          :total="total"
-          @current-change="handleCurrentChange"
-        />
+        <el-pagination background layout="total, prev, pager, next" :current-page="currentPage" :page-size="pageSize"
+          :total="total" @current-change="handleCurrentChange" />
       </div>
     </el-card>
 
     <!-- 新增/编辑对话框 -->
-    <el-dialog
-      :title="dialogType === 'add' ? '新增分类' : '编辑分类'"
-      v-model="dialogVisible"
-      width="500px"
-      class="category-dialog"
-    >
-      <el-form
-        ref="formRef"
-        :model="form"
-        :rules="formRules"
-        label-width="100px"
-        class="category-form"
-      >
+    <el-dialog :title="dialogType === 'add' ? '新增分类' : '编辑分类'" v-model="dialogVisible" width="500px"
+      class="category-dialog">
+      <el-form ref="formRef" :model="form" :rules="formRules" label-width="100px" class="category-form">
         <el-form-item label="分类名称" prop="name">
           <el-input v-model="form.name" placeholder="请输入分类名称" />
         </el-form-item>
@@ -103,12 +87,7 @@
         <el-form-item label="父级分类">
           <el-select v-model="form.parentId" placeholder="请选择父级分类" clearable style="width: 100%">
             <el-option label="无（作为一级分类）" :value="0" />
-            <el-option
-              v-for="item in parentCategories"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
-            />
+            <el-option v-for="item in parentCategories" :key="item.id" :label="item.name" :value="item.id" />
           </el-select>
         </el-form-item>
         <el-form-item label="排序序号" prop="sortOrder">
@@ -128,9 +107,9 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, computed } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import request from '@/utils/request'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { ElMessageBox } from 'element-plus'
 import { formatDate } from '@/utils/dateUtils'
 
 const tableData = ref([])
@@ -160,9 +139,6 @@ const formRef = ref(null)
 const submitting = ref(false)
 const parentCategories = ref([])
 
-// 基础API路径
-const baseAPI = process.env.VUE_APP_BASE_API || '/api'
-
 // 获取分类列表
 const fetchCategories = async () => {
   loading.value = true
@@ -174,8 +150,8 @@ const fetchCategories = async () => {
     }, {
       showDefaultMsg: false,
       onSuccess: (res) => {
-        tableData.value = res.records||[]
-        total.value = res.total||0
+        tableData.value = res.records || []
+        total.value = res.total || 0
       }
     })
   } catch (error) {
@@ -249,7 +225,7 @@ const resetForm = () => {
 // 提交表单
 const submitForm = async () => {
   if (!formRef.value) return
-  
+
   await formRef.value.validate(async (valid) => {
     if (valid) {
       submitting.value = true
@@ -297,7 +273,7 @@ const handleDelete = (row) => {
     } catch (error) {
       console.error('删除分类失败:', error)
     }
-  }).catch(() => {})
+  }).catch(() => { })
 }
 
 onMounted(() => {
@@ -314,14 +290,14 @@ onMounted(() => {
   .page-header {
     margin-bottom: 24px;
     text-align: left;
-    
+
     .page-title {
       font-size: 24px;
       color: #34495e;
       margin: 0 0 8px 0;
       font-weight: 500;
     }
-    
+
     .page-subtitle {
       font-size: 14px;
       color: #7f8c8d;
@@ -334,17 +310,18 @@ onMounted(() => {
     margin-bottom: 20px;
     display: flex;
     justify-content: flex-end;
-    
+
     .action-right {
       display: flex;
       justify-content: flex-end;
     }
-    
+
     .add-btn {
       background-color: #2ecc71;
       border-color: #2ecc71;
-      
-      &:hover, &:focus {
+
+      &:hover,
+      &:focus {
         background-color: #27ae60;
         border-color: #27ae60;
       }
@@ -356,33 +333,35 @@ onMounted(() => {
     border-radius: 8px;
     background-color: #fff;
     box-shadow: none;
-    
+
     .search-form {
       padding: 10px 0;
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      
+
       .el-form-item {
         margin-bottom: 0;
         margin-right: 16px;
       }
-      
+
       .search-btn {
         background-color: #3498db;
         border-color: #3498db;
-        
-        &:hover, &:focus {
+
+        &:hover,
+        &:focus {
           background-color: #2980b9;
           border-color: #2980b9;
         }
       }
-      
+
       .reset-btn {
         color: #7f8c8d;
         border-color: #bdc3c7;
-        
-        &:hover, &:focus {
+
+        &:hover,
+        &:focus {
           color: #34495e;
           border-color: #95a5a6;
           background-color: #f5f5f5;
@@ -390,19 +369,19 @@ onMounted(() => {
       }
     }
   }
-  
+
   .table-card {
     border-radius: 8px;
     overflow: hidden;
     box-shadow: none;
-    
+
     .category-table {
       border-radius: 4px;
       overflow: hidden;
-      
+
       :deep(thead) {
         background-color: #ecf0f1;
-        
+
         th {
           background-color: #ecf0f1;
           color: #34495e;
@@ -410,20 +389,20 @@ onMounted(() => {
           padding: 12px 0;
         }
       }
-      
+
       :deep(tbody tr) {
         transition: all 0.3s;
-        
+
         &:hover {
           background-color: #f8f9fa;
         }
       }
-      
+
       .category-name {
         font-weight: 500;
         color: #2980b9;
       }
-      
+
       .order-tag {
         background-color: #ecf0f1;
         color: #7f8c8d;
@@ -431,12 +410,12 @@ onMounted(() => {
         border-radius: 10px;
         font-size: 12px;
       }
-      
+
       .date-text {
         color: #7f8c8d;
         font-size: 12px;
       }
-      
+
       .edit-btn {
         margin-right: 8px;
       }
@@ -454,25 +433,24 @@ onMounted(() => {
     :deep(.el-dialog__header) {
       border-bottom: 1px solid #ecf0f1;
       padding: 20px;
-      
+
       .el-dialog__title {
         font-size: 18px;
         color: #34495e;
         font-weight: 500;
       }
     }
-    
+
     :deep(.el-dialog__body) {
       padding: 30px 20px;
     }
-    
+
     :deep(.el-dialog__footer) {
       border-top: 1px solid #ecf0f1;
       padding: 15px 20px;
     }
-    
-    .category-form {
-    }
+
+    .category-form {}
   }
 }
-</style> 
+</style>

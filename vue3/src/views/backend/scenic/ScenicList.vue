@@ -260,14 +260,12 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, watch, onUnmounted, nextTick } from 'vue'
+import { ref, reactive, onMounted, watch, onUnmounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import request from '@/utils/request'
 import { formatDate } from '@/utils/dateUtils'
 import ChinaRegionData from '@/assets/中国地区数据.json'
 import { getImageUrl } from '@/utils/uploadConfig'
-
-const baseAPI = process.env.VUE_APP_BASE_API || '/api'
 
 // 高德地图API相关配置
 const AMAP_KEY = '16e2711c3a087b844eb977103e4b2d13'
@@ -376,7 +374,6 @@ const scenicFormRules = {
 const mapDialogVisible = ref(false)
 const mapInstance = ref(null)
 const mapMarker = ref(null)
-const confirmingLocation = ref(false)
 const mapSearchKeyword = ref('')
 const inputTips = ref(null)
 const searchResults = ref([])
