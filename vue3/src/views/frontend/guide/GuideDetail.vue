@@ -117,7 +117,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watch, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import request from '@/utils/request'
 import { formatDate } from '@/utils/dateUtils'
@@ -199,27 +199,40 @@ const processedContent = computed(() => {
 
 const fetchGuide = async () => {
   loading.value = true
+  // 重置数据，避免旧数据残留
+  guide.value = null
+  isCollected.value = false
+  relatedGuides.value = []
+  
   const id = route.params.id
+  console.log('fetchGuide called with id:', id)
+  console.log('id type:', typeof id)
+  
   try {
-    await request.get(`/guide/${id}`, {}, {
-      showDefaultMsg: false,
-      onSuccess: (res) => {
-        guide.value = res
-        document.title = res.title + ' - 旅游攻略'
-
-        // 如果用户已登录，查询是否已收藏
-        if (userStore.isLoggedIn) {
-          checkIsCollected(id)
-        }
-
-        // 获取相关攻略
-        fetchRelatedGuides()
-      }
+    // 使用async/await语法获取攻略详情
+    const response = await request.get(`/guide/${id}`, {}, {
+      showDefaultMsg: false
     })
+    
+    console.log('Guide detail response:', response)
+    guide.value = response
+    document.title = response.title + ' - 旅游攻略'
+
+    // 如果用户已登录，查询是否已收藏
+    if (userStore.isLoggedIn) {
+      checkIsCollected(id)
+    }
+
+    // 获取相关攻略
+    await fetchRelatedGuides()
+    console.log('fetchGuide completed successfully')
   } catch (error) {
     console.error('获取攻略详情失败:', error)
+    // 确保在错误情况下也能显示未找到页面
+    guide.value = null
   } finally {
     loading.value = false
+    console.log('fetchGuide finally block executed')
   }
 }
 
@@ -228,15 +241,16 @@ const fetchRelatedGuides = async () => {
   if (!guide.value) return
 
   try {
-    await request.get('/guide/related', {
+    const data = await request.get('/guide/related', {
       guideId: guide.value.id,
       limit: 3
     }, {
-      showDefaultMsg: false,
-      onSuccess: (data) => {
-        relatedGuides.value = data || []
-      }
+      showDefaultMsg: false
     })
+    
+    relatedGuides.value = data || []
+    console.log('relatedGuides data:', relatedGuides.value)
+    console.log('relatedGuides IDs:', relatedGuides.value.map(item => item.id))
   } catch (error) {
     console.error('获取相关攻略失败:', error)
   }
@@ -301,8 +315,37 @@ const handleShare = () => {
 }
 
 // 前往其他攻略
-const goToGuide = (id) => {
-  router.push(`/guide/detail/${id}`)
+const goToGuide = async (id) => {
+  console.log('goToGuide called with id:', id)
+  console.log('id type:', typeof id)
+  
+  // 确保id是数字类型
+  const numericId = Number(id)
+  console.log('numericId:', numericId)
+  console.log('numericId type:', typeof numericId)
+  
+  try {
+    // 使用命名路由进行导航
+    await router.push({
+      name: 'GuideDetail',
+      params: { id: numericId }
+    })
+    console.log('Navigation using named route successful')
+    
+    // 使用nextTick确保路由变化完成后再执行相关操作
+    nextTick(() => {
+      console.log('After navigation, current route params:', route.params)
+    })
+  } catch (e) {
+    console.error('Navigation failed:', e)
+    // 如果命名路由失败，尝试使用路径方式
+    try {
+      await router.push(`/guide/detail/${numericId}`)
+      console.log('Navigation using path successful')
+    } catch (pathError) {
+      console.error('Path navigation also failed:', pathError)
+    }
+  }
 }
 
 // 返回上一页
@@ -310,7 +353,31 @@ const goBack = () => {
   router.back()
 }
 
-onMounted(fetchGuide)
+// 监听路由参数变化，重新获取攻略详情
+watch(() => route.params.id, (newId, oldId) => {
+  if (newId && newId !== oldId) {
+    console.log('Route param id changed from:', oldId, 'to:', newId)
+    // 确保路由完全更新后再执行数据获取
+    nextTick(() => {
+      fetchGuide()
+    })
+  }
+}, { immediate: true, deep: true })
+
+// 也可以监听完整的路由对象变化，确保捕获所有路由相关变化
+watch(
+  () => route,
+  (newRoute, oldRoute) => {
+    if (newRoute.path !== oldRoute.path) {
+      console.log('Route path changed from:', oldRoute.path, 'to:', newRoute.path)
+      console.log('Route params changed:', { oldParams: oldRoute.params, newParams: newRoute.params })
+    }
+  },
+  { deep: true }
+)
+
+// 移除原来的onMounted，因为watch已经设置了immediate: true
+// onMounted(fetchGuide)
 </script>
 
 <style lang="scss" scoped>
@@ -605,6 +672,9 @@ onMounted(fetchGuide)
       border: 1px solid rgba(103, 182, 245, 0.1);
       cursor: pointer;
       transition: all 0.3s ease;
+      position: relative; /* 确保点击区域正确 */
+      z-index: 1; /* 确保元素在最上层 */
+      user-select: none; /* 防止文本选择干扰点击 */
 
       &:hover {
         transform: translateY(-2px);
@@ -615,6 +685,17 @@ onMounted(fetchGuide)
         .related-title {
           color: #67b6f5;
         }
+      }
+
+      /* 确保整个区域都可以点击 */
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: -1;
       }
     }
 
