@@ -175,4 +175,54 @@ public class TravelGuideService {
 
         return result;
     }
+
+    /**
+     * 获取相关攻略
+     * @param guideId 攻略ID
+     * @param limit 限制数量
+     * @return 相关攻略列表
+     */
+    public List<Map<String, Object>> getRelatedGuides(Long guideId, Integer limit) {
+        List<Map<String, Object>> result = new ArrayList<>();
+
+        // 获取当前攻略
+        TravelGuide currentGuide = travelGuideMapper.selectById(guideId);
+        if (currentGuide == null) {
+            return result;
+        }
+
+        // 简单实现：获取除了当前攻略外的最新攻略
+        LambdaQueryWrapper<TravelGuide> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.ne(TravelGuide::getId, guideId); // 排除当前攻略
+        queryWrapper.orderByDesc(TravelGuide::getCreateTime); // 按创建时间降序排序
+        queryWrapper.last("LIMIT " + limit);
+
+        List<TravelGuide> guides = travelGuideMapper.selectList(queryWrapper);
+
+        // 获取用户信息
+        List<Long> userIds = guides.stream().map(TravelGuide::getUserId).distinct().collect(Collectors.toList());
+        Map<Long, User> userMap = new HashMap<>();
+        if (!userIds.isEmpty()) {
+            userMap = userMapper.selectBatchIds(userIds).stream().collect(Collectors.toMap(User::getId, u -> u));
+        }
+
+        for (TravelGuide guide : guides) {
+            Map<String, Object> relatedGuide = new HashMap<>();
+            relatedGuide.put("id", guide.getId());
+            relatedGuide.put("title", guide.getTitle());
+            relatedGuide.put("views", guide.getViews());
+            relatedGuide.put("createTime", guide.getCreateTime());
+
+            // 添加用户信息
+            User user = userMap.get(guide.getUserId());
+            if (user != null) {
+                relatedGuide.put("userNickname", user.getNickname());
+                relatedGuide.put("userAvatar", user.getAvatar());
+            }
+
+            result.add(relatedGuide);
+        }
+
+        return result;
+    }
 }

@@ -30,6 +30,33 @@ public class TravelGuideController {
         return Result.success(page);
     }
 
+    // 获取热门攻略
+    @Operation(summary = "获取热门攻略")
+    @GetMapping("/hot")
+    public Result<?> getHotGuides(
+            @RequestParam(required = false, defaultValue = "3") Integer limit) {
+        List<Map<String, Object>> hotGuides = travelGuideService.getHotGuides(limit);
+        return Result.success(hotGuides);
+    }
+
+    @Operation(summary = "获取攻略搜索建议")
+    @GetMapping("/suggestions")
+    public Result<?> getGuideSuggestions(
+            @RequestParam String keyword,
+            @RequestParam(defaultValue = "5") Integer limit) {
+        List<Map<String, Object>> suggestions = travelGuideService.getGuideSuggestions(keyword, limit);
+        return Result.success(suggestions);
+    }
+
+    @Operation(summary = "获取相关攻略")
+    @GetMapping("/related")
+    public Result<?> getRelatedGuides(
+            @RequestParam Long guideId,
+            @RequestParam(defaultValue = "3") Integer limit) {
+        List<Map<String, Object>> relatedGuides = travelGuideService.getRelatedGuides(guideId, limit);
+        return Result.success(relatedGuides);
+    }
+
     @Operation(summary = "查看攻略详情")
     @GetMapping("/{id}")
     public Result<?> getGuideById(@PathVariable Long id) {
@@ -56,23 +83,5 @@ public class TravelGuideController {
     public Result<?> deleteGuide(@PathVariable Long id) {
         travelGuideService.deleteGuide(id);
         return Result.success();
-    }
-
-    // 获取热门攻略
-    @Operation(summary = "获取热门攻略")
-    @GetMapping("/hot")
-    public Result<?> getHotGuides(
-            @RequestParam(required = false, defaultValue = "3") Integer limit) {
-        List<Map<String, Object>> hotGuides = travelGuideService.getHotGuides(limit);
-        return Result.success(hotGuides);
-    }
-
-    @Operation(summary = "获取攻略搜索建议")
-    @GetMapping("/suggestions")
-    public Result<?> getGuideSuggestions(
-            @RequestParam String keyword,
-            @RequestParam(defaultValue = "5") Integer limit) {
-        List<Map<String, Object>> suggestions = travelGuideService.getGuideSuggestions(keyword, limit);
-        return Result.success(suggestions);
     }
 }
